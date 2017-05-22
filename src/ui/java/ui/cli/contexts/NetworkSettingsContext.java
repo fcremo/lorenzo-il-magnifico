@@ -1,13 +1,15 @@
 package ui.cli.contexts;
 
-import it.polimi.ingsw.lorenzo.client.ConnectionMethod;
-import it.polimi.ingsw.lorenzo.client.exceptions.NetworkException;
+import client.ConnectionMethod;
+import client.exceptions.NetworkException;
 import ui.cli.InvalidCommandException;
+
+import java.rmi.RemoteException;
 
 public class NetworkSettingsContext extends Context {
     private String hostname = "localhost";
-    private int port = 8420;
-    private ConnectionMethod connectionMethod = ConnectionMethod.SOCKET;
+    private int port = 1099;
+    private ConnectionMethod connectionMethod = ConnectionMethod.RMI;
 
     private Callback callback;
 
@@ -18,30 +20,34 @@ public class NetworkSettingsContext extends Context {
         this.addCommand("set-method", this::setMethod, "Set connection method");
         this.addCommand("show-settings", this::showSettings, "Show current settings");
         this.addCommand("connect", this::connect, "Connect to the server");
+        System.out.println("Network settings");
+        // TODO: 5/22/17 find a way to call internal methods without ugly hacks like this
+        this.printHelp();
+        System.out.println();
+        this.handleInput("show-settings");
     }
 
-    private void setHostname(String[] params) throws InvalidCommandException{
-        if(params.length != 1) throw new InvalidCommandException();
+    private void setHostname(String[] params) throws InvalidCommandException {
+        if (params.length != 1) throw new InvalidCommandException();
 
         this.hostname = params[0];
     }
 
     private void setPort(String[] params) throws InvalidCommandException {
-        if(params.length != 1) throw new InvalidCommandException();
+        if (params.length != 1) throw new InvalidCommandException();
 
-        try{
+        try {
             this.port = Integer.parseInt(params[0]);
-        }
-        catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new InvalidCommandException();
         }
 
     }
 
     private void setMethod(String[] params) throws InvalidCommandException {
-        if(params.length != 1) throw new InvalidCommandException();
+        if (params.length != 1) throw new InvalidCommandException();
 
-        switch (params[0]){
+        switch (params[0]) {
             case "SOCKET":
             case "socket":
                 this.connectionMethod = ConnectionMethod.SOCKET;
@@ -66,13 +72,13 @@ public class NetworkSettingsContext extends Context {
 
         try {
             callback.connect(connectionMethod, hostname, port);
-        } catch (NetworkException e) {
+        } catch (NetworkException | RemoteException e) {
             System.out.println("Connection error! Please double check the settings.");
         }
     }
 
     @FunctionalInterface
     public interface Callback {
-        void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException;
+        void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException;
     }
 }

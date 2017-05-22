@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lorenzo.client.exceptions;
+package client.exceptions;
 
 /**
  * This exception is thrown if there are no rooms available

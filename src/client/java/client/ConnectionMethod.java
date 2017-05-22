@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lorenzo.client;
+package client;
 
 public enum ConnectionMethod {
     RMI, SOCKET

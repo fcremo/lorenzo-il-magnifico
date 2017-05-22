@@ -1,7 +1,7 @@
-package ui.cli;
+package server;
 
-import client.ClientController;
-import client.exceptions.NetworkException;
+import gamecontroller.GameController;
+import gamecontroller.GameEventsInterface;
 import model.Game;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
@@ -11,80 +11,47 @@ import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainedResourceSet;
-import ui.UIEventsInterface;
-import ui.cli.contexts.Context;
-import ui.cli.contexts.LoginContext;
-import ui.cli.contexts.NetworkSettingsContext;
-import ui.cli.contexts.WaitingForGameToStartContext;
 
-import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
- * This is the command line implementation of the user interface.
+ * This class represents a game room
  */
-public class CLIUserInterface implements UIEventsInterface {
-    private ClientController controller;
+public class GameRoom implements GameEventsInterface {
+    /**
+     * The list of the server controllers in this room, one per player
+     */
+    private ArrayList<ServerController> controllers = new ArrayList<>();
 
-    private Context currentContext;
-
-    private Runnable keyboardHandler;
+    private GameController gameController = new GameController(new Game(), this);
 
     /**
-     * This is the entry point for the user interface
-     * @throws NetworkException
+     * The name of the room
      */
-    public void start() {
-        controller = new ClientController(this);
+    private String name;
 
-        currentContext = new NetworkSettingsContext(controller);
-
-        keyboardHandler = new KeyboardHandler();
-        keyboardHandler.run();
+    public GameRoom(String name) {
+        this.name = name;
     }
 
-    @Override
-    public void showLoginPrompt() {
-        currentContext = new LoginContext(controller);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void showWaitingForGameToStart() {
-        currentContext = new WaitingForGameToStartContext();
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public void onPlayerTurnStart(Player player) {
-
+    public void addController(ServerController controller) {
+        controllers.add(controller);
     }
 
-    @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
+    public void removeController(ServerController controller) {
+        controllers.remove(controller);
     }
 
-    @Override
-    public void onPlayerPerformsAction(Player player, Action action) {
-
-    }
-
-    public void onNetworkError() {
-        System.out.println("Network error!");
-        System.exit(1);
-    }
-
-    public static String askForString(String prompt) {
-        System.out.print(prompt + " ");
-        return new Scanner(System.in).nextLine();
-    }
-
-    private class KeyboardHandler implements Runnable {
-        @Override
-        public void run() {
-            while(true){
-                String input = askForString(">");
-                currentContext.handleInput(input);
-            }
-        }
+    public ArrayList<ServerController> getControllers(){
+        return controllers;
     }
 
     @Override
@@ -94,6 +61,11 @@ public class CLIUserInterface implements UIEventsInterface {
 
     @Override
     public void onDicesThrown(int black, int white, int orange) {
+
+    }
+
+    @Override
+    public void onPlayerTurnStart(Player player) {
 
     }
 
@@ -164,6 +136,16 @@ public class CLIUserInterface implements UIEventsInterface {
 
     @Override
     public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
+
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
+
+    }
+
+    @Override
+    public void onPlayerPerformsAction(Player player, Action action) {
 
     }
 }

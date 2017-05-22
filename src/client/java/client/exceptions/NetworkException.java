@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lorenzo.client.exceptions;
+package client.exceptions;
 
 import java.io.IOException;
 

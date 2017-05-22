@@ -18,4 +18,9 @@ public class Main {
         CLIUserInterface UI = new CLIUserInterface();
         UI.start();
     }
+
+    /**
+     * This class is not designed to be instantiated
+     */
+    private Main(){}
 }

@@ -1,12 +1,13 @@
-package it.polimi.ingsw.lorenzo.client.socketclient;
+package client.socketclient;
 
-import it.polimi.ingsw.lorenzo.client.ClientActionsInterface;
-import it.polimi.ingsw.lorenzo.client.exceptions.GameNotStartedException;
-import it.polimi.ingsw.lorenzo.client.exceptions.LoginException;
-import it.polimi.ingsw.lorenzo.client.exceptions.NetworkException;
-import it.polimi.ingsw.lorenzo.client.exceptions.NoAvailableRoomsException;
-import it.polimi.ingsw.lorenzo.gamecontroller.GameEventsInterface;
-import it.polimi.ingsw.lorenzo.model.player.Player;
+import client.exceptions.NetworkException;
+import server.ClientToServerInterface;
+import client.exceptions.GameNotStartedException;
+import client.exceptions.LoginException;
+import client.exceptions.NoAvailableRoomsException;
+import gamecontroller.GameEventsInterface;
+import model.player.Player;
+import protocol.SocketProtocol;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
@@ -18,32 +19,31 @@ import java.util.ArrayList;
 /**
  * This class is the implementation of the socket based client
  */
-public class SocketClient implements ClientActionsInterface {
+public class SocketClient implements ClientToServerInterface {
     private Socket connection;
     private OutputStream outputStream;
     private InputStream inputStream;
 
-    private GameEventsInterface gameController;
+    private GameEventsInterface clientController;
 
-    public SocketClient(String server, int port/*, GameEventsInterface gameController*/) throws NetworkException {
+    public SocketClient(String server, int port, GameEventsInterface clientController) throws NetworkException {
         try {
             connection = new Socket(server, port);
-            this.outputStream = connection.getOutputStream();
-            this.inputStream = connection.getInputStream();
+            outputStream = connection.getOutputStream();
+            inputStream = connection.getInputStream();
         } catch (IOException e) {
             throw new NetworkException();
         }
 
-        //this.gameController = gameController;
+        this.clientController = clientController;
     }
 
     public void loginPlayer(String name) throws LoginException, NetworkException {
-        throw new NotImplementedException();
-        /*try {
-            // outputStream.write(SocketProtocol.setPlayerName(name).getBytes());
+        try {
+            outputStream.write(SocketProtocol.loginPlayer(name));
         } catch (IOException e) {
             throw new NetworkException();
-        }*/
+        }
     }
 
     public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException {

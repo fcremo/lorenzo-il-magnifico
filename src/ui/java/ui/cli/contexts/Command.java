@@ -9,6 +9,7 @@ import ui.cli.InvalidCommandException;
 public interface Command {
     /**
      * Execute the command with the provided arguments
+     *
      * @param arguments
      * @throws InvalidCommandException
      */

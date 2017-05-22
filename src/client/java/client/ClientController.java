@@ -1,7 +1,12 @@
-package ui.cli;
+package client;
 
-import client.ClientController;
 import client.exceptions.NetworkException;
+import client.socketclient.SocketClient;
+import client.exceptions.LoginException;
+import client.exceptions.NoAvailableRoomsException;
+import client.rmiclient.RMIClient;
+import gamecontroller.GameController;
+import gamecontroller.GameEventsInterface;
 import model.Game;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
@@ -11,80 +16,46 @@ import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainedResourceSet;
+import server.ClientToServerInterface;
 import ui.UIEventsInterface;
-import ui.cli.contexts.Context;
 import ui.cli.contexts.LoginContext;
 import ui.cli.contexts.NetworkSettingsContext;
-import ui.cli.contexts.WaitingForGameToStartContext;
 
-import java.util.Scanner;
+import java.rmi.RemoteException;
 
-/**
- * This is the command line implementation of the user interface.
- */
-public class CLIUserInterface implements UIEventsInterface {
-    private ClientController controller;
+public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback, LoginContext.Callback {
+    private UIEventsInterface ui;
 
-    private Context currentContext;
+    private GameController gameController;
 
-    private Runnable keyboardHandler;
+    private ClientToServerInterface clientConnection;
 
-    /**
-     * This is the entry point for the user interface
-     * @throws NetworkException
-     */
-    public void start() {
-        controller = new ClientController(this);
-
-        currentContext = new NetworkSettingsContext(controller);
-
-        keyboardHandler = new KeyboardHandler();
-        keyboardHandler.run();
+    public ClientController(UIEventsInterface ui){
+        this.ui = ui;
     }
 
-    @Override
-    public void showLoginPrompt() {
-        currentContext = new LoginContext(controller);
-    }
-
-    @Override
-    public void showWaitingForGameToStart() {
-        currentContext = new WaitingForGameToStartContext();
-    }
-
-    @Override
-    public void onPlayerTurnStart(Player player) {
-
-    }
-
-    @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPerformsAction(Player player, Action action) {
-
-    }
-
-    public void onNetworkError() {
-        System.out.println("Network error!");
-        System.exit(1);
-    }
-
-    public static String askForString(String prompt) {
-        System.out.print(prompt + " ");
-        return new Scanner(System.in).nextLine();
-    }
-
-    private class KeyboardHandler implements Runnable {
-        @Override
-        public void run() {
-            while(true){
-                String input = askForString(">");
-                currentContext.handleInput(input);
-            }
+    public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
+        if(connectionMethod == ConnectionMethod.SOCKET){
+            clientConnection = new SocketClient(hostname, port, this);
+            ui.showLoginPrompt();
         }
+        else if(connectionMethod == ConnectionMethod.RMI){
+            clientConnection = new RMIClient(hostname, port, this);
+            ui.showLoginPrompt();
+
+        }
+    }
+
+    @Override
+    public void login(String username) throws NetworkException, LoginException, RemoteException {
+        clientConnection.loginPlayer(username);
+
+        try {
+            clientConnection.joinFirstAvailableRoom();
+        } catch (NoAvailableRoomsException e) {
+            clientConnection.createAndJoinRoom();
+        }
+        ui.showWaitingForGameToStart();
     }
 
     @Override
@@ -94,6 +65,11 @@ public class CLIUserInterface implements UIEventsInterface {
 
     @Override
     public void onDicesThrown(int black, int white, int orange) {
+
+    }
+
+    @Override
+    public void onPlayerTurnStart(Player player) {
 
     }
 
@@ -164,6 +140,16 @@ public class CLIUserInterface implements UIEventsInterface {
 
     @Override
     public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
+
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
+
+    }
+
+    @Override
+    public void onPlayerPerformsAction(Player player, Action action) {
 
     }
 }
