@@ -12,9 +12,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class RMIServer extends UnicastRemoteObject implements ServerInterface {
-    private final String NAME = "LORENZO_SERVER";
     private static Registry registry;
-
+    private final String NAME = "LORENZO_SERVER";
     private int port;
     private ArrayList<GameRoom> rooms;
 
@@ -23,10 +22,9 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
         this.rooms = rooms;
         registry = LocateRegistry.getRegistry();
 
-        try{
+        try {
             UnicastRemoteObject.exportObject(this, 0);
-        }
-        catch (RemoteException e){
+        } catch (RemoteException e) {
             System.out.println("RMIServer object already exported");
         }
 

@@ -1,13 +1,13 @@
 package client.socketclient;
 
-import client.exceptions.NetworkException;
-import server.ClientToServerInterface;
 import client.exceptions.GameNotStartedException;
 import client.exceptions.LoginException;
+import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameEventsInterface;
 import model.player.Player;
 import protocol.SocketProtocol;
+import server.ClientToServerInterface;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;

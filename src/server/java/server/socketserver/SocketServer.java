@@ -29,7 +29,7 @@ public class SocketServer implements Runnable {
             listenerSocket = new ServerSocket(port);
             // TODO: 5/19/17 find a way to disable the infinite loop inspection (is intellij bugged?)
             // until then, keep this ugly hack to shut it up
-            while((true)){
+            while ((true)) {
                 // accept a connection
                 Socket s = listenerSocket.accept();
                 SocketClientConnection clientConnection = new SocketClientConnection(s);

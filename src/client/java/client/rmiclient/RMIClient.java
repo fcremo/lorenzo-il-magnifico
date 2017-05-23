@@ -1,9 +1,9 @@
 package client.rmiclient;
 
-import client.exceptions.GameNotStartedException;
-import client.exceptions.NetworkException;
 import client.ServerToClientInterface;
+import client.exceptions.GameNotStartedException;
 import client.exceptions.LoginException;
+import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameEventsInterface;
 import model.player.Player;
@@ -30,10 +30,9 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
 
         Registry registry = LocateRegistry.getRegistry(server, port);
 
-        try{
+        try {
             UnicastRemoteObject.exportObject(this, 0);
-        }
-        catch (RemoteException e){
+        } catch (RemoteException e) {
             System.out.println("RMIClient already exported");
         }
 
@@ -52,6 +51,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
 
     @Override
     public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException {
+        connection.joinFirstAvailableRoom();
 
     }
 

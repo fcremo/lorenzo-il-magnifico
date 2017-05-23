@@ -23,17 +23,17 @@ public class Card {
     /**
      * The resource set needed to take/play the card
      */
-    private ArrayList<RequiredResourceSet> requiredResourceSet;
+    private ArrayList<RequiredResourceSet> requiredResourceSets;
 
     /**
      * The effects of the card
      */
     private EffectsContainer effects;
 
-    public Card(String id, String name, List<RequiredResourceSet> requiredResourceSet) {
+    public Card(String id, String name, List<RequiredResourceSet> requiredResourceSets) {
         this.id = id;
         this.name = name;
-        this.requiredResourceSet = new ArrayList<>(requiredResourceSet);
+        this.requiredResourceSets = new ArrayList<>(requiredResourceSets);
     }
 
     /**
@@ -42,12 +42,12 @@ public class Card {
      *
      * @return the list of resources
      */
-    public List<RequiredResourceSet> getRequiredResourceSet() {
-        return requiredResourceSet;
+    public List<RequiredResourceSet> getRequiredResourceSets() {
+        return requiredResourceSets;
     }
 
-    public void setRequiredResourceSet(List<RequiredResourceSet> requiredResourceSet) {
-        this.requiredResourceSet = new ArrayList<>(requiredResourceSet);
+    public void setRequiredResourceSets(List<RequiredResourceSet> requiredResourceSets) {
+        this.requiredResourceSets = new ArrayList<>(requiredResourceSets);
     }
 
     public String getId() {

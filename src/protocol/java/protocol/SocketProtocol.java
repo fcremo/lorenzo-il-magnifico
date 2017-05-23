@@ -16,7 +16,7 @@ public class SocketProtocol {
         return null;
     }
 
-    public static byte[] loginPlayer(String name){
+    public static byte[] loginPlayer(String name) {
         SocketMessage message = new SocketMessage()
                 .setType(MessageType.REQUEST)
                 .setAction(ProtocolAction.LOGIN)

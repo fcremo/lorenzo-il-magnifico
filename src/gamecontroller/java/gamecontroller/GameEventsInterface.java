@@ -23,18 +23,21 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player's turn starts
+     *
      * @param player
      */
     void onPlayerTurnStart(Player player);
 
     /**
      * Called when a player skips a turn
+     *
      * @param player
      */
     void playerSkipsTurn(Player player);
 
     /**
      * Called when a player commits servants to perform an action
+     *
      * @param player
      * @param servants
      */
@@ -43,6 +46,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player goes to a floor
+     *
      * @param player
      * @param familyMemberColor
      * @param floor
@@ -51,6 +55,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player goes to the small harvest action space
+     *
      * @param player
      * @param familyMemberColor
      */
@@ -58,6 +63,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player goes to the big harvest action space
+     *
      * @param player
      * @param familyMemberColor
      */
@@ -65,20 +71,23 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player goes to the small production action space
+     *
      * @param player
      * @param familyMemberColor
      */
-    public void goToSmallProducion(Player player, FamilyMemberColor familyMemberColor);
+    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor);
 
     /**
      * Called when a player goes to the big production action space
+     *
      * @param player
      * @param familyMemberColor
      */
-    public void goToBigProducion(Player player, FamilyMemberColor familyMemberColor);
+    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor);
 
     /**
      * Called when a player goes to the council palace action space
+     *
      * @param player
      * @param familyMemberColor
      */
@@ -86,6 +95,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player goes to a market action space
+     *
      * @param player
      * @param familyMemberColor
      * @param marketActionSpace
@@ -94,6 +104,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player places a family member in any action space
+     *
      * @param player
      * @param familyMemberColor
      * @param actionSpace
@@ -102,6 +113,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player plays a leader card
+     *
      * @param player
      * @param leaderCard
      */
@@ -109,6 +121,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player discards a leader card
+     *
      * @param player
      * @param leaderCard
      */
@@ -116,15 +129,17 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player activates an effect
+     *
      * @param player
      * @param effect
      * @param <T>
      */
-    <T extends OncePerTurnEffectInterface>  void onPlayerActivatesOncePerTurnEffect(Player player, T effect);
+    <T extends OncePerTurnEffectInterface> void onPlayerActivatesOncePerTurnEffect(Player player, T effect);
 
 
     /**
      * Called when a player earns resources
+     *
      * @param player
      * @param obtainedResourceSet
      */
@@ -132,6 +147,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player occupies an action space
+     *
      * @param player
      * @param familyMemberColor
      * @param actionSpace
@@ -140,6 +156,7 @@ public interface GameEventsInterface {
 
     /**
      * Called when a player performs an action
+     *
      * @param player
      * @param action
      */

@@ -13,7 +13,6 @@ import model.resource.ObtainedResourceSet;
  * This class represents the state of the board.
  */
 public class Board {
-    ObtainedResourceSet[] faithTrackVictoryPoints = new ObtainedResourceSet[16];
     private Game game;
     private ActionSpace councilPalace;
     private ActionSpace smallProductionArea;
@@ -29,6 +28,7 @@ public class Board {
     private Tower<BuildingCard> yellowTower = new Tower<>();
     private Tower<VentureCard> purpleTower = new Tower<>();
     private Excommunication[] excommunications = new Excommunication[3];
+    private ObtainedResourceSet[] faithTrackBonus = new ObtainedResourceSet[16];
 
     public Board(Game game) {
         this.game = game;
@@ -144,5 +144,13 @@ public class Board {
 
     public void setExcommunications(Excommunication[] excommunications) {
         this.excommunications = excommunications;
+    }
+
+    public ObtainedResourceSet[] getFaithTrackBonus() {
+        return faithTrackBonus;
+    }
+
+    public void setFaithTrackBonus(ObtainedResourceSet[] faithTrackBonus) {
+        this.faithTrackBonus = faithTrackBonus;
     }
 }

@@ -25,8 +25,8 @@ public class Server {
 
     private ArrayList<GameRoom> rooms = new ArrayList<>();
 
-    public void start(){
-        if(enableRMIServer){
+    public void start() {
+        if (enableRMIServer) {
             try {
                 rmiServer = new RMIServer(rmiServerPort, rooms);
             } catch (RemoteException e) {
@@ -34,7 +34,7 @@ public class Server {
             }
         }
 
-        if(enableSocketServer){
+        if (enableSocketServer) {
             socketServer = new Thread(new SocketServer(socketServerPort, rooms));
             socketServer.start();
         }

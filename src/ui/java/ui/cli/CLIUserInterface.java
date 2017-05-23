@@ -29,8 +29,14 @@ public class CLIUserInterface implements UIEventsInterface {
 
     private Runnable keyboardHandler;
 
+    public static String askForString(String prompt) {
+        System.out.print(prompt + " ");
+        return new Scanner(System.in).nextLine();
+    }
+
     /**
      * This is the entry point for the user interface
+     *
      * @throws NetworkException
      */
     public void start() {
@@ -72,21 +78,6 @@ public class CLIUserInterface implements UIEventsInterface {
         System.exit(1);
     }
 
-    public static String askForString(String prompt) {
-        System.out.print(prompt + " ");
-        return new Scanner(System.in).nextLine();
-    }
-
-    private class KeyboardHandler implements Runnable {
-        @Override
-        public void run() {
-            while(true){
-                String input = askForString(">");
-                currentContext.handleInput(input);
-            }
-        }
-    }
-
     @Override
     public void onGameStart(Game g) {
 
@@ -123,12 +114,12 @@ public class CLIUserInterface implements UIEventsInterface {
     }
 
     @Override
-    public void goToSmallProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 
     @Override
-    public void goToBigProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 
@@ -165,5 +156,15 @@ public class CLIUserInterface implements UIEventsInterface {
     @Override
     public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
 
+    }
+
+    private class KeyboardHandler implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                String input = askForString(">");
+                currentContext.handleInput(input);
+            }
+        }
     }
 }

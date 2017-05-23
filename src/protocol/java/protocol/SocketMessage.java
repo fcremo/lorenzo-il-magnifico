@@ -11,42 +11,43 @@ public class SocketMessage {
     /**
      * Create a new SocketMessage
      */
-    public SocketMessage(){
+    public SocketMessage() {
         this.message = new Message();
     }
 
     /**
      * Parse a JSON string into a SocketMessage
+     *
      * @param message the JSON representation of the message
      */
-    public SocketMessage(String message){
+    public SocketMessage(String message) {
 
     }
 
-    public SocketMessage setType(MessageType type){
+    public MessageType getType() {
+        return type;
+    }
+
+    public SocketMessage setType(MessageType type) {
         this.type = type;
         return this;
     }
 
-    public MessageType getType(){
-        return type;
+    public ProtocolAction getAction() {
+        return this.message.getAction();
     }
 
-    public SocketMessage setAction(ProtocolAction action){
+    public SocketMessage setAction(ProtocolAction action) {
         this.message.setAction(action);
         return this;
     }
 
-    public ProtocolAction getAction(){
-        return this.message.getAction();
+    public Object getPayload() {
+        return this.message.getPayload();
     }
 
-    public SocketMessage setPayload(Object payload){
+    public SocketMessage setPayload(Object payload) {
         this.message.setPayload(payload);
         return this;
-    }
-
-    public Object getPayload(){
-        return this.message.getPayload();
     }
 }

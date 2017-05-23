@@ -5,7 +5,7 @@ public enum MessageType {
 
     private String type;
 
-    MessageType(String s){
+    MessageType(String s) {
         this.type = s;
     }
 }

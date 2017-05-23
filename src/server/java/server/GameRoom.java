@@ -30,6 +30,8 @@ public class GameRoom implements GameEventsInterface {
      */
     private String name;
 
+    private Thread timer;
+
     public GameRoom(String name) {
         this.name = name;
     }
@@ -42,16 +44,36 @@ public class GameRoom implements GameEventsInterface {
         this.name = name;
     }
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+
     public void addController(ServerController controller) {
         controllers.add(controller);
+        if (controllers.size() >= 2 && timer == null) {
+            timer = new Thread(new TimerClass());
+            timer.start();
+        }
     }
 
     public void removeController(ServerController controller) {
         controllers.remove(controller);
     }
 
-    public ArrayList<ServerController> getControllers(){
+    public ArrayList<ServerController> getControllers() {
         return controllers;
+    }
+
+    public boolean isAvailable() {
+        return (gameController.isGameStarting() && !this.isFull());
+    }
+
+    public boolean isFull() {
+        return (controllers.size() >= 4);
     }
 
     @Override
@@ -95,12 +117,12 @@ public class GameRoom implements GameEventsInterface {
     }
 
     @Override
-    public void goToSmallProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 
     @Override
-    public void goToBigProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 
@@ -147,5 +169,22 @@ public class GameRoom implements GameEventsInterface {
     @Override
     public void onPlayerPerformsAction(Player player, Action action) {
 
+    }
+
+    private void onRoomTimeout() {
+        gameController.startGame();
+    }
+
+    private class TimerClass implements Runnable {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(90000);
+                onRoomTimeout();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

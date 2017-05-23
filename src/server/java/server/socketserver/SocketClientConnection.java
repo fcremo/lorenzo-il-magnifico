@@ -24,11 +24,12 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     @Override
     public void run() {
         // TODO: 5/19/17 find a way to disable the infinite loop inspection
-        while((true)){
+        while ((true)) {
             try {
                 String in = input.readLine();
 
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
 

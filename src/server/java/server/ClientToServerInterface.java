@@ -17,21 +17,24 @@ import java.util.ArrayList;
 public interface ClientToServerInterface extends Remote {
     /**
      * Logs in the player
+     *
      * @param name the username chosen by the user
-     * @throws LoginException thrown if the username is already used
+     * @throws LoginException   thrown if the username is already used
      * @throws NetworkException thrown if there's a network error
      */
     void loginPlayer(String name) throws LoginException, NetworkException, RemoteException;
 
     /**
      * Joins the first available room
+     *
      * @throws NoAvailableRoomsException thrown if there are no rooms available
-     * @throws NetworkException thrown if there's a network error
+     * @throws NetworkException          thrown if there's a network error
      */
     void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException;
 
     /**
      * Creates a new game room and joins it
+     *
      * @throws NetworkException thrown if there's a network error
      */
     void createAndJoinRoom() throws NetworkException, RemoteException;

@@ -50,9 +50,8 @@ public class Player {
      */
     private ArrayList<Excommunication> excommunications;
 
-    public Player(String username, PlayerColor color) {
+    public Player(String username) {
         this.username = username;
-        this.color = color;
     }
 
     /**

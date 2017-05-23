@@ -9,6 +9,12 @@ import java.util.logging.Logger;
 public class Main {
     private static final Logger LOGGER = Logger.getLogger("CLI Main");
 
+    /**
+     * This class is not designed to be instantiated
+     */
+    private Main() {
+    }
+
     public static void main(String[] args) throws IOException {
         LOGGER.info("Starting Lorenzo Il Magnifico CLI");
 
@@ -18,9 +24,4 @@ public class Main {
         CLIUserInterface UI = new CLIUserInterface();
         UI.start();
     }
-
-    /**
-     * This class is not designed to be instantiated
-     */
-    private Main(){}
 }

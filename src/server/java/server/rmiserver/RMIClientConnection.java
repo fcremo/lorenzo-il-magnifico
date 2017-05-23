@@ -19,10 +19,9 @@ public class RMIClientConnection extends ClientConnection implements ClientToSer
 
     public RMIClientConnection(ServerToClientInterface client) {
         this.client = client;
-        try{
+        try {
             UnicastRemoteObject.exportObject(this, 0);
-        }
-        catch (RemoteException e){
+        } catch (RemoteException e) {
             System.out.println("RMIClientConnection already exported");
         }
     }
@@ -30,6 +29,7 @@ public class RMIClientConnection extends ClientConnection implements ClientToSer
     @Override
     public void loginPlayer(String name) throws LoginException, NetworkException, RemoteException {
         System.out.println("rmi loginPlayer");
+        getController().loginPlayer(name);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RMIClientConnection extends ClientConnection implements ClientToSer
 
     @Override
     public void createAndJoinRoom() throws NetworkException, RemoteException {
-
+        getController().createAndJoinRoom();
     }
 
     @Override

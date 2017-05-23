@@ -1,7 +1,7 @@
 package server.rmiserver;
 
-import server.ClientToServerInterface;
 import client.ServerToClientInterface;
+import server.ClientToServerInterface;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,10 +1,10 @@
 package client;
 
-import client.exceptions.NetworkException;
-import client.socketclient.SocketClient;
 import client.exceptions.LoginException;
+import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import client.rmiclient.RMIClient;
+import client.socketclient.SocketClient;
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
 import model.Game;
@@ -30,20 +30,17 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
 
     private ClientToServerInterface clientConnection;
 
-    public ClientController(UIEventsInterface ui){
+    public ClientController(UIEventsInterface ui) {
         this.ui = ui;
     }
 
     public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
-        if(connectionMethod == ConnectionMethod.SOCKET){
+        if (connectionMethod == ConnectionMethod.SOCKET) {
             clientConnection = new SocketClient(hostname, port, this);
-            ui.showLoginPrompt();
-        }
-        else if(connectionMethod == ConnectionMethod.RMI){
+        } else if (connectionMethod == ConnectionMethod.RMI) {
             clientConnection = new RMIClient(hostname, port, this);
-            ui.showLoginPrompt();
-
         }
+        ui.showLoginPrompt();
     }
 
     @Override
@@ -99,12 +96,12 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     }
 
     @Override
-    public void goToSmallProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 
     @Override
-    public void goToBigProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor) {
 
     }
 

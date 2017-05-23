@@ -31,16 +31,29 @@ public class ServerController implements ClientToServerInterface {
 
     @Override
     public void loginPlayer(String name) throws LoginException, NetworkException {
-
+        player = new Player(name);
     }
 
     @Override
     public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException {
-
+        for (GameRoom room : gameRooms) {
+            if (!room.isAvailable()) {
+                room.addController(this);
+                chosenRoom = room;
+                return;
+            }
+        }
+        throw new NoAvailableRoomsException();
     }
 
     @Override
     public void createAndJoinRoom() throws NetworkException, RemoteException {
+        chosenRoom = new GameRoom(player.getUsername() + "'s room");
+        chosenRoom.addController(this);
+        gameRooms.add(chosenRoom);
+    }
+
+    public void onRoomTimeout() {
 
     }
 

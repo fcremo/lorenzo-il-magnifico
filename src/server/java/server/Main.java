@@ -8,15 +8,16 @@ import java.util.logging.Logger;
 public class Main {
     private static final Logger LOGGER = Logger.getLogger("Server Launcher");
 
-    public static void main(String[] args){
+    /**
+     * This class is not designed to be instantiated
+     */
+    private Main() {
+    }
+
+    public static void main(String[] args) {
         LOGGER.info("Starting Lorenzo il Magnifico Server..");
 
         Server s = new Server();
         s.start();
     }
-
-    /**
-     * This class is not designed to be instantiated
-     */
-    private Main(){}
 }
