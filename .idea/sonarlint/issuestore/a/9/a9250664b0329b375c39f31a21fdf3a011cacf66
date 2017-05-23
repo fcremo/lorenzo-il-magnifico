@@ -1,12 +1,0 @@
-
-[
-squid:S106";Replace this usage of System.out or System.err by a logger.(¥’›½øÿÿÿÿ8»µ±µ¿+
-Usquid:S2864"4Iterate over the "entrySet" instead of the "keySet".(Âç™Øøÿÿÿÿ8ú¥¿+
-gsquid:S1132"FMove the "" string literal on the left side of this string comparison.(‰Îû£ıÿÿÿÿ8¶ï´µ¿+
-V
-squid:S106";Replace this usage of System.out or System.err by a logger.(×äØå8‡õí¥¿+
-V
-squid:S106";Replace this usage of System.out or System.err by a logger.(ƒÿÔ8â½°µ¿+
-Fsquid:S1166"%Either log or rethrow this exception.(¢ñı»ÿÿÿÿÿ8â½°µ¿+
-[
-squid:S106";Replace this usage of System.out or System.err by a logger.(ÿÅÆùÿÿÿÿ8‡õí¥¿+

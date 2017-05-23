@@ -1,11 +1,0 @@
-
-’squid:S1319"qThe type of the "floors" object should be an interface such as "List" rather than the implementation "ArrayList".(Õó’Êıÿÿÿÿ8ªç£º¿+
-Fsquid:S1068"*Remove this unused "floors" private field.(©Ï‹Û8ªç£º¿+
-Msquid:S1135"2Complete the task associated to this TODO comment.(ÖÈíf8ªç£º¿+
-Qsquid:S1191"5Use classes from the Java API instead of Sun classes.(˜½‘8ªç£º¿+
-Msquid:S1135"2Complete the task associated to this TODO comment.(ÖÈíf8ªç£º¿+
-Ssquid:S1135"2Complete the task associated to this TODO comment.(ôÎÕúıÿÿÿÿ8ªç£º¿+
-Msquid:S1135"2Complete the task associated to this TODO comment.(ÖÈíf8ªç£º¿+
-Nsquid:S1135"2Complete the task associated to this TODO comment.(•¿ƒ¢8ªç£º¿+
-usquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(©Ï‹Û8ªç£º¿+
-—squid:S1319"{The type of the "developmentCards" object should be an interface such as "List" rather than the implementation "ArrayList".(ÊÑ 8ªç£º¿+

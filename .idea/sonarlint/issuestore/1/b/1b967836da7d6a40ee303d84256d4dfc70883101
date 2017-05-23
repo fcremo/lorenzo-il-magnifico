@@ -1,10 +1,0 @@
-
-[squid:S1068":Remove this unused "availableBuildingCards" private field.(œË–ıùÿÿÿÿ8Ê¯‹µ¿+
-Zsquid:S1068"9Remove this unused "availableVentureCards" private field.(é½—ºøÿÿÿÿ8Ê¯‹µ¿+
-Ssquid:S1135"2Complete the task associated to this TODO comment.(İ³³îÿÿÿÿÿ8Ê¯‹µ¿+
-Wsquid:S1068";Remove this unused "availableCharacterCards" private field.(’¸œÌ8Ê¯‹µ¿+
-Qsquid:S1191"5Use classes from the Java API instead of Sun classes.(˜½‘8Ê¯‹µ¿+
-Wsquid:S1068";Remove this unused "availableTerritoryCards" private field.(™×°¸8Ê¯‹µ¿+
-“squid:S1319"rThe type of the "players" object should be an interface such as "List" rather than the implementation "ArrayList".(ñìÊØúÿÿÿÿ8Ê¯‹µ¿+
-Ssquid:S1135"2Complete the task associated to this TODO comment.(İ³³îÿÿÿÿÿ8Ê¯‹µ¿+
-Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ğÂ›8Ê¯‹µ¿+
