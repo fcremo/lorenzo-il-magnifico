@@ -1,0 +1,6 @@
+
+—squid:S1319"vThe type of the "productions" object should be an interface such as "List" rather than the implementation "ArrayList".(Úèá¥úÿÿÿÿ8„±„ä¿+
+Ÿsquid:S1319"~The type of the "requiredResourceSet" object should be an interface such as "List" rather than the implementation "ArrayList".(ØË¬ûÿÿÿÿ8„±„ä¿+
+—squid:S1319"{The type of the "immediateActions" object should be an interface such as "List" rather than the implementation "ArrayList".(öâğ¸8„±„ä¿+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Éœé£8“Ë…ä¿+
+’squid:S1319"vThe type of the "productions" object should be an interface such as "List" rather than the implementation "ArrayList".(¡¥ò8“Ë…ä¿+

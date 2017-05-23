@@ -1,0 +1,14 @@
+
+[
+squid:S106";Replace this usage of System.out or System.err by a logger.(—€†úÿÿÿÿ8ÍÃã¥¿+
+Csquid:S2189""Add an end condition to this loop.(˜ïˆÿÿÿÿÿ8Äû€µ¿+
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(§Á”8İƒˆµ¿+
+usquid:S1450"YRemove the "controller" field and declare it as a local variable in the relevant methods.(¯Ö±Õ8ÍÃã¥¿+
+\squid:S1147";Remove this call to "exit" or ensure it is really required.(ôá¤“úÿÿÿÿ8ÍÃã¥¿+
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÿœåê8İƒˆµ¿+
+squid:S1450"^Remove the "keyboardHandler" field and declare it as a local variable in the relevant methods.(”Çè®ùÿÿÿÿ8â¤†µ¿+
+V
+squid:S106";Replace this usage of System.out or System.err by a logger.(Ç÷–ö8ÍÃã¥¿+
+[
+squid:S106";Replace this usage of System.out or System.err by a logger.(œ¸’ ûÿÿÿÿ8ÍÃã¥¿+
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(·ıä¾8İƒˆµ¿+

@@ -1,0 +1,11 @@
+
+œsquid:S1319"{The type of the "immediateEffects" object should be an interface such as "List" rather than the implementation "ArrayList".(äš¤½úÿÿÿÿ8ò˜¡ã¿+
+œsquid:S1319"{The type of the "immediateActions" object should be an interface such as "List" rather than the implementation "ArrayList".(¾µ³¦øÿÿÿÿ8ò˜¡ã¿+
+—squid:S1319"{The type of the "permanentEffects" object should be an interface such as "List" rather than the implementation "ArrayList".(şÕ¥8¨ç§ã¿+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(û¡°™8ø»¶ã¿+
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ä°“×ÿÿÿÿÿ8ò˜¡ã¿+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(÷‹¸ 8ò˜¡ã¿+
+—squid:S1319"{The type of the "immediateActions" object should be an interface such as "List" rather than the implementation "ArrayList".(éøÖÆ8¸»¢ã¿+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(î³›õ8öÂË»¿+
+Ÿsquid:S1319"~The type of the "requiredResourceSet" object should be an interface such as "List" rather than the implementation "ArrayList".(ñŠŸûÿÿÿÿÿ8öÂË»¿+
+Ÿsquid:S1319"~The type of the "requiredResourceSet" object should be an interface such as "List" rather than the implementation "ArrayList".(ãœÔ¾úÿÿÿÿ8öÂË»¿+

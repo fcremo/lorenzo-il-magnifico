@@ -1,0 +1,5 @@
+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(´Ü—Ø8Á¸Œ¾¿+
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ìˆ€§şÿÿÿÿ8Á¸Œ¾¿+
+usquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ìÃÅò8æ†”¾¿+
+zsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(„ï´±ùÿÿÿÿ8¾Ë¾¿+

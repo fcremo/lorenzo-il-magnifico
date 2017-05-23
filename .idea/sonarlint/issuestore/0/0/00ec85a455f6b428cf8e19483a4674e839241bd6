@@ -1,0 +1,17 @@
+
+›squid:S1319"The type of the "availableLeaderCards" object should be an interface such as "List" rather than the implementation "ArrayList".(™Ûæù8©éˆÀ+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(«Ó¸Á8©éˆÀ+
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(è¶ÕÓùÿÿÿÿ8©éˆÀ+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Ê¸8©éˆÀ+
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(àÁÂòşÿÿÿÿ8©éˆÀ+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(šâ8©éˆÀ+
+•squid:S1319"tThe type of the "buildings" object should be an interface such as "List" rather than the implementation "ArrayList".(¥¬Å‚ÿÿÿÿÿ8©éˆÀ+
+Œsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(É‰Ÿ§8©éˆÀ+
+–squid:S1319"uThe type of the "characters" object should be an interface such as "List" rather than the implementation "ArrayList".(à±Š¡ûÿÿÿÿ8©éˆÀ+
+œsquid:S1319"{The type of the "excommunications" object should be an interface such as "List" rather than the implementation "ArrayList".(·ÈÜøÿÿÿÿ8©éˆÀ+
+squid:S1319"sThe type of the "ventures" object should be an interface such as "List" rather than the implementation "ArrayList".(Îúœ~8©éˆÀ+
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(íØ¢†şÿÿÿÿ8©éˆÀ+
+˜squid:S1319"|The type of the "playedLeaderCards" object should be an interface such as "List" rather than the implementation "ArrayList".(ŠË×8©éˆÀ+
+—squid:S1319"vThe type of the "territories" object should be an interface such as "List" rather than the implementation "ArrayList".(˜êòÿÿÿÿÿ8©éˆÀ+
+Qsquid:S1191"5Use classes from the Java API instead of Sun classes.(˜½‘8©éˆÀ+
+Nsquid:S1135"2Complete the task associated to this TODO comment.(ùÉÕß8©éˆÀ+
