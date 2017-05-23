@@ -12,7 +12,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/client/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/server/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/protocol/java" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/src/model/java/it/polimi/ingsw/lorenzo/model/card/effects/dabuttare" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
