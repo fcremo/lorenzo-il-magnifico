@@ -5,7 +5,10 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.card.leader.LeaderCard;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
+import model.resource.ObtainedResourceSet;
 
 import java.util.ArrayList;
 
@@ -39,6 +42,26 @@ public class Game {
     private ArrayList<VentureCard> availableVentureCards;
 
     /**
+     * The list of available excommunications
+     */
+    private ArrayList<Excommunication> availableExcommunications;
+
+    /**
+     * The list of available personal bonus tiles
+     */
+    private ArrayList<PersonalBonusTile> availablePersonalBonusTiles;
+
+    /**
+     * The list of available leader cards
+     */
+    private ArrayList<LeaderCard> availableLeaderCards;
+
+    /**
+     * The list of possible council privileges the player can choose from
+     */
+    private ArrayList<ObtainedResourceSet> councilPrivileges;
+
+    /**
      * The Board object contains the board state
      */
     private Board board;
@@ -61,7 +84,7 @@ public class Game {
     /**
      * The current round
      */
-    private int currentRound;
+    private int currentRound = 1;
 
     /**
      * The value of the black dice as rolled (does not account for bonuses/maluses)
@@ -205,5 +228,69 @@ public class Game {
 
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public ArrayList<TerritoryCard> getAvailableTerritoryCards() {
+        return availableTerritoryCards;
+    }
+
+    public void setAvailableTerritoryCards(ArrayList<TerritoryCard> availableTerritoryCards) {
+        this.availableTerritoryCards = availableTerritoryCards;
+    }
+
+    public ArrayList<BuildingCard> getAvailableBuildingCards() {
+        return availableBuildingCards;
+    }
+
+    public void setAvailableBuildingCards(ArrayList<BuildingCard> availableBuildingCards) {
+        this.availableBuildingCards = availableBuildingCards;
+    }
+
+    public ArrayList<CharacterCard> getAvailableCharacterCards() {
+        return availableCharacterCards;
+    }
+
+    public void setAvailableCharacterCards(ArrayList<CharacterCard> availableCharacterCards) {
+        this.availableCharacterCards = availableCharacterCards;
+    }
+
+    public ArrayList<VentureCard> getAvailableVentureCards() {
+        return availableVentureCards;
+    }
+
+    public void setAvailableVentureCards(ArrayList<VentureCard> availableVentureCards) {
+        this.availableVentureCards = availableVentureCards;
+    }
+
+    public ArrayList<Excommunication> getAvailableExcommunications() {
+        return availableExcommunications;
+    }
+
+    public void setAvailableExcommunications(ArrayList<Excommunication> availableExcommunications) {
+        this.availableExcommunications = availableExcommunications;
+    }
+
+    public ArrayList<PersonalBonusTile> getAvailablePersonalBonusTiles() {
+        return availablePersonalBonusTiles;
+    }
+
+    public void setAvailablePersonalBonusTiles(ArrayList<PersonalBonusTile> availablePersonalBonusTiles) {
+        this.availablePersonalBonusTiles = availablePersonalBonusTiles;
+    }
+
+    public ArrayList<LeaderCard> getAvailableLeaderCards() {
+        return availableLeaderCards;
+    }
+
+    public void setAvailableLeaderCards(ArrayList<LeaderCard> availableLeaderCards) {
+        this.availableLeaderCards = availableLeaderCards;
+    }
+
+    public ArrayList<ObtainedResourceSet> getCouncilPrivileges() {
+        return councilPrivileges;
+    }
+
+    public void setCouncilPrivileges(ArrayList<ObtainedResourceSet> councilPrivileges) {
+        this.councilPrivileges = councilPrivileges;
     }
 }
