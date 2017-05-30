@@ -14,7 +14,13 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class RMIClientConnection extends ClientConnection implements ClientToServerInterface, Remote {
+/**
+ * This class implements the ClientToServerInterface for RMI.
+ * Clients will get a stub that will call (via RMI) methods on a server side instance of this class.
+ *
+ * The server can also use this object to push messages to the clients using the ServerToClientInterface.
+ */
+public class RMIClientConnection extends ClientConnection implements ServerToClientInterface, ClientToServerInterface, Remote {
     private ServerToClientInterface client;
 
     public RMIClientConnection(ServerToClientInterface client) {
@@ -28,7 +34,6 @@ public class RMIClientConnection extends ClientConnection implements ClientToSer
 
     @Override
     public void loginPlayer(String name) throws LoginException, NetworkException, RemoteException {
-        System.out.println("rmi loginPlayer");
         getController().loginPlayer(name);
     }
 
