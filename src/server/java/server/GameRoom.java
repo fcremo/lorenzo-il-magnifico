@@ -30,6 +30,12 @@ public class GameRoom implements GameEventsInterface {
      */
     private String name;
 
+    /**
+     * The time to wait (in milliseconds) before starting the game after two players have joined the room.
+     * TODO: 5/30/17 make this timeout configurable
+     */
+    private int gameStartTimeout = 5000;
+
     private Thread timer;
 
     public GameRoom(String name) {
@@ -52,10 +58,16 @@ public class GameRoom implements GameEventsInterface {
         this.gameController = gameController;
     }
 
-    public void addController(ServerController controller) {
+    /**
+     * Adds a player to the room, starting the room timeout if
+     * there are at least 2 players connected
+     * @param controller
+     */
+    public void addPlayer(ServerController controller) {
         controllers.add(controller);
         if (controllers.size() >= 2 && timer == null) {
-            timer = new Thread(new TimerClass());
+            System.out.println("Starting room " + name + " timeout");
+            timer = new Thread(new RoomTimerClass());
             timer.start();
         }
     }
@@ -172,19 +184,29 @@ public class GameRoom implements GameEventsInterface {
     }
 
     private void onRoomTimeout() {
+        System.out.println("Room " + name + " timeout expired, starting game...");
         gameController.startGame();
     }
 
-    private class TimerClass implements Runnable {
+    private class RoomTimerClass implements Runnable {
         @Override
         public void run() {
-            try {
-                Thread.sleep(90000);
-                onRoomTimeout();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // The time when the timer was started, needed to handle exceptions
+            long startTime;
+            long remainingTime = gameStartTimeout;
 
+            while(true){
+                startTime = System.currentTimeMillis();
+                try {
+                    Thread.sleep(remainingTime);
+                    onRoomTimeout();
+                    break;
+                } catch (InterruptedException e) {
+                    // If somehow the thread is woken up early compute the
+                    // remaining time and go back to sleep again
+                    remainingTime = remainingTime - (System.currentTimeMillis() - startTime);
+                }
+            }
         }
     }
 }
