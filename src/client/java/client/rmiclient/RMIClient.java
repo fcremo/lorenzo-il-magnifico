@@ -57,7 +57,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
 
     @Override
     public void createAndJoinRoom() throws NetworkException, RemoteException {
-
+        connection.createAndJoinRoom();
     }
 
     @Override
