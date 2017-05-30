@@ -1,7 +1,6 @@
 package model.card.effects.interfaces;
 
 import model.resource.ObtainedResourceSet;
-import model.resource.RequiredResourceSet;
 
 import java.util.List;
 
@@ -16,5 +15,5 @@ public interface ObtainedResourceSetModifierEffectInterface extends EffectInterf
      * @param currentResources the current list of resource sets that the player can receive
      * @return the modified list of resource sets the player can choose from
      */
-    List<RequiredResourceSet> modifyResources(List<ObtainedResourceSet> currentResources);
+    List<ObtainedResourceSet> modifyResources(List<ObtainedResourceSet> currentResources);
 }
