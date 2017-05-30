@@ -13,6 +13,10 @@ import java.util.ArrayList;
 
 public class RMIServer extends UnicastRemoteObject implements ServerInterface {
     private static Registry registry;
+
+    private boolean createLocalRegistry = true;
+    private int REGISTRY_PORT = 1099;
+
     private final String NAME = "LORENZO_SERVER";
     private int port;
     private ArrayList<GameRoom> rooms;
@@ -20,12 +24,21 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
     public RMIServer(int port, ArrayList<GameRoom> rooms) throws RemoteException {
         this.port = port;
         this.rooms = rooms;
-        registry = LocateRegistry.getRegistry();
 
-        try {
-            UnicastRemoteObject.exportObject(this, 0);
-        } catch (RemoteException e) {
-            System.out.println("RMIServer object already exported");
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+
+        if(createLocalRegistry){
+            registry = LocateRegistry.createRegistry(REGISTRY_PORT);
+            // No need to export objects if the registry is
+            // created by the same JVM where the server runs
+        }
+        else {
+            registry = LocateRegistry.getRegistry();
+            try {
+                UnicastRemoteObject.exportObject(this, 0);
+            } catch (RemoteException e) {
+                System.out.println("RMIServer object already exported");
+            }
         }
 
         registry.rebind(NAME, this);
