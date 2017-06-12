@@ -38,6 +38,8 @@ public class ServerController implements ClientToServerInterface {
      */
     private Player player;
 
+    private String username;
+
     public ServerController(ClientConnection clientConnection, ArrayList<GameRoom> gameRooms) {
         this.clientConnection = clientConnection;
         this.gameRooms = gameRooms;
@@ -53,7 +55,7 @@ public class ServerController implements ClientToServerInterface {
     @Override
     public void loginPlayer(String name) throws LoginException, NetworkException {
         LOGGER.fine("Player " + name + " is logging in");
-        player = new Player(name);
+        username = name;
     }
 
     /**
@@ -92,13 +94,33 @@ public class ServerController implements ClientToServerInterface {
 
     }
 
-    @Override
-    public void initializeGame() throws RemoteException {
-
-    }
 
     @Override
     public ArrayList<Player> getPlayers() throws NetworkException, GameNotStartedException, RemoteException {
         return null;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public ClientConnection getClientConnection() {
+        return clientConnection;
+    }
+
+    public void setClientConnection(ClientConnection clientConnection) {
+        this.clientConnection = clientConnection;
     }
 }

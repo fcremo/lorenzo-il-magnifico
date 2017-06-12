@@ -5,7 +5,9 @@ import client.exceptions.GameNotStartedException;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
+import model.Game;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
 import server.ClientConnection;
 import server.ClientToServerInterface;
 
@@ -13,6 +15,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the ClientToServerInterface for RMI.
@@ -48,17 +51,22 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void initializeGame() throws RemoteException {
-
-    }
-
-    @Override
     public ArrayList<Player> getPlayers() throws RemoteException, NetworkException, GameNotStartedException {
         return null;
     }
 
     @Override
     public void pingClient() throws RemoteException {
+        client.pingClient();
+    }
 
+    @Override
+    public void setConfiguration(Game game) {
+
+    }
+
+    @Override
+    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
+        return client.choosePersonalBonusTile(personalBonusTiles);
     }
 }

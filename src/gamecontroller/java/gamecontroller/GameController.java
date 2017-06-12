@@ -10,10 +10,8 @@ import model.exceptions.CantPerformActionException;
 import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainedResourceSet;
-import server.configloader.deserializers.ConfigLoader;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -22,12 +20,11 @@ import java.util.ArrayList;
  * It's shared by the client and the server so that both use the exact same logic for updating the state of the game.
  */
 public class GameController {
-    Game game;
 
-    GameEventsInterface callback;
+    private Game game;
+    private GameEventsInterface callback;
 
-    public GameController(Game game, GameEventsInterface callback) {
-        this.game = game;
+    public GameController(GameEventsInterface callback) {
         this.callback = callback;
     }
 
@@ -39,27 +36,10 @@ public class GameController {
         this.game = game;
     }
 
+
+
     public boolean isGameStarting() {
         return (!game.isStarted() && !game.isEnded());
-    }
-
-    public void startGame() {
-        loadConfiguration();
-        // TODO: 5/30/17 pass configuration to clients and go on with the game preparation phase
-    }
-
-    /**
-     * Load the game configuration from the files
-     */
-    public void loadConfiguration() {
-        ConfigLoader configLoader = new ConfigLoader("configuration/test0.json");
-        try {
-            configLoader.loadConfiguration();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        
-        game = configLoader.getGame();
     }
 
     public void setPlayersColours() {

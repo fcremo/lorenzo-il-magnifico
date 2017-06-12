@@ -15,15 +15,19 @@ import model.card.effects.interfaces.OncePerTurnEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
 import model.resource.ObtainedResourceSet;
 import server.ClientToServerInterface;
 import ui.UIEventsInterface;
+import ui.cli.contexts.ChooseBonusTileContext;
 import ui.cli.contexts.LoginContext;
 import ui.cli.contexts.NetworkSettingsContext;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
-public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback, LoginContext.Callback {
+public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback, LoginContext.Callback,
+                                            ChooseBonusTileContext.Callback {
     private UIEventsInterface ui;
 
     private GameController gameController;
@@ -53,6 +57,11 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
             clientConnection.createAndJoinRoom();
         }
         ui.showWaitingForGameToStart();
+    }
+
+    @Override
+    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
+        return ui.choosePersonalBonusTile(personalBonusTiles);
     }
 
     @Override

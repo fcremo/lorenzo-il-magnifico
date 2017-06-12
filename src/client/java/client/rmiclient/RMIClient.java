@@ -6,7 +6,9 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameEventsInterface;
+import model.Game;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
 import server.ClientToServerInterface;
 import server.rmiserver.ServerInterface;
 
@@ -17,18 +19,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RMIClient implements ClientToServerInterface, ServerToClientInterface, Remote {
     private GameEventsInterface clientController;
 
-    private ServerInterface server;
     private ClientToServerInterface connection;
 
 
-    public RMIClient(String server, int port, GameEventsInterface clientController) throws RemoteException, NetworkException {
+    public RMIClient(String serverHostname, int serverPort, GameEventsInterface clientController) throws RemoteException, NetworkException {
         this.clientController = clientController;
 
-        Registry registry = LocateRegistry.getRegistry(server, port);
+        Registry registry = LocateRegistry.getRegistry(serverHostname, serverPort);
 
         try {
             UnicastRemoteObject.exportObject(this, 0);
@@ -37,8 +39,8 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         }
 
         try {
-            this.server = (ServerInterface) registry.lookup("LORENZO_SERVER");
-            connection = this.server.getServerConnection(this);
+            ServerInterface server = (ServerInterface) registry.lookup("LORENZO_SERVER");
+            connection = server.getServerConnection(this);
         } catch (NotBoundException e) {
             System.err.println("Server not found (remote object lookup failed)");
         }
@@ -61,11 +63,6 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void initializeGame() throws RemoteException {
-
-    }
-
-    @Override
     public ArrayList<Player> getPlayers() throws NetworkException, GameNotStartedException {
         return null;
     }
@@ -73,5 +70,15 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void pingClient() throws RemoteException {
         System.out.println("Client pinged by the server");
+    }
+
+    @Override
+    public void setConfiguration(Game game) {
+
+    }
+
+    @Override
+    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
+        clientController.choosePersonalBonusTile(personalBonusTiles);
     }
 }

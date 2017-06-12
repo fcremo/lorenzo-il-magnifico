@@ -10,13 +10,12 @@ import model.card.effects.interfaces.OncePerTurnEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
 import model.resource.ObtainedResourceSet;
 import ui.UIEventsInterface;
-import ui.cli.contexts.Context;
-import ui.cli.contexts.LoginContext;
-import ui.cli.contexts.NetworkSettingsContext;
-import ui.cli.contexts.WaitingForGameToStartContext;
+import ui.cli.contexts.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -156,6 +155,13 @@ public class CLIUserInterface implements UIEventsInterface {
     @Override
     public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
 
+    }
+
+    @Override
+    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
+        Context chooseBonusTileContext = new ChooseBonusTileContext(controller, personalBonusTiles);
+        this.currentContext = chooseBonusTileContext;
+        
     }
 
     private class KeyboardHandler implements Runnable {

@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * Base class for a UI context
  */
-public class Context {
+public abstract class Context {
     HashMap<String, Command> commands = new HashMap<>();
     HashMap<String, String> helps = new HashMap<>();
 

@@ -2,6 +2,7 @@ package server;
 
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
+import gamecontroller.ServerGameController;
 import model.Game;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
@@ -13,6 +14,7 @@ import model.player.Player;
 import model.resource.ObtainedResourceSet;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * This class represents a game room
@@ -23,7 +25,7 @@ public class GameRoom implements GameEventsInterface {
      */
     private ArrayList<ServerController> controllers = new ArrayList<>();
 
-    private GameController gameController = new GameController(new Game(), this);
+    private ServerGameController serverGameController = new ServerGameController(this);
 
     /**
      * The name of the room
@@ -50,12 +52,20 @@ public class GameRoom implements GameEventsInterface {
         this.name = name;
     }
 
-    public GameController getGameController() {
-        return gameController;
+    public ServerController getControllerForPlayer (Player player) {
+        for (ServerController controller : controllers) {
+            if (controller.getPlayer().getUsername().equals(player.getUsername()))
+                return controller;
+        }
+        throw new NoSuchElementException();
     }
 
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
+    public ServerGameController getServerGameController() {
+        return serverGameController;
+    }
+
+    public void setServerGameController(ServerGameController serverGameController) {
+        this.serverGameController = serverGameController;
     }
 
     /**
@@ -81,7 +91,7 @@ public class GameRoom implements GameEventsInterface {
     }
 
     public boolean isAvailable() {
-        return (gameController.isGameStarting() && !this.isFull());
+        return (serverGameController.isGameStarting() && !this.isFull());
     }
 
     public boolean isFull() {
@@ -90,7 +100,10 @@ public class GameRoom implements GameEventsInterface {
 
     @Override
     public void onGameStart(Game g) {
+        for (ServerController controller: controllers) {
+            controller.
 
+        }
     }
 
     @Override
@@ -185,7 +198,8 @@ public class GameRoom implements GameEventsInterface {
 
     private void onRoomTimeout() {
         System.out.println("Room " + name + " timeout expired, starting game...");
-        gameController.startGame();
+        serverGameController.setPlayers();
+        serverGameController.startGame();
     }
 
     private class RoomTimerClass implements Runnable {

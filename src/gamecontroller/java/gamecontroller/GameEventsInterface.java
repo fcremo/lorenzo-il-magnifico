@@ -8,7 +8,10 @@ import model.card.effects.interfaces.OncePerTurnEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.player.bonustile.PersonalBonusTile;
 import model.resource.ObtainedResourceSet;
+
+import java.util.List;
 
 /**
  * This interface specifies all the game-related events (e.g. Player X occupies a certain action space)
@@ -18,6 +21,13 @@ public interface GameEventsInterface {
      * Called when the game is started with the game configuration
      */
     void onGameStart(Game g);
+
+    /**
+     * Called when player has to choose a personal bonus tile (at the beginning of the game)
+     * @param personalBonusTiles
+     * @return
+     */
+    PersonalBonusTile choosePersonalBonusTile (List<PersonalBonusTile> personalBonusTiles);
 
     void onDicesThrown(int black, int white, int orange);
 

@@ -40,11 +40,6 @@ public interface ClientToServerInterface extends Remote {
     void createAndJoinRoom() throws NetworkException, RemoteException;
 
     /**
-     * Asks the server to initialize the game (load cards, board & other configuration)
-     */
-    void initializeGame() throws RemoteException;
-
-    /**
      * Retrieves the list of players from the  server
      */
     ArrayList<Player> getPlayers() throws RemoteException, NetworkException, GameNotStartedException;

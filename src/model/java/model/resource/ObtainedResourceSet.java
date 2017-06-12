@@ -66,4 +66,14 @@ public class ObtainedResourceSet {
         }
         return newResourceSet;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ObtainedResourceSet)) return false;
+
+        ObtainedResourceSet otherResourceSet = (ObtainedResourceSet) o;
+
+        return this.resources.equals(otherResourceSet.resources) &&
+                this.resourceMultipliers.equals(otherResourceSet.resourceMultipliers);
+    }
 }
