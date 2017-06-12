@@ -29,7 +29,7 @@
                     <archive>
                         <manifest>
                             <!-- Jar file entry point -->
-                            <mainClass>server.Main</mainClass>
+                            <mainClass>server.ServerMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

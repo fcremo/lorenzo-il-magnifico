@@ -6,7 +6,7 @@
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="MAIN_CLASS_NAME" value="server.Main" />
+    <option name="MAIN_CLASS_NAME" value="server.ServerMain" />
     <option name="VM_PARAMETERS" value="-Djava.rmi.server.codebase=file://$PROJECT_DIR$/out/artifacts/lorenzo_il_magnifico_jar/lorenzo-il-magnifico.jar" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
