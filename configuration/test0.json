@@ -26,48 +26,602 @@
 
   "developmentCards":{
     "territoryCards":[
-      {"id":"1", "name":"Avamposto Commerciale", "period": 1, "requiredResourceSets":[{}], "effects":[], "harvestResourceSet":{"GOLD":1}, "requiredValueForHarvest":1}
+      {"id":"1", "name":"Commercial Hub", "period": 1, "requiredResourceSet":[],
+        "effects":[],
+        "harvestResourceSet":{"GOLD":1}, "requiredValueForHarvest":1},
+      {"id":"2", "name":"Woods", "period":1, "requiredResourceSet":[],
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"WOOD":1}],
+          "harvestResourceSet":{"WOOD":1}}], "requiredValueForHarvest":2},
+      {"id":"3", "name":"Village", "period":1, "requiredResourceSet":[],
+        "effects":[],
+        "harvestResourceSet":{"GOLD":1, "SERVANTS":1}, "requiredValueForHarvest":1},
+      {"id":"4", "name":"Gravel Pit", "period":1, "requiredResourceSet":[],
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"STONE":2}]}],
+        "harvestResourceSet":{"STONE":2}, "requiredValueForHarvest":4},
+      {"id":"5", "name":"Forest", "period":1, "requiredResourceSet":[],
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"WOOD":1}]}],
+        "harvestResourceSet":{"WOOD":3}, "requiredValueForHarvest":5},
+      {"id":"6", "name":"Monastery", "period":1, "requiredResourceSet":[],
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":2, "SERVANTS":1}]}],
+        "harvestResourceSet":{"FAITH_POINTS":1, "STONE":1}, "requiredValueForHarvest":5},
+      {"id":"7", "name":"Citadel", "period":1, "requiredResourceSet":[],
+        "effects":[],
+        "harvestResourceSet":{"MILITARY_POINTS":2, "STONE":1}, "requiredValueForHarvest":5},
+      {"id":"8", "name":"City", "period":1, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"GOLD":3}]}],
+        "harvestResourceSet":{"COUNCIL_PRIVILEGES":1}, "requiredValueForHarvest":6},
+      {"id":"9", "name":"Gold Mine", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"GOLD":1}]}],
+        "harvestResourceSet":{"GOLD":2}, "requiredValueForHarvest":1},
+      {"id":"10", "name":"Mountain Town", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"SERVANTS":1}]}],
+        "harvestResourceSet":{"MILITARY_POINTS":1, "STONE":2}, "requiredValueForHarvest":3},
+      {"id":"11", "name":"Mining Town", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"SERVANTS":2, "STONE":1}]}],
+        "harvestResourceSet":{"SERVANTS":1, "STONE":2}, "requiredValueForHarvest":4},
+      {"id":"12", "name":"Rock Pit", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"WOOD":1}]}],
+        "harvestResourceSet":{"STONE":3}, "requiredValueForHarvest":3},
+      {"id":"13", "name":"Estate", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"SERVANTS":2, "WOOD":1}]}],
+        "harvestResourceSet":{"GOLD":1, "WOOD":2}, "requiredValueForHarvest":4},
+      {"id":"14", "name":"Hermitage", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"FAITH_POINTS":1}]}],
+        "harvestResourceSet":{"FAITH_POINTS":1}, "requiredValueForHarvest":2},
+      {"id":"15", "name":"Manor House", "period":2, "requiredResourceSet":[],
+        "effects":[],
+        "harvestResourceSet":{"MILITARY_POINTS":2, "SERVANTS":2}, "requiredValueForHarvest":5},
+      {"id":"16", "name":"Dukedom", "period":2, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"GOLD":4}]}],
+        "harvestResourceSet":{"GOLD":1, "STONE":1, "WOOD":2}, "requiredValueForHarvest":6},
+      {"id":"17", "name":"Trading Town", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"GOLD":1, "SERVANTS":1}]}],
+        "harvestResourceSet":{"GOLD":3}, "requiredValueForHarvest":1},
+      {"id":"18", "name":"Farm", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"VICTORY_POINTS":1, "WOOD":1}]}],
+        "harvestResourceSet":{"VICTORY_POINTS":2, "WOOD":2}, "requiredValueForHarvest":3},
+      {"id":"19", "name":"Colony", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"MILITARY_POINTS":2}]}],
+        "harvestResourceSet":{"VICTORY_POINTS":4, "WOOD":1}, "requiredValueForHarvest":5},
+      {"id":"20", "name":"Marble Pit", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"VICTORY_POINTS":3}]}],
+        "harvestResourceSet":{"VICTORY_POINTS":1, "STONE":2}, "requiredValueForHarvest":2},
+      {"id":"21", "name":"Province", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"COUNCIL_PRIVILEGES":1, "STONE":1}]}],
+        "harvestResourceSet":{"VICTORY_POINTS":4, "STONE":1}, "requiredValueForHarvest":6},
+      {"id":"22", "name":"Sanctuary", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"FAITH_POINTS":1}]}],
+        "harvestResourceSet":{"GOLD":1, "FAITH_POINTS":1}, "requiredValueForHarvest":1},
+      {"id":"23", "name":"Castle", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"VICTORY_POINTS":2, "GOLD":2}]}],
+        "harvestResourceSet":{"MILITARY_POINTS":3, "SERVANTS":1}, "requiredValueForHarvest":4},
+      {"id":"24", "name":"Fortified Town", "period":3, "requiredResourceSet":[],
+        "effects":[{"effectsType": "ImmediateResources", "resourceSet":[{"MILITARY_POINTS":2, "SERVANTS":1}]}],
+        "harvestResourceSet":{"MILITARY_POINTS":1, "SERVANTS":2}, "requiredValueForHarvest":2}
     ],
     "buildingCards":[
-      {"id":"25", "name":"Zecca", "requiredResourceSets":[{"WOOD":1,"STONE":3}], "period": 1,
-        "effects":[{"effectType": "ImmediateResources", "resources": [{"VICTORY_POINTS": 5}]}],
+      {"id":"25", "name":"Mint", "requiredResourceSet":[{"WOOD":1,"STONE":3}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS": 5}]}],
         "productions":[
           {
             "price":{},
-            "resources": {
-              "multipliers": [{"requirements": {"REQUIRED_BUILDINGS": 1}, "resources": {"GOLD": 1}}]
+            "resourceSet": {
+              "multipliers": [{"requirements": {"REQUIRED_BUILDINGS": 1}, "resourceSet": {"GOLD": 1}}]
             }
           }
         ],
         "requiredValueForProduction":5
+      },
+      {"id":"26", "name":"Tax Office", "requiredResourceSet":[{"WOOD":3, "STONE":1}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":5}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {
+              "multipliers": [{"requirements": {"REQUIRED_TERRITORIES":1}, "resourceSet": {"GOLD":1}}]
+            }
+          }
+        ],
+        "requiredValueForProduction":5
+      },
+      {"id":"27", "name":"Triumphal Arch", "requiredResourceSet":[{"GOLD":2, "STONE":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":6}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {
+              "multipliers": [{"requirements": {"REQUIRED_VENTURES":1}, "resourceSet": {"VICTORY_POINTS":1}}]
+            }
+          }
+        ],
+        "requiredValueForProduction":6
+      },
+      {"id":"28", "name":"Theater", "requiredResourceSet":[{"GOLD":2, "WOOD":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":6}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {
+              "multipliers": [{"requirements": {"REQUIRED_CHARACTERS":1}, "resourceSet": {"VICTORY_POINTS":1}}]
+            }
+          }
+        ],
+        "requiredValueForProduction":6
+      },
+      {"id":"29", "name":"Carpenter's Shop", "requiredResourceSet":[{"GOLD":1, "WOOD":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":3}]}],
+        "productions":[
+          {
+            "price":{"WOOD":1},
+            "resourceSet": {"GOLD":3}
+          },
+          {
+            "price":{"WOOD":2},
+            "resourceSet": {"GOLD":5}
+          }
+        ],
+        "requiredValueForProduction":4
+      },
+      {"id":"30", "name":"Stonemason's Shop", "requiredResourceSet":[{"GOLD":1, "STONE":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":2}]}],
+        "productions":[
+          {
+            "price":{"STONE":1},
+            "resourceSet": {"GOLD":3}
+          },
+          {
+            "price":{"STONE":2},
+            "resourceSet": {"GOLD":5}
+          }
+        ],
+        "requiredValueForProduction":3
+      },
+      {"id":"31", "name":"Chapel", "requiredResourceSet":[{"WOOD":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":2}]}],
+        "productions":[
+          {
+            "price":{"GOLD":1},
+            "resourceSet": {"FAITH_POINTS":1}
+          }
+        ],
+        "requiredValueForProduction":2
+      },
+      {"id":"32", "name":"Residence", "requiredResourceSet":[{"STONE":2}], "period": 1,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":1}]}],
+        "productions":[
+          {
+            "price":{"GOLD":1},
+            "resourceSet": {"COUNCIL_PRIVILEGES":1}
+          }
+        ],
+        "requiredValueForProduction":1
+      },
+      {"id":"33", "name":"Marketplace", "requiredResourceSet":[{"WOOD":2, "STONE":1}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":3}]}],
+        "productions":[
+          {
+            "price":{"GOLD":3},
+            "resourceSet": {"WOOD":2, "STONE":2}
+          }
+        ],
+        "requiredValueForProduction":3
+      },
+      {"id":"34", "name":"Treasury", "requiredResourceSet":[{"WOOD":3}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":4}]}],
+        "productions":[
+          {
+            "price":{"GOLD":1},
+            "resourceSet": {"VICTORY_POINTS":3}
+          },
+          {
+            "price":{"GOLD":2},
+            "resourceSet": {"VICTORY_POINTS":5}
+          }
+        ],
+        "requiredValueForProduction":3
+      },
+      {"id":"35", "name":"Painters' Guild", "requiredResourceSet":[{"WOOD":4}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":5}]}],
+        "productions":[
+          {
+            "price":{"WOOD":1},
+            "resourceSet": {"VICTORY_POINTS":3}
+          },
+          {
+            "price":{"WOOD":3},
+            "resourceSet": {"VICTORY_POINTS":7}
+          }
+        ],
+        "requiredValueForProduction":4
+      },
+      {"id":"36", "name":"Sculptors' Guild", "requiredResourceSet":[{"STONE":4}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":6}]}],
+        "productions":[
+          {
+            "price":{"STONE":1},
+            "resourceSet": {"VICTORY_POINTS":3}
+          },
+          {
+            "price":{"STONE":3},
+            "resourceSet": {"VICTORY_POINTS":7}
+          }
+        ],
+        "requiredValueForProduction":5
+      },
+      {"id":"37", "name":"Stonemasons' Guild", "requiredResourceSet":[{"WOOD":1, "STONE":2}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":4}]}],
+        "productions":[
+          {
+            "price":{"SERVANTS":1, "WOOD":1, "STONE":1},
+            "resourceSet": {"VICTORY_POINTS":6}
+          }
+        ],
+        "requiredValueForProduction":4
+      },
+      {"id":"38", "name":"Baptistery", "requiredResourceSet":[{"STONE":3}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":2, "FAITH_POINTS":1}]}],
+        "productions":[
+          {
+            "price":{"FAITH_POINTS":1},
+            "resourceSet": {"GOLD":2, "VICTORY_POINTS":2}
+          }
+        ],
+        "requiredValueForProduction":2
+      },
+      {"id":"39", "name":"Barracks", "requiredResourceSet":[{"WOOD":1, "STONE":1}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":3}]}],
+        "productions":[
+          {
+            "price":{"SERVANTS":1},
+            "resourceSet": {"MILITARY_POINTS":3}
+          }
+        ],
+        "requiredValueForProduction":1
+      },
+      {"id":"40", "name":"Stronghold", "requiredResourceSet":[{"GOLD":2, "WOOD":2, "STONE":2}], "period": 2,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":8}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {"MILITARY_POINTS":2, "VICTORY_POINTS":2}
+          }
+        ],
+        "requiredValueForProduction":6
+      },
+      {"id":"41", "name":"Bank", "requiredResourceSet":[{"GOLD":3,"WOOD":1, "STONE":3}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":7}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {"GOLD":5}
+          }
+        ],
+        "requiredValueForProduction":2
+      },
+      {"id":"42", "name":"Fair", "requiredResourceSet":[{"GOLD":4, "WOOD":3}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":8}]}],
+        "productions":[
+          {
+            "price":{"GOLD":4},
+            "resourceSet": {"WOOD":3, "STONE":3}
+          }
+        ],
+        "requiredValueForProduction":4
+      },
+      {"id":"43", "name":"Garden", "requiredResourceSet":[{"SERVANTS":2, "WOOD":4, "STONE":2}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":10}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {"VICTORY_POINTS":3}
+          }
+        ],
+        "requiredValueForProduction":1
+      },
+      {"id":"44", "name":"Fortress", "requiredResourceSet":[{"GOLD":2, "WOOD":2, "STONE":4}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":9}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {"VICTORY_POINTS":2, "COUNCIL_PRIVILEGES":1}
+          }
+        ],
+        "requiredValueForProduction":5
+      },
+      {"id":"45", "name":"Palace", "requiredResourceSet":[{"GOLD":3, "WOOD":3, "STONE":1}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":9}]}],
+        "productions":[
+          {
+            "price":{"GOLD":1},
+            "resourceSet": {"SERVANTS":2, "VICTORY_POINTS":4}
+          }
+        ],
+        "requiredValueForProduction":6
+      },
+      {"id":"46", "name":"Church", "requiredResourceSet":[{"WOOD":1, "STONE":4}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":5, "FAITH_POINTS":1}]}],
+        "productions":[
+          {
+            "price":{"WOOD":1},
+            "resourceSet": {"FAITH_POINTS":2}
+          },
+          {
+            "price":{"STONE":1},
+            "resourceSet": {"FAITH_POINTS":2}
+          }
+        ],
+        "requiredValueForProduction":1
+      },
+      {"id":"47", "name":"Military Academy", "requiredResourceSet":[{"SERVANTS":1, "WOOD":2, "STONE":2}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":7}]}],
+        "productions":[
+          {
+            "price":{"SERVANTS":1},
+            "resourceSet": {"MILITARY_POINTS":3, "VICTORY_POINTS":1}
+          }
+        ],
+        "requiredValueForProduction":3
+      },
+      {"id":"48", "name":"Cathedral", "requiredResourceSet":[{"WOOD":4, "STONE":4}], "period": 3,
+        "effects":[{"effectType": "ImmediateResources", "resourceSet": [{"VICTORY_POINTS":7, "FAITH_POINTS":3}]}],
+        "productions":[
+          {
+            "price":{},
+            "resourceSet": {"VICTORY_POINTS":1}
+          }
+        ],
+        "requiredValueForProduction":2
       }
     ],
     "characterCards":[
-      {"id":"49", "name":"Condottiero", "requiredResourceSets":[{"GOLD":2}], "period": 1,
+      {"id":"49", "name":"Warlord", "requiredResourceSet":[{"GOLD":2}], "period": 1,
         "effects":[
-          {"effectType": "ImmediateResources", "resources": [{"MILITARY_POINTS": 3}]},
-          {"effectType": "ActionValueModifier", "value": 2, "actionType": "TAKE_TERRITORY_CARD"}
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS": 3}]},
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "TAKE_TERRITORY_CARD"}
+        ]},
+      {"id":"50", "name":"Stonemason", "requiredResourceSet":[{"GOLD":4}], "period": 1,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "TAKE_BUILDING_CARD"},
+          {"effectType": "RequiredResourceSetModifier", "discount":[{"resourceType": "WOOD", "quantity": -1},{"resourceType": "STONE", "quantity": -1}], "actionType": "TAKE_BUILDING_CARD"}
+          //TODO check consistency with deserializer for multiple discounts to choose from
+        ]},
+      {"id":"51", "name":"Dame", "requiredResourceSet":[{"GOLD":4}], "period": 1,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "TAKE_CHARACTER_CARD"},
+          {"effectType": "RequiredResourceSetModifier", "resourceType": "GOLD", "quantity": -1, "actionType": "TAKE_CHARACTER_CARD"}
+        ]},
+      {"id":"52", "name":"Knight", "requiredResourceSet":[{"GOLD":2}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "TAKE_VENTURE_CARD"}
+        ]},
+      {"id":"53", "name":"Farmer", "requiredResourceSet":[{"GOLD":3}], "period": 1,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "HARVEST"}
+        ]},
+      {"id":"54", "name":"Artisan", "requiredResourceSet":[{"GOLD":3}], "period": 1,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":2, "actionType": "PRODUCTION"}
+        ]},
+      {"id":"55", "name":"Preacher", "requiredResourceSet":[{"GOLD":2}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":4}]},
+          {"effectType": "ObtainedResourceSetModifier", "resourceType": "actionSpaceResourceSet", "quantity": 0, "actionType": "occupyTowerActionSpace"}
+          //TODO handle Preacher's special effect
+        ]},
+      {"id":"56", "name":"Abbess", "requiredResourceSet":[{"GOLD":3}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":1}]},
+          {"effectType": "ImmediateAction", "value":4, "actionType": ["TAKE_TERRITORY_CARD", "TAKE_BUILDING_CARD", "TAKE_CHARACTER_CARD", "TAKE_VENTURE_CARD"]}
+        ]},
+      {"id":"57", "name":"Captain", "requiredResourceSet":[{"GOLD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":2}]},
+          {"effectType": "ImmediateAction", "value":6, "actionType": "TAKE_TERRITORY_CARD"}
+        ]},
+      {"id":"58", "name":"Architect", "requiredResourceSet":[{"GOLD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateAction", "value":6 , "actionType": "TAKE_BUILDING_CARD"},
+          {"effectType": "RequiredResourceSetModifier", "resourceType": "WOOD", "quantity": -1, "actionType": "TAKE_BUILDING_CARD"},
+          {"effectType": "RequiredResourceSetModifier", "resourceType": "STONE", "quantity": -1, "actionType": "TAKE_BUILDING_CARD"}
+        ]},
+      {"id":"59", "name":"Patron", "requiredResourceSet":[{"GOLD":3}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateAction", "value":6, "actionType": "TAKE_CHARACTER_CARD"},
+          {"effectType": "RequiredResourceSetModifier", "resourceType": "GOLD", "quantity": -2, "actionType": "TAKE_CHARACTER_CARD"}
+        ]},
+      {"id":"60", "name":"Hero", "requiredResourceSet":[{"GOLD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "ImmediateAction", "value":6, "actionType": "TAKE_VENTURE_CARD"}
+        ]},
+      {"id":"61", "name":"Peasant", "requiredResourceSet":[{"GOLD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":3, "actionType": "PRODUCTION"}
+        ]},
+      {"id":"62", "name":"Scholar", "requiredResourceSet":[{"GOLD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ActionValueModifier", "value":3, "actionType": "HARVEST"}
+        ]},
+      {"id":"63", "name":"Papal Messenger", "requiredResourceSet":[{"GOLD":5}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":3}]}
+        ]},
+      {"id":"64", "name":"Royal Messenger", "requiredResourceSet":[{"GOLD":5}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"COUNCIL_PRIVILEGES":3}]}
+        ]},
+      {"id":"65", "name":"Noble", "requiredResourceSet":[{"GOLD":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"multipliers": [{"requirements": {"REQUIRED_TERRITORIES": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}]}
+        ]},
+      {"id":"66", "name":"Governor", "requiredResourceSet":[{"GOLD":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"multipliers": [{"requirements": {"REQUIRED_BUILDINGS": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}]}
+        ]},
+      {"id":"67", "name":"Paramour", "requiredResourceSet":[{"GOLD":7}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"multipliers": [{"requirements": {"REQUIRED_CHARACTERS": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}]}
+        ]},
+      {"id":"68", "name":"Herald", "requiredResourceSet":[{"GOLD":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"multipliers": [{"requirements": {"REQUIRED_VENTURES": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}]}
+        ]},
+      {"id":"69", "name":"Cardinal", "requiredResourceSet":[{"GOLD":4}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":2}]},
+          {"effectType": "ImmediateAction", "value":4, "actionType": "HARVEST"}
+        ]},
+      {"id":"70", "name":"Bishop", "requiredResourceSet":[{"GOLD":5}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":1}]},
+          {"effectType": "ImmediateAction", "value":4, "actionType": "PRODUCTION"}
+        ]},
+      {"id":"71", "name":"General", "requiredResourceSet":[{"GOLD":5}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"multipliers": [{"requirements": {"REQUIRED_MILITARY_POINTS": 2}, "resourceSet": {"VICTORY_POINTS": 1}}]}]}
+        ]},
+      {"id":"72", "name":"Ambassador", "requiredResourceSet":[{"GOLD":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"COUNCIL_PRIVILEGE":1}]},
+          {"effectType": "ImmediateAction", "value":7, "actionType": ["TAKE_TERRITORY_CARD", "TAKE_BUILDING_CARD", "TAKE_CHARACTER_CARD", "TAKE_VENTURE_CARD"]}
         ]}
     ],
     "ventureCards":[
-      {"id":"73", "name":"Ingaggiare Reclute", "requiredResourceSets":[{"GOLD":4}], "period": 1,
+      {"id":"73", "name":"Hiring Recruits", "requiredResourceSet":[{"GOLD":4}], "period": 1,
         "effects":[
-          {"effectType": "ImmediateResources", "resources": [{"MILITARY_POINTS": 5}]},
-          {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":5}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"74", "name":"Repairing the Church", "requiredResourceSet":[{"GOLD":1, "WOOD":1, "STONE":1}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"75", "name":"Building the Walls", "requiredResourceSet":[{"STONE":3}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":2, "COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":3}}
+        ]},
+      {"id":"76", "name":"Raising a Statue", "requiredResourceSet":[{"WOOD":2, "STONE":2}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"COUNCIL_PRIVILEGES":2}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"77", "name":"Military Campaign", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":3, "MILITARY_POINTS":2}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"GOLD":3}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"78", "name":"Hosting Panhandlers", "requiredResourceSet":[{"WOOD":3}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"SERVANTS":4}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"79", "name":"Fighting Heresies", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":5, "MILITARY_POINTS":3}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":2}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"80", "name":"Support to the Bishop", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":4, "MILITARY_POINTS":2},{"GOLD":2, "WOOD":1, "STONE":1}], "period": 1,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":3}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":1}}
+        ]},
+      {"id":"81", "name":"Hiring Soldiers", "requiredResourceSet":[{"GOLD":6}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":6}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"82", "name":"Repairing the Abbey", "requiredResourceSet":[{"GOLD":2, "WOOD":2, "STONE":2}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":2}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":6}}
+        ]},
+      {"id":"83", "name":"Building the Bastions", "requiredResourceSet":[{"STONE":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":3, "COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":2}}
+        ]},
+      {"id":"84", "name":"Support to the King", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":6, "MILITARY_POINTS":3}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"GOLD":5, "COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":3}}
+        ]},
+      {"id":"85", "name":"Improving the Canals", "requiredResourceSet":[{"SERVANTS":2, "GOLD":3}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateAction", "value":4, "actionType": "HARVEST"},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"86", "name":"Hosting Foreigners", "requiredResourceSet":[{"WOOD":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"SERVANTS":5}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"87", "name":"Crusade", "requiredResourceSet":[{"REQUIRED_MILITARY-POINTS":8, "MILITARY_POINTS":4}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"GOLD":5, "FAITH_POINTS":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"88", "name":"Support to the Cardinal", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":7, "MILITARY_POINTS":4}, {"GOLD":3, "WOOD":2, "STONE":2}], "period": 2,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":3}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"89", "name":"Hiring Mercenaries", "requiredResourceSet":[{"GOLD":8}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":7}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":6}}
+        ]},
+      {"id":"90", "name":"Repairing the Cathedral", "requiredResourceSet":[{"GOLD":3, "WOOD":3, "STONE":3}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":1}]},
+          {"effectType": "ImmediateAction", "value":7, "actionType": ["TAKE_TERRITORY_CARD", "TAKE_BUILDING_CARD", "TAKE_CHARACTER_CARD", "TAKE_VENTURE_CARD"]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"91", "name": "Building the Towers", "requiredResourceSet":[{"STONE":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"MILITARY_POINTS":4, "COUNCIL_PRIVILEGES":1}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":4}}
+        ]},
+      {"id":"92", "name": "Promoting Sacred Art", "requiredResourceSet":[{"WOOD":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":3}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":3}}
+        ]},
+      {"id":"93", "name": "Military Conquest", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":12, "MILITARY_POINTS":6}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"GOLD":3, "WOOD":3, "STONE":3}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":7}}
+        ]},
+      {"id":"94", "name": "Improving the Roads", "requiredResourceSet":[{"SERVANTS":3, "GOLD":4}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateAction", "value":3, "actionType": "PRODUCTION"},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":5}}
+        ]},
+      {"id":"95", "name": "Sacred War", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":15, "MILITARY_POINTS":8}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":4}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":8}}
+        ]},
+      {"id":"96", "name": "Support to the Pope", "requiredResourceSet":[{"REQUIRED_MILITARY_POINTS":10, "MILITARY_POINTS":5}, {"GOLD":4, "WOOD":3, "STONE":3}], "period": 3,
+        "effects":[
+          {"effectType": "ImmediateResources", "resourceSet": [{"FAITH_POINTS":2}]},
+          {"effectType": "EndOfGameResources", "resourceSet": {"VICTORY_POINTS":10}}
         ]}
     ]
   },
 
   "leaderCards":[
-    {"id": "1", "name": "Francesco Sforza", "requiredResourceSets":[{"ventures": 5}],
+    {"id":"1", "name": "Francesco Sforza", "requiredResourceSet":[{"ventures":5}],
       "effects": [
-        {"effectType": "OncePerTurnAction", "action": "PRODUCTION", "value": 1}
+        {"effectType": "OncePerTurnAction", "action": "PRODUCTION", "value":1}
       ]
     }
   ],
 
   "excommunications": [{"period": 1, "effects": [
-    {"effectType": "ObtainedResourceSetModifier", "resourceType": "MILITARY_POINTS", "quantity": -1}
+    {"effectType": "ObtainedResourceSetModifier", "resourceType": "MILITARY_POINTS", "quantity":-1}
   ]}],
 
   "councilPrivileges": [
