@@ -1,11 +1,11 @@
 package client.socketclient;
 
-import client.exceptions.GameNotStartedException;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameEventsInterface;
-import model.player.Player;
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.player.PersonalBonusTile;
 import protocol.SocketProtocol;
 import server.ClientToServerInterface;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.rmi.RemoteException;
 
 /**
  * This class is the implementation of the socket based client
@@ -38,6 +38,7 @@ public class SocketClient implements ClientToServerInterface {
         this.clientController = clientController;
     }
 
+    @Override
     public void loginPlayer(String name) throws LoginException, NetworkException {
         try {
             outputStream.write(SocketProtocol.loginPlayer(name));
@@ -46,6 +47,7 @@ public class SocketClient implements ClientToServerInterface {
         }
     }
 
+    @Override
     public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException {
         throw new NotImplementedException();
         /*try {
@@ -55,16 +57,13 @@ public class SocketClient implements ClientToServerInterface {
         }*/
     }
 
+    @Override
     public void createAndJoinRoom() throws NetworkException {
 
     }
 
-    public void initializeGame() {
+    @Override
+    public void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException {
 
-    }
-
-
-    public ArrayList<Player> getPlayers() throws NetworkException, GameNotStartedException {
-        throw new NotImplementedException();
     }
 }

@@ -1,0 +1,194 @@
+[
+  {
+    "id": "73", "name": "Hiring Recruits", "period": 1,
+    "requiredResourceSet": [{"GOLD": 4}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 5}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "74", "name": "Repairing the Church", "period": 1,
+    "requiredResourceSet": [{"GOLD": 1, "WOOD": 1, "STONE": 1}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "75", "name": "Building the Walls", "period": 1,
+    "requiredResourceSet": [{"STONE": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 2, "COUNCIL_PRIVILEGES": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 3}}
+    ]
+  },
+  {
+    "id": "76", "name": "Raising a Statue", "period": 1,
+    "requiredResourceSet": [{"WOOD": 2, "STONE": 2}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGES": 2}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "77", "name": "Military Campaign", "period": 1,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 3, "MILITARY_POINTS": 2}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"GOLD": 3}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "78", "name": "Hosting Panhandlers", "period": 1,
+    "requiredResourceSet": [{"WOOD": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"SERVANTS": 4}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "79", "name": "Fighting Heresies", "period": 1,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 5, "MILITARY_POINTS": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 2}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "80", "name": "Support to the Bishop", "period": 1,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 4, "MILITARY_POINTS": 2}, {"GOLD": 2, "WOOD": 1, "STONE": 1}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 3}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 1}}
+    ]
+  },
+  {
+    "id": "81", "name": "Hiring Soldiers", "period": 2,
+    "requiredResourceSet": [{"GOLD": 6}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 6}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "82", "name": "Repairing the Abbey", "period": 2,
+    "requiredResourceSet": [{"GOLD": 2, "WOOD": 2, "STONE": 2}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 2}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 6}}
+    ]
+  },
+  {
+    "id": "83", "name": "Building the Bastions", "period": 2,
+    "requiredResourceSet": [{"STONE": 4}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 3, "COUNCIL_PRIVILEGES": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 2}}
+    ]
+  },
+  {
+    "id": "84", "name": "Support to the King", "period": 2,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 6, "MILITARY_POINTS": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"GOLD": 5, "COUNCIL_PRIVILEGES": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 3}}
+    ]
+  },
+  {
+    "id": "85", "name": "Improving the Canals", "period": 2,
+    "requiredResourceSet": [{"SERVANTS": 2, "GOLD": 3}],
+    "effects": [
+      {"effectType": "ImmediateAction", "value": 4, "actionType": "HARVEST"},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "86", "name": "Hosting Foreigners", "period": 2,
+    "requiredResourceSet": [{"WOOD": 4}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"SERVANTS": 5}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "87", "name": "Crusade", "period": 2,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 8, "MILITARY_POINTS": 4}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"GOLD": 5, "FAITH_POINTS": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "88", "name": "Support to the Cardinal", "period": 2,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 7, "MILITARY_POINTS": 4}, {"GOLD": 3, "WOOD": 2, "STONE": 2}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 3}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "89", "name": "Hiring Mercenaries", "period": 3,
+    "requiredResourceSet": [{"GOLD": 8}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 7}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 6}}
+    ]
+  },
+  {
+    "id": "90", "name": "Repairing the Cathedral", "period": 3,
+    "requiredResourceSet": [{"GOLD": 3, "WOOD": 3, "STONE": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}},
+      {"effectType": "ImmediateAction", "value": 7, "actionType": ["TAKE_TERRITORY_CARD", "TAKE_BUILDING_CARD", "TAKE_CHARACTER_CARD", "TAKE_VENTURE_CARD"]},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "91", "name": "Building the Towers", "period": 3,
+    "requiredResourceSet": [{"STONE": 6}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 4, "COUNCIL_PRIVILEGES": 1}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  },
+  {
+    "id": "92", "name": "Promoting Sacred Art", "period": 3,
+    "requiredResourceSet": [{"WOOD": 6}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 3}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 3}}
+    ]
+  },
+  {
+    "id": "93", "name": "Military Conquest", "period": 3,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 12, "MILITARY_POINTS": 6}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"GOLD": 3, "WOOD": 3, "STONE": 3}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 7}}
+    ]
+  },
+  {
+    "id": "94", "name": "Improving the Roads", "period": 3,
+    "requiredResourceSet": [{"SERVANTS": 3, "GOLD": 4}],
+    "effects": [
+      {"effectType": "ImmediateAction", "value": 3, "actionType": "PRODUCTION"},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "95", "name": "Sacred War", "period": 3,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 15, "MILITARY_POINTS": 8}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 4}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 8}}
+    ]
+  },
+  {
+    "id": "96", "name": "Support to the Pope", "period": 3,
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 10, "MILITARY_POINTS": 5}, {"GOLD": 4, "WOOD": 3, "STONE": 3}],
+    "effects": [
+      {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 2}},
+      {"effectType": "EndOfGameResources", "resources": {"VICTORY_POINTS": 10}}
+    ]}
+]

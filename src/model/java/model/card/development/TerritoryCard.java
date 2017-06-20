@@ -1,18 +1,18 @@
 package model.card.development;
 
-import model.action.Action;
 import model.resource.ObtainedResourceSet;
-import model.resource.RequiredResourceSet;
 
-import java.util.List;
+import java.util.ArrayList;
 
+/**
+ * This class represents a territory card
+ */
 public class TerritoryCard extends DevelopmentCard {
     private ObtainedResourceSet harvestResourceSet;
     private int requiredValueForHarvest;
 
-    public TerritoryCard(String id, String name, List<RequiredResourceSet> requiredResourceSet, int period,
-                         Action immediateAction, ObtainedResourceSet harvestResourceSet, int requiredValueForHarvest) {
-        super(id, name, requiredResourceSet, period, immediateAction);
+    public TerritoryCard(String id, String name, int period, ObtainedResourceSet harvestResourceSet, int requiredValueForHarvest) {
+        super(id, name, new ArrayList<>(), period);
         this.harvestResourceSet = harvestResourceSet;
         this.requiredValueForHarvest = requiredValueForHarvest;
     }

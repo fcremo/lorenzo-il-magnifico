@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * and be sure that the returned objects will implement the given interface.
  * This way we can hide the the use of the isAssignableFrom() method and provide a nice interface for getting only
  * relevant effects from a card.
- * There's also a method for retrieving instances of a specific effect, should it be needed.
+ * There's also a method for retrieving instances of a specific effect class, should it be needed.
  */
 public class EffectsContainer {
     private ArrayList<EffectInterface> effects = new ArrayList<>();

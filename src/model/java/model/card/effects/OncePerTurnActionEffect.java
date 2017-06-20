@@ -1,42 +1,42 @@
 package model.card.effects;
 
-import model.action.Action;
 import model.action.ActionType;
-import model.card.effects.interfaces.OncePerTurnActionEffectInterface;
+import model.card.effects.interfaces.OncePerTurnEffectInterface;
 
-public class OncePerTurnActionEffect implements OncePerTurnActionEffectInterface {
+import java.util.ArrayList;
+
+/**
+ * This effect allows the player to perform one extra action per turn
+ */
+public class OncePerTurnActionEffect implements OncePerTurnEffectInterface {
     /**
      * The turn when the effect was last activated
      */
     private int lastActivatedAt = 0;
 
-    private ActionType actionType;
+    private ArrayList<ActionType> actionTypes;
     private int actionValue;
 
-    public OncePerTurnActionEffect(ActionType actionType, int actionValue) {
-        this.actionType = actionType;
+    public OncePerTurnActionEffect(ArrayList<ActionType> actionTypes, int actionValue) {
+        this.actionTypes = actionTypes;
         this.actionValue = actionValue;
     }
 
-    public ActionType getActionType() {
-        return actionType;
+    /**
+     * Returns the types of actions that the player can perform.
+     * N.B: The player can choose only one.
+     *
+     * @return the types of actions that the player can perform
+     */
+    public ArrayList<ActionType> getActionTypes() {
+        return actionTypes;
     }
 
-    public void setActionType(ActionType actionType) {
-        this.actionType = actionType;
-    }
-
+    /**
+     * @return the starting value of the action to perform
+     */
     public int getActionValue() {
         return actionValue;
-    }
-
-    public void setActionValue(int actionValue) {
-        this.actionValue = actionValue;
-    }
-
-    @Override
-    public Action getAction() {
-        return new Action(actionType, actionValue);
     }
 
     @Override

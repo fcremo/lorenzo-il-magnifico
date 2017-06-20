@@ -2,9 +2,12 @@ package model.card.effects;
 
 import model.action.Action;
 import model.action.ActionType;
-import model.card.effects.interfaces.ActionValueModifierEffectInterface;
+import model.card.effects.interfaces.EffectInterface;
 
-public class ActionValueModifierEffect implements ActionValueModifierEffectInterface {
+/**
+ * This effect modifies the family member value for a certain action type
+ */
+public class ActionValueModifierEffect implements EffectInterface {
     private ActionType actionType;
     private int value;
 
@@ -13,7 +16,12 @@ public class ActionValueModifierEffect implements ActionValueModifierEffectInter
         this.value = value;
     }
 
-    @Override
+    /**
+     * Modify the value of the family member for a given action
+     * @param currentValue the current value of the family member
+     * @param action the action being performed
+     * @return
+     */
     public int modifyValue(int currentValue, Action action) {
         if(action.getActionType() == actionType){
             return action.getActionValue() + value;

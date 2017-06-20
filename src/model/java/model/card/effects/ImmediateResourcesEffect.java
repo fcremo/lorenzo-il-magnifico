@@ -3,20 +3,20 @@ package model.card.effects;
 import model.card.effects.interfaces.EffectInterface;
 import model.resource.ObtainedResourceSet;
 
-import java.util.ArrayList;
-
+/**
+ * This effect gives the player some resources when taking a card
+ */
 public class ImmediateResourcesEffect implements EffectInterface {
-    private ArrayList<ObtainedResourceSet> obtainedResourceSets;
+    private ObtainedResourceSet obtainedResourceSet;
 
-    public ImmediateResourcesEffect(ArrayList<ObtainedResourceSet> obtainedResourceSets) {
-        this.obtainedResourceSets = obtainedResourceSets;
+    public ImmediateResourcesEffect(ObtainedResourceSet obtainedResourceSet) {
+        this.obtainedResourceSet = obtainedResourceSet;
     }
 
-    public ArrayList<ObtainedResourceSet> getObtainedResourceSets() {
-        return obtainedResourceSets;
-    }
-
-    public void setObtainedResourceSets(ArrayList<ObtainedResourceSet> obtainedResourceSets) {
-        this.obtainedResourceSets = obtainedResourceSets;
+    /**
+     * @return the set of resources obtained
+     */
+    public ObtainedResourceSet getObtainedResourceSet() {
+        return obtainedResourceSet;
     }
 }

@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1, "period": 1, 
+    "effects": [
+      {"effectType": "ObtainedResourceSetModifier", "resourceType": "MILITARY_POINTS", "quantity": -1}
+    ]
+  },
+  {
+    "id": 2, "period": 1, 
+    "effects": [
+      {"effectType": "ObtainedResourceSetModifier", "resourceType": "GOLD", "quantity": -1}
+    ]
+  },
+  {
+    "id": 3, "period": 1, 
+    "effects": [
+      {"effectType": "ObtainedResourceSetModifier", "resourceType": "SERVANTS", "quantity": -1}
+    ]
+  },
+  {
+    "id": 4, "period": 1, 
+    "effects": [
+      {"effectType": "ObtainedResourceSetModifier", "resourceType": "WOOD", "quantity": -1},
+      {"effectType": "ObtainedResourceSetModifier", "resourceType": "STONE", "quantity": -1}
+    ]
+  },
+  {
+    "id": 5, "period": 1, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -3, "actionType": "HARVEST"}
+    ]
+  },
+  {
+    "id": 6, "period": 1, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -3, "actionType": "PRODUCTION"}
+    ]
+  },
+  {
+    "id": 7, "period": 1, 
+    "effects": [
+      {"effectType": "FamilyMemberValueModifier", "value": -1, "familyMemberColor": "BLACK"},
+      {"effectType": "FamilyMemberValueModifier", "value": -1, "familyMemberColor": "WHITE"},
+      {"effectType": "FamilyMemberValueModifier", "value": -1, "familyMemberColor": "ORANGE"}
+    ]
+  },
+  {
+    "id": 8, "period": 2, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -4, "actionType": "TAKE_TERRITORY_CARD"}
+    ]
+  },
+  {
+    "id": 9, "period": 2, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -4, "actionType": "TAKE_BUILDING_CARD"}
+    ]
+  },
+  {
+    "id": 10, "period": 2, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -4, "actionType": "TAKE_CHARACTER_CARD"}
+    ]
+  },
+  {
+    "id": 11, "period": 2, 
+    "effects": [
+      {"effectType": "ActionValueModifier", "value": -4, "actionType": "TAKE_VENTURE_CARD"}
+    ]
+  },
+  {
+    "id": 12, "period": 2, 
+    "effects": [
+      {"effectType": "InhibitActionSpace", "actionSpace": "Market"}
+    ]
+  },
+  {
+    "id": 13, "period": 2, 
+    "effects": [
+      {"effectType": "ServantsValueMultiplier", "multiplier": 0.5}
+    ]
+  },
+  {
+    "id": 14, "period": 2, 
+    "effects": [
+      {"effectType": "SkipFirstTurn"}
+    ]
+  },
+  {
+    "id": 15, "period": 3, 
+    "effects": [
+      {"effectType": "IgnoreEndOfGameVictoryPointsFromDevelopmentCards", "cardType": "CHARACTER"}
+    ]
+  },
+  {
+    "id": 16, "period": 3, 
+    "effects": [
+      {"effectType": "IgnoreEndOfGameVictoryPointsFromDevelopmentCards", "cardType": "VENTURE"}
+    ]
+  },
+  {
+    "id": 17, "period": 3, 
+    "effects": [
+      {"effectType": "IgnoreEndOfGameVictoryPointsFromDevelopmentCards", "cardType": "TERRITORY"}
+    ]
+  },
+  {
+    "id": 18, "period": 3, 
+    "effects": [
+      {"effectType": "EndOfGameResources", "multipliers": {"requirements": {"REQUIRED_VICTORY_POINTS": 5}, "resourceSet": {"VICTORY_POINTS": -1}}}
+    ]
+  },
+  {
+    "id": 19, "period": 3, 
+    "effects": [
+      {"effectType": "EndOfGameResources", "multipliers": {"requirements": {"REQUIRED_MILITARY_POINTS": 1}, "resourceSet": {"VICTORY_POINTS": -1}}}
+    ]
+  },
+  {
+    "id": 20, "period": 3, 
+    "effects": [
+      {"effectType": "EndOfGameBuildingCardCostPenalty", "multipliers": {"requirements": [{"BUILDING_CARD_COST_WOOD": 1}, {"BUILDING_CARD_COST_STONE": 1}], "resourceSet": {"VICTORY_POINTS": -1}}}
+    ]
+  },
+  {
+    "id": 21, "period": 3, 
+    "effects": [
+      {
+        "effectType": "EndOfGameResources",
+        "multipliers": [
+          {"requirements": {"REQUIRED_GOLD": 1}, "resources": {"VICTORY_POINTS": -1}},
+          {"requirements": {"REQUIRED_WOOD": 1}, "resources": {"VICTORY_POINTS": -1}},
+          {"requirements": {"REQUIRED_STONE": 1}, "resources": {"VICTORY_POINTS": -1}},
+          {"requirements": {"REQUIRED_SERVANTS": 1}, "resources": {"VICTORY_POINTS": -1}}
+        ]}
+    ]
+  }
+]

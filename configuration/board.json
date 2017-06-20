@@ -1,0 +1,22 @@
+{
+  "greenTower":[{}, {}, {"WOOD":1}, {"WOOD":2}],
+  "blueTower":[{}, {}, {"STONE":1}, {"STONE":2}],
+  "yellowTower":[{}, {}, {"MILITARY_POINTS":1}, {"MILITARY_POINTS":2}],
+  "purpleTower":[{}, {}, {"GOLD":1}, {"GOLD":2}],
+  "councilPalace":{"COUNCIL_PRIVILEGES":1, "GOLD":1},
+  "smallProductionArea":{},
+  "bigProductionArea":{},
+  "smallHarvestArea":{},
+  "bigHarvestArea":{},
+  "marketGold":{"GOLD":5},
+  "marketServants":{"SERVANTS":5},
+  "marketMilitaryAndGold":{"MILITARY_POINTS":3, "GOLD":2},
+  "marketCouncilPrivileges":{"COUNCIL_PRIVILEGES":2},
+
+  "faithTrackBonus":[
+    {"VICTORY_POINTS":0}, {"VICTORY_POINTS":1}, {"VICTORY_POINTS":2}, {"VICTORY_POINTS":3},
+    {"VICTORY_POINTS":4}, {"VICTORY_POINTS":5}, {"VICTORY_POINTS":7}, {"VICTORY_POINTS":9},
+    {"VICTORY_POINTS":11}, {"VICTORY_POINTS":13}, {"VICTORY_POINTS":15}, {"VICTORY_POINTS":17},
+    {"VICTORY_POINTS":19}, {"VICTORY_POINTS":22}, {"VICTORY_POINTS":25}, {"VICTORY_POINTS":30}
+  ]
+}

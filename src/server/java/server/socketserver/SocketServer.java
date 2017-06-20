@@ -1,7 +1,6 @@
 package server.socketserver;
 
 import server.GameRoom;
-import server.ServerController;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -32,10 +31,10 @@ public class SocketServer implements Runnable {
             while ((true)) {
                 // accept a connection
                 Socket s = listenerSocket.accept();
-                SocketClientConnection clientConnection = new SocketClientConnection(s);
+                SocketClientConnection clientConnection = new SocketClientConnection(rooms, s);
 
                 // create a server controller
-                ServerController controller = new ServerController(clientConnection, rooms);
+                //ServerController controller = new ServerController(clientConnection, rooms);
 
                 // start the client handler
                 Thread handler = new Thread(clientConnection);

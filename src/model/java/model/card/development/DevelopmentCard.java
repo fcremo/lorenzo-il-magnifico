@@ -1,6 +1,5 @@
 package model.card.development;
 
-import model.action.Action;
 import model.card.Card;
 import model.resource.RequiredResourceSet;
 
@@ -12,15 +11,9 @@ import java.util.List;
 public abstract class DevelopmentCard extends Card {
     private int period;
 
-    /**
-     * An action that the player can perform when taking the card.
-     */
-    private Action immediateAction;
-
-    public DevelopmentCard(String id, String name, List<RequiredResourceSet> requiredResourceSet, int period, Action immediateAction) {
+    public DevelopmentCard(String id, String name, List<RequiredResourceSet> requiredResourceSet, int period) {
         super(id, name, requiredResourceSet);
         this.period = period;
-        this.immediateAction = immediateAction;
     }
 
     public int getPeriod() {
@@ -29,13 +22,5 @@ public abstract class DevelopmentCard extends Card {
 
     public void setPeriod(int period) {
         this.period = period;
-    }
-
-    public Action getImmediateAction() {
-        return immediateAction;
-    }
-
-    public void setImmediateAction(Action immediateAction) {
-        this.immediateAction = immediateAction;
     }
 }

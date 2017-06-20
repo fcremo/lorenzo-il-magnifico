@@ -1,0 +1,22 @@
+[
+  {
+    "productionObtainedResourceSet": {"MILITARY_POINTS": 1, "GOLD": 2},
+    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
+  },
+  {
+    "productionObtainedResourceSet": {"SERVANTS": 1, "GOLD": 2},
+    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
+  },
+  {
+    "productionObtainedResourceSet": {"SERVANTS": 1, "MILITARY_POINTS": 2},
+    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "GOLD": 1}
+  },
+  {
+    "productionObtainedResourceSet": {"SERVANTS": 2, "GOLD": 1},
+    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
+  },
+  {
+    "productionObtainedResourceSet": {"GOLD": 1, "MILITARY_POINTS": 2},
+    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
+  }
+]

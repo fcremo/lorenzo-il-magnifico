@@ -1,7 +1,7 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
-import model.player.bonustile.PersonalBonusTile;
+import model.player.PersonalBonusTile;
 import ui.cli.InvalidCommandException;
 
 import java.rmi.RemoteException;

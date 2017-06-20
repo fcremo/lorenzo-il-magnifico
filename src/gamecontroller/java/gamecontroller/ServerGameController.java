@@ -1,21 +1,23 @@
 package gamecontroller;
 
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
 import model.Excommunication;
+import model.Game;
 import model.player.Player;
-import model.player.PlayerColor;
-import model.player.bonustile.PersonalBonusTile;
+import model.player.PersonalBonusTile;
+import server.ClientConnection;
 import server.GameRoom;
-import server.ServerController;
-import server.configloader.deserializers.ConfigLoader;
 
-import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+/**
+ * This class extends {@link GameController} to provide server specific functionality
+ */
 public class ServerGameController extends GameController {
-
     private GameRoom gameRoom;
 
     public ServerGameController(GameRoom gameRoom) {
@@ -23,85 +25,94 @@ public class ServerGameController extends GameController {
         this.gameRoom = gameRoom;
     }
 
-    public void startGame() {
-        // Load game configuration from files
-        loadConfiguration();
-        // Create players and set colors
-        PlayerColor colors[] = PlayerColor.values();
-        int i = 0;
-        for (ServerController controller : gameRoom.getControllers()) {
-            Player player = new Player(controller.getUsername());
-
-            // Set player color
-            player.setColor(colors[i]);
-            i++;
-
-            this.getGame().addPlayer(player);
-            controller.setPlayer(player);
-        }
-
-        // Extract excommunications
-        drawExcommunications();
-
-        // Set turn order
-        Collections.shuffle(this.getGame().getPlayers());
-
-        // Personal bonus tile draft
-        for(int p = this.getGame().getPlayers().size()-1; p>=0; p--) {
-            Player player = this.getGame().getPlayers().get(p);
-            ServerController controller = gameRoom.getControllerForPlayer(player);
-            PersonalBonusTile chosenPersonalBonusTile = controller.getClientConnection().choosePersonalBonusTile(this.getGame().getAvailablePersonalBonusTiles());
-            // If the bonus tile chosen by the player is not available, the first available one is used
-            if (!this.getGame().getAvailablePersonalBonusTiles().contains(chosenPersonalBonusTile)) {
-                chosenPersonalBonusTile = this.getGame().getAvailablePersonalBonusTiles().get(0);
-            }
-            player.setBonusTile(chosenPersonalBonusTile);
-            this.getGame().getAvailablePersonalBonusTiles().remove(chosenPersonalBonusTile);
-        }
-
-        // TODO: 5/30/17 pass configuration to clients and go on with the game preparation phase
-
+    /**
+     * Set a random player order and update current player
+     */
+    public void shufflePlayers(){
+        Collections.shuffle(getGame().getPlayers());
+        Player nextPlayer = getGame().getPlayers().get(getGame().getPlayers().size()-1);
+        getGame().setCurrentPlayer(nextPlayer);
     }
 
     /**
-     * Load the game configuration from the files
+     * Draw three random excommunications
      */
-    public void loadConfiguration() {
-        ConfigLoader configLoader = new ConfigLoader("configuration/test0.json");
-        try {
-            configLoader.loadConfiguration();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        super.setGame(configLoader.getGame());
-    }
-
     public void drawExcommunications(){
+        Game game = getGame();
+
         // First period
-        List<Excommunication> firstPeriodExcommunications = getGame().getAvailableExcommunications()
-                .stream()
-                .filter(e -> e.getPeriod() == 1)
-                .collect(Collectors.toList());
+        List<Excommunication> firstPeriodExcommunications = game.getAvailableExcommunications().stream()
+                .filter(e -> e.getPeriod() == 1).collect(Collectors.toList());
         Excommunication firstPeriodExcommunication = firstPeriodExcommunications.get(new Random().nextInt(firstPeriodExcommunications.size()));
 
+        Excommunication[] chosenExcommunications = {firstPeriodExcommunication, firstPeriodExcommunication, firstPeriodExcommunication};
+        game.getBoard().setExcommunications(chosenExcommunications);
+        /*
         // Second period
-        List<Excommunication> secondPeriodExcommunications = getGame().getAvailableExcommunications()
-                .stream()
-                .filter(e -> e.getPeriod() == 2)
-                .collect(Collectors.toList());
+        List<Excommunication> secondPeriodExcommunications = game.getAvailableExcommunications().stream()
+                .filter(e -> e.getPeriod() == 2).collect(Collectors.toList());
         Excommunication secondPeriodExcommunication = secondPeriodExcommunications.get(new Random().nextInt(secondPeriodExcommunications.size()));
 
         // Third period
-        List<Excommunication> thirdPeriodExcommunications = getGame().getAvailableExcommunications()
-                .stream()
-                .filter(e -> e.getPeriod() == 3)
-                .collect(Collectors.toList());
+        List<Excommunication> thirdPeriodExcommunications = game.getAvailableExcommunications().stream()
+                .filter(e -> e.getPeriod() == 3).collect(Collectors.toList());
         Excommunication thirdPeriodExcommunication = thirdPeriodExcommunications.get(new Random().nextInt(thirdPeriodExcommunications.size()));
 
         // Set chosen excommunications in the game
         Excommunication[] chosenExcommunications = {firstPeriodExcommunication, secondPeriodExcommunication, thirdPeriodExcommunication};
-        getGame().getBoard().setExcommunications(chosenExcommunications);
+        game.getBoard().setExcommunications(chosenExcommunications);
+         */
     }
 
+    @Override
+    public void setGameState(GameState gameState) {
+        super.setGameState(gameState);
+        gameRoom.onGameStateChange(gameState);
+    }
+
+    /**
+     * Start drafting the personal bonus tiles
+     */
+    public void draftNextBonusTile(){
+        setGameState(GameState.DRAFTING_BONUS_TILES);
+        ClientConnection connection = gameRoom.getConnectionForPlayer(getGame().getCurrentPlayer());
+        try {
+            connection.askToChoosePersonalBonusTile(getGame().getAvailablePersonalBonusTiles());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Called when a player chooses his personal bonus tile
+     * @param player
+     * @param personalBonusTile
+     */
+    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException {
+        // Check that the personal bonus tile is available
+        if (!getGame().getAvailablePersonalBonusTiles().contains(personalBonusTile)) {
+            throw new PersonalBonusTileNotAvailableException();
+        }
+
+        super.setPersonalBonusTile(player, personalBonusTile);
+
+        // Remove the chosen bonus tile from the available ones
+        getGame().getAvailablePersonalBonusTiles().remove(personalBonusTile);
+
+        // Draft next bonus tile
+        int currentPlayerIndex = getGame().getPlayers().indexOf(player);
+        if(currentPlayerIndex > 0) {
+            Player nextPlayer = getGame().getPlayers().get(currentPlayerIndex - 1);
+            getGame().setCurrentPlayer(nextPlayer);
+            draftNextBonusTile();
+        }
+        else {
+            // TODO: 6/13/17
+            draftLeaderCards();
+        }
+    }
+
+    private void draftLeaderCards(){
+        System.out.println("DRAFT LEADER CARDS REACHED");
+    }
 }

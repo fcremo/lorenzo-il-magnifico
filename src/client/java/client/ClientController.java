@@ -7,16 +7,9 @@ import client.rmiclient.RMIClient;
 import client.socketclient.SocketClient;
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
-import model.Game;
-import model.action.Action;
-import model.board.actionspace.ActionSpace;
-import model.board.actionspace.Floor;
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
-import model.card.leader.LeaderCard;
-import model.player.FamilyMemberColor;
-import model.player.Player;
-import model.player.bonustile.PersonalBonusTile;
-import model.resource.ObtainedResourceSet;
+import gamecontroller.GameState;
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.player.PersonalBonusTile;
 import server.ClientToServerInterface;
 import ui.UIEventsInterface;
 import ui.cli.contexts.ChooseBonusTileContext;
@@ -38,6 +31,19 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         this.ui = ui;
     }
 
+    /* ---------------------------------------
+     * CALLBACKS
+     * --------------------------------------- */
+    /**
+     * NetworkSettingsContext callback.
+     * Establishes a connection to the server
+     * @param connectionMethod
+     * @param hostname
+     * @param port
+     * @throws NetworkException
+     * @throws RemoteException
+     */
+    @Override
     public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
         if (connectionMethod == ConnectionMethod.SOCKET) {
             clientConnection = new SocketClient(hostname, port, this);
@@ -47,6 +53,14 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         ui.showLoginPrompt();
     }
 
+    /**
+     * {@link LoginContext} callback.
+     * Logs in the player with the given username
+     * @param username
+     * @throws NetworkException
+     * @throws LoginException
+     * @throws RemoteException
+     */
     @Override
     public void login(String username) throws NetworkException, LoginException, RemoteException {
         clientConnection.loginPlayer(username);
@@ -59,103 +73,25 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         ui.showWaitingForGameToStart();
     }
 
-    @Override
-    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
-        return ui.choosePersonalBonusTile(personalBonusTiles);
+    /* ---------------------------------------
+     * GAME EVENTS
+     * --------------------------------------- */
+
+    public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
+        ui.showChoosePersonalBonusTile(personalBonusTiles);
     }
 
     @Override
-    public void onGameStart(Game g) {
-
+    public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException {
+        try {
+            clientConnection.choosePersonalBonusTile(bonusTile);
+        } catch (PersonalBonusTileNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onDicesThrown(int black, int white, int orange) {
-
-    }
-
-    @Override
-    public void onPlayerTurnStart(Player player) {
-
-    }
-
-    @Override
-    public void playerSkipsTurn(Player player) {
-
-    }
-
-    @Override
-    public void onPlayerSpentServants(Player player, int servants) {
-
-    }
-
-    @Override
-    public void onPlayerGoesToFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor) {
-
-    }
-
-    @Override
-    public void goToSmallHarvest(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToBigHarvest(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToMarket(Player player, FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPlacesFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPlayedLeaderCard(Player player, LeaderCard leaderCard) {
-
-    }
-
-    @Override
-    public void onPlayerDiscardsLeaderCard(Player player, LeaderCard leaderCard) {
-
-    }
-
-    @Override
-    public <T extends OncePerTurnEffectInterface> void onPlayerActivatesOncePerTurnEffect(Player player, T effect) {
-
-    }
-
-    @Override
-    public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
-
-    }
-
-    @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPerformsAction(Player player, Action action) {
+    public void onGameStateChange(GameState gameState) {
 
     }
 }

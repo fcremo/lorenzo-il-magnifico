@@ -1,18 +1,14 @@
 package server;
 
-import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
+import gamecontroller.GameState;
 import gamecontroller.ServerGameController;
-import model.Game;
-import model.action.Action;
-import model.board.actionspace.ActionSpace;
-import model.board.actionspace.Floor;
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
-import model.card.leader.LeaderCard;
-import model.player.FamilyMemberColor;
 import model.player.Player;
-import model.resource.ObtainedResourceSet;
+import model.player.PlayerColor;
+import server.configloader.ConfigLoader;
 
+import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -21,10 +17,13 @@ import java.util.NoSuchElementException;
  */
 public class GameRoom implements GameEventsInterface {
     /**
-     * The list of the server controllers in this room, one per player
+     * The list of connections to the players
      */
-    private ArrayList<ServerController> controllers = new ArrayList<>();
+    private ArrayList<ClientConnection> connections = new ArrayList<>();
 
+    /**
+     * The controller for the game of this room
+     */
     private ServerGameController serverGameController = new ServerGameController(this);
 
     /**
@@ -38,10 +37,117 @@ public class GameRoom implements GameEventsInterface {
      */
     private int gameStartTimeout = 5000;
 
-    private Thread timer;
+    private Thread roomTimeoutTimer;
 
     public GameRoom(String name) {
         this.name = name;
+    }
+
+    /**
+     * Callback called when the room timeout expires
+     */
+    private void onRoomTimeout() {
+        System.out.println("Room " + name + " timeout expired, starting game...");
+        // Load game configuration
+        loadConfiguration();
+
+        // Create players and set colors
+        createPlayers();
+
+        // Extract excommunications
+        serverGameController.drawExcommunications();
+
+        // Set random turn order
+        serverGameController.shufflePlayers();
+
+        // Start personal bonus tile draft
+        serverGameController.draftNextBonusTile();
+    }
+
+    /**
+     * Load the game configuration
+     */
+    private void loadConfiguration() {
+        try {
+            serverGameController.setGame(ConfigLoader.loadConfiguration("configuration"));
+        } catch (IOException e) {
+            // TODO: Handle exception
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create players and assign colors
+     */
+    private void createPlayers() {
+        PlayerColor[] colors = PlayerColor.values();
+        int i = 0;
+        for (ClientConnection connection : connections) {
+            Player player = new Player(connection.getUsername());
+
+            // Set player color
+            player.setColor(colors[i]);
+
+            // Add player to the game
+            serverGameController.addPlayer(player);
+            connection.setPlayer(player);
+
+            i++;
+        }
+    }
+
+    /**
+     * Signal state change to all players
+     * @param gameState
+     */
+    @Override
+    public void onGameStateChange(GameState gameState) {
+        for (ClientConnection connection: connections) {
+            try {
+                connection.onGameStateChange(gameState);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isAvailable() {
+        return (serverGameController.isGameStarting() && !this.isFull());
+    }
+
+    public boolean isFull() {
+        return (connections.size() >= 4);
+    }
+
+    public ClientConnection getConnectionForPlayer (Player player) {
+        for (ClientConnection connection : connections) {
+            // TODO: 6/13/17 implement equals for players
+            if (connection.getPlayer().getUsername().equals(player.getUsername()))
+                return connection;
+        }
+        throw new NoSuchElementException();
+    }
+
+    public ArrayList<ClientConnection> getConnections() {
+        return connections;
+    }
+
+    /**
+     * Adds a player to the room, starting the room timeout if
+     * there are at least 2 players connected
+     * @param clientConnection
+     */
+    public void addPlayer(ClientConnection clientConnection) {
+        connections.add(clientConnection);
+        if (connections.size() >= 2 && roomTimeoutTimer == null) {
+            System.out.println("Starting room " + name + " timeout");
+            roomTimeoutTimer = new Thread(new RoomTimerClass());
+            roomTimeoutTimer.start();
+        }
+    }
+
+    public ServerGameController getServerGameController() {
+        return serverGameController;
     }
 
     public String getName() {
@@ -50,156 +156,6 @@ public class GameRoom implements GameEventsInterface {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ServerController getControllerForPlayer (Player player) {
-        for (ServerController controller : controllers) {
-            if (controller.getPlayer().getUsername().equals(player.getUsername()))
-                return controller;
-        }
-        throw new NoSuchElementException();
-    }
-
-    public ServerGameController getServerGameController() {
-        return serverGameController;
-    }
-
-    public void setServerGameController(ServerGameController serverGameController) {
-        this.serverGameController = serverGameController;
-    }
-
-    /**
-     * Adds a player to the room, starting the room timeout if
-     * there are at least 2 players connected
-     * @param controller
-     */
-    public void addPlayer(ServerController controller) {
-        controllers.add(controller);
-        if (controllers.size() >= 2 && timer == null) {
-            System.out.println("Starting room " + name + " timeout");
-            timer = new Thread(new RoomTimerClass());
-            timer.start();
-        }
-    }
-
-    public void removeController(ServerController controller) {
-        controllers.remove(controller);
-    }
-
-    public ArrayList<ServerController> getControllers() {
-        return controllers;
-    }
-
-    public boolean isAvailable() {
-        return (serverGameController.isGameStarting() && !this.isFull());
-    }
-
-    public boolean isFull() {
-        return (controllers.size() >= 4);
-    }
-
-    @Override
-    public void onGameStart(Game g) {
-        for (ServerController controller: controllers) {
-            controller.
-
-        }
-    }
-
-    @Override
-    public void onDicesThrown(int black, int white, int orange) {
-
-    }
-
-    @Override
-    public void onPlayerTurnStart(Player player) {
-
-    }
-
-    @Override
-    public void playerSkipsTurn(Player player) {
-
-    }
-
-    @Override
-    public void onPlayerSpentServants(Player player, int servants) {
-
-    }
-
-    @Override
-    public void onPlayerGoesToFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor) {
-
-    }
-
-    @Override
-    public void goToSmallHarvest(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToBigHarvest(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToSmallProduction(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToBigProduction(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor) {
-
-    }
-
-    @Override
-    public void goToMarket(Player player, FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPlacesFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPlayedLeaderCard(Player player, LeaderCard leaderCard) {
-
-    }
-
-    @Override
-    public void onPlayerDiscardsLeaderCard(Player player, LeaderCard leaderCard) {
-
-    }
-
-    @Override
-    public <T extends OncePerTurnEffectInterface> void onPlayerActivatesOncePerTurnEffect(Player player, T effect) {
-
-    }
-
-    @Override
-    public void onPlayerGetsResources(Player player, ObtainedResourceSet obtainedResourceSet) {
-
-    }
-
-    @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
-
-    }
-
-    @Override
-    public void onPlayerPerformsAction(Player player, Action action) {
-
-    }
-
-    private void onRoomTimeout() {
-        System.out.println("Room " + name + " timeout expired, starting game...");
-        serverGameController.setPlayers();
-        serverGameController.startGame();
     }
 
     private class RoomTimerClass implements Runnable {

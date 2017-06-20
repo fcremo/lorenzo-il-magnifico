@@ -2,7 +2,7 @@ package ing.polimi.ingsw;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import model.card.effects.ObtainedResourceModifier;
+import model.card.effects.ObtainedResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
 import org.junit.Test;
 import server.configloader.deserializers.EffectDeserializer;
@@ -18,6 +18,6 @@ public class EffectDeserializerTest {
         Gson gson = new GsonBuilder().registerTypeAdapter(EffectInterface.class, new EffectDeserializer()).create();
         EffectInterface effect = gson.fromJson(testCase, EffectInterface.class);
 
-        assertTrue(ObtainedResourceModifier.class.isAssignableFrom(effect.getClass()));
+        assertTrue(ObtainedResourceSetModifierEffect.class.isAssignableFrom(effect.getClass()));
     }
 }

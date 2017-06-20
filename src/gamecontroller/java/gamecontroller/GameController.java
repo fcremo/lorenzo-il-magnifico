@@ -1,5 +1,6 @@
 package gamecontroller;
 
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
 import model.Game;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
@@ -9,40 +10,44 @@ import model.card.leader.LeaderCard;
 import model.exceptions.CantPerformActionException;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.player.PersonalBonusTile;
 import model.resource.ObtainedResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
 /**
- * This class is responsible for handling player actions (raising exceptions if need be), updating the state and
- * making callbacks to report the changes.
- * It's shared by the client and the server so that both use the exact same logic for updating the state of the game.
+ * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
+ * updating the game state and making callbacks to report the changes.
+ * The code is shared by the client and the server so that both use the exact same logic for updating the state of the game.
  */
 public class GameController {
-
+    /**
+     * The game being played
+     */
     private Game game;
+
+    /**
+     * The callback interface for game events
+     */
     private GameEventsInterface callback;
+
+    /**
+     * The state of the game
+     */
+    private GameState gameState;
 
     public GameController(GameEventsInterface callback) {
         this.callback = callback;
+        this.gameState = GameState.INITIALIZING;
     }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-
 
     public boolean isGameStarting() {
-        return (!game.isStarted() && !game.isEnded());
+        return gameState == GameState.INITIALIZING;
     }
 
-    public void setPlayersColours() {
+    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException {
+        player.setBonusTile(personalBonusTile);
     }
 
     public void throwDices() {
@@ -94,7 +99,6 @@ public class GameController {
     public <T extends OncePerTurnEffectInterface> void activateOncePerTurnEffect(Player player, T effect) {
     }
 
-
     /**
      * Performs the action and returns the set of resources obtained
      *
@@ -106,4 +110,24 @@ public class GameController {
         throw new NotImplementedException();
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void addPlayer(Player player){
+        // TODO: 6/13/17 check number of players and throw an exception if >= 4
+        game.addPlayer(player);
+    }
 }

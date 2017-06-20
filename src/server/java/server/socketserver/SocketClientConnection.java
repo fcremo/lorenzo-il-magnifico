@@ -1,10 +1,15 @@
 package server.socketserver;
 
+import gamecontroller.GameState;
+import model.player.PersonalBonusTile;
 import server.ClientConnection;
+import server.GameRoom;
 
 import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is responsible for handling communication with a single client.
@@ -15,7 +20,8 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     private BufferedReader input;
     private BufferedWriter output;
 
-    public SocketClientConnection(Socket connection) throws IOException {
+    public SocketClientConnection(ArrayList<GameRoom> gameRooms, Socket connection) throws IOException {
+        super(gameRooms);
         this.connection = connection;
         input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         output = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
@@ -35,6 +41,16 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void pingClient() throws RemoteException {
+
+    }
+
+    @Override
+    public void onGameStateChange(GameState gameState) {
+
+    }
+
+    @Override
+    public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
 
     }
 }

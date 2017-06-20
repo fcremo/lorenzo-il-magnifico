@@ -1,0 +1,152 @@
+[
+  {
+    "id": "1", "name": "Francesco Sforza",
+    "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 5}],
+    "effects": [
+      {"effectType": "OncePerTurnAction", "action": "HARVEST", "value": 1}
+    ]
+  },
+  {
+    "id": "2", "name": "Ludovico Ariosto",
+    "requiredResourceSet": [{"REQUIRED_CHARACTER_CARDS": 5}],
+    "effects": [
+      {"effectType": "SkipOccupationChecks"}
+    ]
+  },
+  {
+    "id": "3", "name": "Filippo Brunelleschi",
+    "requiredResourceSet": [{"REQUIRED_BUILDING_CARDS": 5}],
+    "effects": [
+      {"effectType": "DoubleOccupationCostIgnore"}
+    ]
+  },
+  {
+    "id": "4", "name": "Federico da Montefeltro",
+    "requiredResourceSet": [{"REQUIRED_TERRITORY_CARDS": 5}],
+    "effects": [
+      {"effectType": "OncePerTurnFamilyMemberValueSetter", "value": 6, "allowedFamilyMemberColor": ["BLACK", "WHITE", "ORANGE"]}
+    ]
+  },
+  {
+    "id": "5", "name": "Girolamo Savonarola",
+    "requiredResourceSet": [{"REQUIRED_GOLD": 18}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"FAITH_POINTS": 1}}
+    ]
+  },
+  {
+    "id": "6", "name": "Giovanni dalle Bande Nere",
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 12}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"GOLD": 1, "WOOD": 1, "STONE": 1}}
+    ]
+  },
+  {
+    "id": "7", "name": "Sandro Botticelli",
+    "requiredResourceSet": [{"REQUIRED_WOOD": 10}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"MILITARY_POINTS": 2, "VICTORY_POINTS": 1}}
+    ]
+  },
+  {
+    "id": "8", "name": "Michelangelo Buonarroti",
+    "requiredResourceSet": [{"REQUIRED_STONE": 10}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"GOLD": 3}}
+    ]
+  },
+  {
+    "id": "9", "name": "Ludovico III Gonzaga",
+    "requiredResourceSet": [{"REQUIRED_SERVANTS": 15}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"COUNCIL_PRIVILEGES": 1}}
+    ]
+  },
+  {
+    "id": "10", "name": "Leonardo da Vinci",
+    "requiredResourceSet": [{"REQUIRED_CHARACTER_CARDS": 4, "REQUIRED_TERRITORY_CARDS": 2}],
+    "effects": [
+      {"effectType": "OncePerTurnAction", "action": "PRODUCTION", "value": 0}
+    ]
+  },
+  {
+    "id": "11", "name": "Pico della Mirandola",
+    "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 4, "REQUIRED_BUILDING_CARDS": 2}],
+    "effects": [
+      {"effectType": "DevelopmentCardRequiredResourceSetModifier", "resources": {"GOLD": -3}, "cardType": "CHARACTER"},
+      {"effectType": "DevelopmentCardRequiredResourceSetModifier", "resources": {"GOLD": -3}, "cardType": "BUILDING"},
+      {"effectType": "DevelopmentCardRequiredResourceSetModifier", "resources": {"GOLD": -3}, "cardType": "TERRITORY"},
+      {"effectType": "DevelopmentCardRequiredResourceSetModifier", "resources": {"GOLD": -3}, "cardType": "VENTURE"}
+    ]
+  },
+  {
+    "id": "12", "name": "Sisto IV",
+    "requiredResourceSet": [{"REQUIRED_GOLD": 6, "REQUIRED_WOOD": 6, "REQUIRED_STONE": 6, "REQUIRED_SERVANTS": 6}],
+    "effects": [
+      {"effectType": "ChurchSupportBonusResources", "resources": {"VICTORY_POINTS": 5}}
+    ]
+  },
+  {
+    "id": "13", "name": "Lucrezia Borgia",
+    "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 6}, {"REQUIRED_CHARACTER_CARDS": 6}, {"REQUIRED_BUILDING_CARDS": 6}, {"REQUIRED_TERRITORY_CARDS": 6}],
+    "effects": [
+      {"effectType": "FamilyMemberValueModifier", "value": 2, "familyMemberColor": "BLACK"},
+      {"effectType": "FamilyMemberValueModifier", "value": 2, "familyMemberColor": "WHITE"},
+      {"effectType": "FamilyMemberValueModifier", "value": 2, "familyMemberColor": "ORANGE"}
+    ]
+  },
+  {
+    "id": "14", "name": "Sigismondo Malatesta",
+    "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 7, "REQUIRED_FAITH_POINTS": 3}],
+    "effects": [
+      {"effectType": "FamilyMemberValueModifier", "value": 3, "familyMemberColor": "NEUTRAL"}
+    ]
+  },
+  {
+    "id": "15", "name": "Lorenzo de' Medici",
+    "requiredResourceSet": [{"REQUIRED_VICTORY_POINTS": 35}],
+    "effects": [
+      {"effectType": "CopyOtherLeaderAbility"}
+    ]
+  },
+  {
+    "id": "16", "name": "Ludovico il Moro",
+    "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 2, "REQUIRED_CHARACTER_CARDS": 2, "REQUIRED_BUILDING_CARDS": 2, "REQUIRED_TERRITORY_CARDS": 2}],
+    "effects": [
+      {"effectType": "FamilyMemberValueSetter", "value": 5, "familyMemberColor": "BLACK"},
+      {"effectType": "FamilyMemberValueSetter", "value": 5, "familyMemberColor": "WHITE"},
+      {"effectType": "FamilyMemberValueSetter", "value": 5, "familyMemberColor": "ORANGE"}
+    ]
+  },
+  {
+    "id": "17", "name": "Cesare Borgia",
+    "requiredResourceSet": [{"REQUIRED_BUILDING_CARDS": 3, "REQUIRED_GOLD": 12, "REQUIRED_FAITH_POINTS": 2}],
+    "effects": [
+      {"effectType": "SkipMilitaryPointsRequirement"}
+    ]
+  },
+  {
+    "id": "18", "name": "Santa Rita",
+    "requiredResourceSet": [{"REQUIRED_FAITH_POINTS": 8}],
+    "effects": [
+      {"effectType": "DevelopmentCardImmediateResourcesMultiplier", "multiplier": 2, "resourceType": "GOLD"},
+      {"effectType": "DevelopmentCardImmediateResourcesMultiplier", "multiplier": 2, "resourceType": "WOOD"},
+      {"effectType": "DevelopmentCardImmediateResourcesMultiplier", "multiplier": 2, "resourceType": "STONE"},
+      {"effectType": "DevelopmentCardImmediateResourcesMultiplier", "multiplier": 2, "resourceType": "SERVANTS"}
+    ]
+  },
+  {
+    "id": "19", "name": "Cosimo de' Medici",
+    "requiredResourceSet": [{"REQUIRED_CHARACTER_CARDS": 2, "REQUIRED_BUILDING_CARDS": 4}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"SERVANTS": 3, "VICTORY_POINTS": 1}}
+    ]
+  },
+  {
+    "id": "20", "name": "Bartolomeo Colleoni",
+    "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 2, "REQUIRED_TERRITORY_CARDS": 4}],
+    "effects": [
+      {"effectType": "OncePerTurnBonusResources", "resources": {"VICTORY_POINTS": 4}}
+    ]
+  }
+]

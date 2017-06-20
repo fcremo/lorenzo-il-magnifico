@@ -1,14 +1,13 @@
 package server;
 
-import client.exceptions.GameNotStartedException;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
-import model.player.Player;
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.player.PersonalBonusTile;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 /**
  * This interface specifies all the requests from client to server.
@@ -40,8 +39,10 @@ public interface ClientToServerInterface extends Remote {
     void createAndJoinRoom() throws NetworkException, RemoteException;
 
     /**
-     * Retrieves the list of players from the  server
+     * Chooses a personal bonus tile
+     * @param personalBonusTile
+     * @throws NetworkException
+     * @throws RemoteException
      */
-    ArrayList<Player> getPlayers() throws RemoteException, NetworkException, GameNotStartedException;
-
+    void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException;
 }

@@ -3,15 +3,17 @@ package server.rmiserver;
 import client.ServerToClientInterface;
 import server.ClientToServerInterface;
 import server.GameRoom;
-import server.ServerController;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class RMIServer extends UnicastRemoteObject implements ServerInterface {
+    private static final Logger LOGGER = Logger.getLogger("RMIServer");
+
     private static Registry registry;
 
     private boolean createLocalRegistry = true;
@@ -37,7 +39,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
             try {
                 UnicastRemoteObject.exportObject(this, 0);
             } catch (RemoteException e) {
-                System.out.println("RMIServer object already exported");
+                LOGGER.fine("RMIServer object already exported");
             }
         }
 
@@ -46,8 +48,6 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
 
     @Override
     public ClientToServerInterface getServerConnection(ServerToClientInterface client) throws RemoteException {
-        RMIClientConnection connection = new RMIClientConnection(client);
-        new ServerController(connection, rooms);
-        return connection;
+        return new RMIClientConnection(rooms, client);
     }
 }

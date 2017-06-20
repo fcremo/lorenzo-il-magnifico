@@ -1,6 +1,5 @@
 package model.card.development;
 
-import model.action.Action;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
 import model.util.Tuple;
@@ -12,10 +11,16 @@ public class BuildingCard extends DevelopmentCard {
     private ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions;
     private int requiredValueForProduction;
 
-    public BuildingCard(String id, String name, List<RequiredResourceSet> requiredResourceSet, int period,
-                        Action immediateAction, ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions,
+    public BuildingCard(String id, String name, RequiredResourceSet requiredResourceSet, int period,
+                        ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions,
                         int requiredValueForProduction) {
-        super(id, name, requiredResourceSet, period, immediateAction);
+        super(id, name, new ArrayList<>(), period);
+
+        // Set required resource sets
+        ArrayList<RequiredResourceSet> requiredResourceSets = new ArrayList<>();
+        requiredResourceSets.add(requiredResourceSet);
+        this.setRequiredResourceSet(requiredResourceSets);
+
         this.productions = productions;
         this.requiredValueForProduction = requiredValueForProduction;
     }

@@ -1,15 +1,11 @@
 package server.rmiserver;
 
 import client.ServerToClientInterface;
-import client.exceptions.GameNotStartedException;
-import client.exceptions.LoginException;
-import client.exceptions.NetworkException;
-import client.exceptions.NoAvailableRoomsException;
-import model.Game;
-import model.player.Player;
-import model.player.bonustile.PersonalBonusTile;
+import gamecontroller.GameState;
+import model.player.PersonalBonusTile;
 import server.ClientConnection;
 import server.ClientToServerInterface;
+import server.GameRoom;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -26,7 +22,8 @@ import java.util.List;
 public class RMIClientConnection extends ClientConnection implements ServerToClientInterface, ClientToServerInterface, Remote {
     private ServerToClientInterface client;
 
-    public RMIClientConnection(ServerToClientInterface client) {
+    public RMIClientConnection(ArrayList<GameRoom> gameRooms, ServerToClientInterface client) {
+        super(gameRooms);
         this.client = client;
         try {
             UnicastRemoteObject.exportObject(this, 0);
@@ -36,23 +33,8 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void loginPlayer(String name) throws LoginException, NetworkException, RemoteException {
-        getController().loginPlayer(name);
-    }
-
-    @Override
-    public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException {
-        getController().joinFirstAvailableRoom();
-    }
-
-    @Override
-    public void createAndJoinRoom() throws NetworkException, RemoteException {
-        getController().createAndJoinRoom();
-    }
-
-    @Override
-    public ArrayList<Player> getPlayers() throws RemoteException, NetworkException, GameNotStartedException {
-        return null;
+    public void onGameStateChange(GameState gameState) throws RemoteException {
+        client.onGameStateChange(gameState);
     }
 
     @Override
@@ -61,12 +43,7 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void setConfiguration(Game game) {
-
-    }
-
-    @Override
-    public PersonalBonusTile choosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
-        return client.choosePersonalBonusTile(personalBonusTiles);
+    public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
+        client.askToChoosePersonalBonusTile(personalBonusTiles);
     }
 }
