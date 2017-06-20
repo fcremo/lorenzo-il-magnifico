@@ -1,6 +1,7 @@
 package ui;
 
 import gamecontroller.GameEventsInterface;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface UIEventsInterface extends GameEventsInterface {
     void showWaitingForGameToStart();
 
     void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles);
+
+    void showChooseLeaderCard(List<LeaderCard> leaderCards);
 
     void onNetworkError();
 

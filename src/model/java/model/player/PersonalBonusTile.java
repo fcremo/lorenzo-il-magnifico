@@ -47,7 +47,7 @@ public class PersonalBonusTile implements Serializable {
 
     @Override
     public String toString() {
-        return  "productionObtainedResourceSet=" + productionObtainedResourceSet +
-                ", harvestObtainedResourceSet=" + harvestObtainedResourceSet;
+        return  "Production: " + productionObtainedResourceSet +
+                "\n\tHarvest: " + harvestObtainedResourceSet;
     }
 }

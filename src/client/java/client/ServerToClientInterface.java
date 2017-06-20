@@ -1,6 +1,7 @@
 package client;
 
 import gamecontroller.GameEventsInterface;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 
 import java.rmi.Remote;
@@ -14,4 +15,6 @@ public interface ServerToClientInterface extends GameEventsInterface, Remote {
     void pingClient() throws RemoteException;
 
     void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException;
+
+    void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException;
 }

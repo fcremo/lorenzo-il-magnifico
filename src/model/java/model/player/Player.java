@@ -26,15 +26,15 @@ public class Player {
     /**
      * The available (not already played) leader cards
      */
-    private ArrayList<LeaderCard> availableLeaderCards;
+    private ArrayList<LeaderCard> availableLeaderCards = new ArrayList<>();
     /**
      * The played leader cards
      */
-    private ArrayList<LeaderCard> playedLeaderCards;
-    private ArrayList<DevelopmentCard> territories;
-    private ArrayList<DevelopmentCard> ventures;
-    private ArrayList<DevelopmentCard> buildings;
-    private ArrayList<DevelopmentCard> characters;
+    private ArrayList<LeaderCard> playedLeaderCards = new ArrayList<>();
+    private ArrayList<DevelopmentCard> territories = new ArrayList<>();
+    private ArrayList<DevelopmentCard> ventures = new ArrayList<>();
+    private ArrayList<DevelopmentCard> buildings = new ArrayList<>();
+    private ArrayList<DevelopmentCard> characters = new ArrayList<>();
     /**
      * The available (not placed in this turn) family members
      */
@@ -47,7 +47,7 @@ public class Player {
     /**
      * The excommunications
      */
-    private ArrayList<Excommunication> excommunications;
+    private ArrayList<Excommunication> excommunications = new ArrayList<>();
 
     public Player(String username) {
         this.username = username;

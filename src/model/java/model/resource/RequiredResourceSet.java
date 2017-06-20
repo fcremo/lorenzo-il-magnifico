@@ -1,8 +1,9 @@
 package model.resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class RequiredResourceSet {
+public class RequiredResourceSet implements Serializable {
     private HashMap<ResourceType, Integer> requiredResources = new HashMap<>();
 
     public RequiredResourceSet(HashMap<ResourceType, Integer> requiredResources) {
@@ -23,6 +24,21 @@ public class RequiredResourceSet {
 
     public void setResourceRequirement(ResourceType resourceType, int requirement){
         requiredResources.put(resourceType, requirement);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder printable = new StringBuilder();
+        for (ResourceType resource : requiredResources.keySet()) {
+            printable.append(requiredResources.get(resource).toString())
+                    .append(" ")
+                    .append(resource.toString())
+                    .append(", ");
+        }
+        if (printable.lastIndexOf(",") != -1){
+            printable.deleteCharAt(printable.lastIndexOf(","));
+        }
+        return printable.toString();
     }
 
     @Override

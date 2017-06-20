@@ -15,8 +15,8 @@ public class ChooseBonusTileContext extends Context {
     public ChooseBonusTileContext(Callback callback, List<PersonalBonusTile> personalBonusTiles) {
         this.callback = callback;
         this.personalBonusTiles = personalBonusTiles;
-        this.addCommand("show-bonus-tiles", this::showBonusTiles, "Show available bonus tiles");
-        this.addCommand("choose-bonus-tile", this::chooseBonusTile, "Choose a bonus tile");
+        this.addCommand("show", this::showBonusTiles, "Show available bonus tiles");
+        this.addCommand("choose", this::chooseBonusTile, "Choose a bonus tile");
         System.out.println("Choose a personal bonus tile");
         this.printBonusTiles();
     }
@@ -40,9 +40,7 @@ public class ChooseBonusTileContext extends Context {
         }
         catch (NumberFormatException e) {
             throw new InvalidCommandException();
-        } catch (NetworkException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
+        } catch (NetworkException | RemoteException e) {
             e.printStackTrace();
         }
     }

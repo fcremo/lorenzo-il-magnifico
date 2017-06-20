@@ -3,13 +3,14 @@ package model.card;
 import model.card.effects.EffectsContainer;
 import model.resource.RequiredResourceSet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The base class representing a leader or development card
  */
-public class Card {
+public class Card implements Serializable {
     /**
      * The unique id of the card
      */
@@ -72,5 +73,27 @@ public class Card {
 
     public void setEffects(EffectsContainer effects) {
         this.effects = effects;
+    }
+
+    @Override
+    public boolean equals(Object card) {
+        if (this == card) return true;
+        if (!(card instanceof Card)) return false;
+
+        Card otherCard = (Card) card;
+
+        return id.equals(otherCard.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return name  +
+                "\n requirements:" + requiredResourceSet +
+                "\n effects:" + effects;
     }
 }

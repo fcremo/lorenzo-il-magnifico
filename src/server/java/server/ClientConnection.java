@@ -4,9 +4,12 @@ import client.ServerToClientInterface;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
-import model.player.Player;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -100,6 +103,11 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     @Override
     public void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException {
         room.getServerGameController().setPersonalBonusTile(player, personalBonusTile);
+    }
+
+    @Override
+    public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
+        room.getServerGameController().addLeaderCard(player, leaderCard);
     }
 
     private boolean isThisPlayerTurn(){

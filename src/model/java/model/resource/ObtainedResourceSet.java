@@ -1,11 +1,12 @@
 package model.resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * This class represents an obtained/obtainable set of resources
  */
-public class ObtainedResourceSet {
+public class ObtainedResourceSet implements Serializable {
     /**
      * The set of static resources
      */
@@ -65,6 +66,25 @@ public class ObtainedResourceSet {
             newResourceSet.resources.put(resource, currentQty + qty);
         }
         return newResourceSet;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder printable = new StringBuilder();
+        for (ObtainableResource resource : resources.keySet()) {
+            printable.append(resources.get(resource).toString())
+                    .append(" ")
+                    .append(resource.toString())
+                    .append(", ");
+        }
+        for (RequiredResourceSet required : resourceMultipliers.keySet()) {
+            printable.append(resourceMultipliers.get(required).toString())
+                    .append(" --> ")
+                    .append(required.toString())
+                    .append(", ");
+        }
+        printable.deleteCharAt(printable.lastIndexOf(","));
+        return printable.toString();
     }
 
     @Override

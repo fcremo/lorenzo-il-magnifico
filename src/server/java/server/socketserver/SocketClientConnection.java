@@ -1,6 +1,7 @@
 package server.socketserver;
 
 import gamecontroller.GameState;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import server.ClientConnection;
 import server.GameRoom;
@@ -51,6 +52,11 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
+
+    }
+
+    @Override
+    public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
 
     }
 }

@@ -3,7 +3,10 @@ package server;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 
 import java.rmi.Remote;
@@ -45,4 +48,12 @@ public interface ClientToServerInterface extends Remote {
      * @throws RemoteException
      */
     void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException;
+
+    /**
+     * Chooses a leader card
+     * @param leaderCard
+     * @throws NetworkException
+     * @throws RemoteException
+     */
+    void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
 }

@@ -8,11 +8,15 @@ import client.socketclient.SocketClient;
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
 import gamecontroller.GameState;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import server.ClientToServerInterface;
 import ui.UIEventsInterface;
 import ui.cli.contexts.ChooseBonusTileContext;
+import ui.cli.contexts.ChooseLeaderCardContext;
 import ui.cli.contexts.LoginContext;
 import ui.cli.contexts.NetworkSettingsContext;
 
@@ -20,7 +24,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback, LoginContext.Callback,
-                                            ChooseBonusTileContext.Callback {
+                                            ChooseBonusTileContext.Callback, ChooseLeaderCardContext.Callback {
     private UIEventsInterface ui;
 
     private GameController gameController;
@@ -81,6 +85,10 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         ui.showChoosePersonalBonusTile(personalBonusTiles);
     }
 
+    public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
+        ui.showChooseLeaderCard(leaderCards);
+    }
+
     @Override
     public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException {
         try {
@@ -88,6 +96,11 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         } catch (PersonalBonusTileNotAvailableException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
+        clientConnection.chooseLeaderCard(leaderCard);
     }
 
     @Override

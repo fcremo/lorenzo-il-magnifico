@@ -4,7 +4,10 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameEventsInterface;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import protocol.SocketProtocol;
 import server.ClientToServerInterface;
@@ -64,6 +67,11 @@ public class SocketClient implements ClientToServerInterface {
 
     @Override
     public void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException {
+
+    }
+
+    @Override
+    public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
 
     }
 }

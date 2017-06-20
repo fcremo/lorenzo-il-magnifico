@@ -2,6 +2,7 @@ package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * relevant effects from a card.
  * There's also a method for retrieving instances of a specific effect class, should it be needed.
  */
-public class EffectsContainer {
+public class EffectsContainer implements Serializable {
     private ArrayList<EffectInterface> effects = new ArrayList<>();
 
     /**

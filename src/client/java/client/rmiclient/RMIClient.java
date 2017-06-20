@@ -6,7 +6,10 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameState;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import server.ClientToServerInterface;
 import server.rmiserver.ServerInterface;
@@ -67,9 +70,14 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         connection.choosePersonalBonusTile(personalBonusTile);
     }
 
+    @Override
+    public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
+        connection.chooseLeaderCard(leaderCard);
+    }
+
     /* ----------------------------------------------------------
-     * SERVER TO CLIENT INTERFACE
-     * ---------------------------------------------------------- */
+         * SERVER TO CLIENT INTERFACE
+         * ---------------------------------------------------------- */
     @Override
     public void pingClient() throws RemoteException {
         System.out.println("Client pinged by the server");
@@ -78,6 +86,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
         clientController.showChoosePersonalBonusTile(personalBonusTiles);
+    }
+
+    @Override
+    public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
+        clientController.showChooseLeaderCard(leaderCards);
     }
 
     @Override

@@ -2,6 +2,7 @@ package server.rmiserver;
 
 import client.ServerToClientInterface;
 import gamecontroller.GameState;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import server.ClientConnection;
 import server.ClientToServerInterface;
@@ -45,5 +46,10 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
         client.askToChoosePersonalBonusTile(personalBonusTiles);
+    }
+
+    @Override
+    public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
+        client.askToChooseLeaderCard(leaderCards);
     }
 }

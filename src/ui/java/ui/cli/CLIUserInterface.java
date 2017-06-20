@@ -1,12 +1,16 @@
 package ui.cli;
 
 import client.ClientController;
+import client.ConnectionMethod;
+import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import gamecontroller.GameState;
+import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import ui.UIEventsInterface;
 import ui.cli.contexts.*;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,6 +33,20 @@ public class CLIUserInterface implements UIEventsInterface {
         controller = new ClientController(this);
 
         currentContext = new NetworkSettingsContext(controller);
+
+        keyboardHandler = new KeyboardHandler();
+        keyboardHandler.run();
+    }
+
+    public void start(String username) {
+        controller = new ClientController(this);
+
+        try {
+            controller.connect(ConnectionMethod.RMI, "localhost", 1099);
+            controller.login(username);
+        } catch (NetworkException | RemoteException | LoginException e) {
+            e.printStackTrace();
+        }
 
         keyboardHandler = new KeyboardHandler();
         keyboardHandler.run();
@@ -58,6 +76,11 @@ public class CLIUserInterface implements UIEventsInterface {
     @Override
     public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
         currentContext = new ChooseBonusTileContext(controller, personalBonusTiles);
+    }
+
+    @Override
+    public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
+        currentContext = new ChooseLeaderCardContext(controller, leaderCards);
     }
 
     private class KeyboardHandler implements Runnable {
