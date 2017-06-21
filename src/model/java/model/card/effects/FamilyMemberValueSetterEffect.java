@@ -23,4 +23,9 @@ public class FamilyMemberValueSetterEffect implements EffectInterface {
             return currentValue;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Your " + familyMemberColor + " Family Member has a value of " + value + ", regardless of its related die.";
+    }
 }

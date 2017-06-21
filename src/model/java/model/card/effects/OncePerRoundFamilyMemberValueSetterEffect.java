@@ -1,16 +1,16 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.FamilyMemberValueSetterEffectInterface;
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.player.FamilyMemberColor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This effect allows the player to set the value of one family member to a certain value once per turn
+ * This effect allows the player to set the value of one family member to a certain value once per round
  */
-public class OncePerTurnFamilyMemberValueSetterEffect implements OncePerTurnEffectInterface, FamilyMemberValueSetterEffectInterface {
+public class OncePerRoundFamilyMemberValueSetterEffect implements OncePerRoundEffectInterface, FamilyMemberValueSetterEffectInterface {
     private int lastActivatedAt = 0;
 
     private FamilyMemberColor familyMemberColor;
@@ -18,7 +18,7 @@ public class OncePerTurnFamilyMemberValueSetterEffect implements OncePerTurnEffe
     private ArrayList<FamilyMemberColor> allowedFamilyMemberColor;
     private int value;
 
-    public OncePerTurnFamilyMemberValueSetterEffect(ArrayList<FamilyMemberColor> allowedFamilyMemberColor, int value) {
+    public OncePerRoundFamilyMemberValueSetterEffect(ArrayList<FamilyMemberColor> allowedFamilyMemberColor, int value) {
         this.allowedFamilyMemberColor = allowedFamilyMemberColor;
         this.value = value;
     }
@@ -55,5 +55,10 @@ public class OncePerTurnFamilyMemberValueSetterEffect implements OncePerTurnEffe
     @Override
     public void markActivated(int currentTurn) {
         lastActivatedAt = currentTurn;
+    }
+
+    @Override
+    public String toString() {
+        return "Once per round one of the " + allowedFamilyMemberColor.toString() + " Family Members has a value of " + value + ", regardless of its related die.";
     }
 }

@@ -17,4 +17,9 @@ public class CopyOtherLeaderAbilityEffect implements EffectInterface {
     public void setClonedEffects(ArrayList<EffectInterface> clonedEffects) {
         this.clonedEffects = clonedEffects;
     }
+
+    @Override
+    public String toString() {
+        return "Copy the ability of another Leader Card already played by another player. Once you decide the ability to copy, it can’t be changed.";
+    }
 }

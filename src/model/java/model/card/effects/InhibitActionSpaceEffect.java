@@ -28,4 +28,9 @@ public class InhibitActionSpaceEffect implements EffectInterface {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "You can’t place your Family Members in the " + actionSpaceType + " action spaces.";
+    }
 }

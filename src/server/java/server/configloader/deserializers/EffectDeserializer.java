@@ -133,21 +133,21 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 effect = new FamilyMemberValueSetterEffect(familyMemberColor, value);
                 break;
             }
-            case "OncePerTurnAction": {
-                ArrayList<ActionType> actionTypes = context.deserialize(jsonEffect.getAsJsonArray("actionType"), new TypeToken<ArrayList<ActionType>>(){}.getType());
+            case "OncePerRoundAction": {
+                ActionType actionType = context.deserialize(jsonEffect.get("actionType"), ActionType.class);
                 int value = jsonEffect.getAsJsonPrimitive("value").getAsInt();
-                effect = new OncePerTurnActionEffect(actionTypes, value);
+                effect = new OncePerRoundActionEffect(actionType, value);
                 break;
             }
-            case "OncePerTurnBonusResources": {
+            case "OncePerRoundBonusResources": {
                 ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainedResourceSet.class);
-                effect = new OncePerTurnBonusResourcesEffect(obtainedResourceSet);
+                effect = new OncePerRoundBonusResourcesEffect(obtainedResourceSet);
                 break;
             }
-            case "OncePerTurnFamilyMemberValueSetter": {
+            case "OncePerRoundFamilyMemberValueSetter": {
                 ArrayList<FamilyMemberColor> allowedFamilyMemberColors = context.deserialize(jsonEffect.getAsJsonArray("allowedFamilyMemberColor"), new TypeToken<ArrayList<FamilyMemberColor>>(){}.getType());
                 int value = jsonEffect.get("value").getAsInt();
-                effect = new OncePerTurnFamilyMemberValueSetterEffect(allowedFamilyMemberColors, value);
+                effect = new OncePerRoundFamilyMemberValueSetterEffect(allowedFamilyMemberColors, value);
                 break;
             }
             case "SkipMilitaryPointsRequirement": {

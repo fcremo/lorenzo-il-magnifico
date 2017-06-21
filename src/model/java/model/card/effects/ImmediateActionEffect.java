@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * without placing a family member
  */
 public class ImmediateActionEffect implements EffectInterface {
-    private ArrayList<ActionType> actionTypes;
-    private int actionValue;
+    protected ArrayList<ActionType> actionTypes;
+    protected int actionValue;
 
     public ImmediateActionEffect(ArrayList<ActionType> actionTypes, int actionValue) {
         this.actionTypes = actionTypes;
@@ -24,7 +24,7 @@ public class ImmediateActionEffect implements EffectInterface {
      *
      * @return the types of actions that the player can perform
      */
-    public ArrayList<ActionType> getActions(){
+    public ArrayList<ActionType> getActions() {
         return actionTypes;
     }
 
@@ -33,5 +33,19 @@ public class ImmediateActionEffect implements EffectInterface {
      */
     public int getActionValue() {
         return actionValue;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder effects = new StringBuilder("Perform a ");
+        for (ActionType action : actionTypes) {
+            effects.append(action)
+                    .append(" or ");
+        }
+        effects.delete(effects.lastIndexOf(" or "), effects.lastIndexOf(" or ") + 4);
+        effects.append(" with value ")
+                .append(actionValue)
+                .append(" without placing a Family Member.");
+        return effects.toString();
     }
 }

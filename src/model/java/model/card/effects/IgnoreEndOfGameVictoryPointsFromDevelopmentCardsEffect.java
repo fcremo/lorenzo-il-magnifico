@@ -22,5 +22,10 @@ public class IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect implements E
     public boolean ignoreVictoryPointsFromDevelopmentCard(Class<? extends DevelopmentCard> developmentCardType){
         return developmentCardType == this.developmentCardType;
     }
+
+    @Override
+    public String toString() {
+        return "At the end of the game, you don’t score points for any of your " + developmentCardType + ".";
+    }
 }
 

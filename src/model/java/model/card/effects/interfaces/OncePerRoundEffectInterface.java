@@ -1,9 +1,9 @@
 package model.card.effects.interfaces;
 
 /**
- * This is the base interface for effects that can be activated once per turn
+ * This is the base interface for effects that can be activated once per round
  */
-public interface OncePerTurnEffectInterface extends EffectInterface {
+public interface OncePerRoundEffectInterface extends EffectInterface {
     /**
      * Checks if the effect has not been activated during the current turn
      * @param currentTurn

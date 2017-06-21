@@ -68,6 +68,10 @@ public class ObtainedResourceSet implements Serializable {
         return newResourceSet;
     }
 
+    public boolean isEmpty() {
+        return (resources.isEmpty() && resourceMultipliers.isEmpty());
+    }
+
     @Override
     public String toString() {
         StringBuilder printable = new StringBuilder();
@@ -83,7 +87,9 @@ public class ObtainedResourceSet implements Serializable {
                     .append(required.toString())
                     .append(", ");
         }
-        printable.deleteCharAt(printable.lastIndexOf(","));
+        if (printable.lastIndexOf(", ") != -1) {
+            printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
+        }
         return printable.toString();
     }
 
