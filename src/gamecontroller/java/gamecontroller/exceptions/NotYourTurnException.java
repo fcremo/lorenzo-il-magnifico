@@ -5,6 +5,7 @@ package gamecontroller.exceptions;
  */
 public class NotYourTurnException extends ActionNotAllowedException {
     public NotYourTurnException() {
+        // Constructor with no message
     }
 
     public NotYourTurnException(String s) {

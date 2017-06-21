@@ -3,19 +3,20 @@ package model.card.effects;
 import model.card.effects.interfaces.EffectInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This effect allows the player to copy the ability of another Leader Card already played by another player
  */
 public class CopyOtherLeaderAbilityEffect implements EffectInterface {
-    ArrayList<EffectInterface> clonedEffects = new ArrayList<>();
+    private ArrayList<EffectInterface> clonedEffects = new ArrayList<>();
 
-    public ArrayList<EffectInterface> getClonedEffects() {
+    public List<EffectInterface> getClonedEffects() {
         return clonedEffects;
     }
 
-    public void setClonedEffects(ArrayList<EffectInterface> clonedEffects) {
-        this.clonedEffects = clonedEffects;
+    public void setClonedEffects(List<EffectInterface> clonedEffects) {
+        this.clonedEffects = new ArrayList<>(clonedEffects);
     }
 
     @Override

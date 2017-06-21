@@ -11,6 +11,7 @@ import model.player.Player;
 import model.resource.ObtainedResourceSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the root object representing the state of the game
@@ -111,7 +112,8 @@ public class Game {
      * @param player the player that's going to be first
      */
     public void setFirstPlayer(Player player) {
-        // TODO: 4/11/17
+        this.players.remove(player);
+        this.players.add(0, player);
     }
 
     public void addPlayer(Player player) throws IllegalStateException {
@@ -120,11 +122,11 @@ public class Game {
         this.players.add(player);
     }
 
-    public ArrayList<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<Player> players) {
+    public void setPlayers(List<Player> players) {
         this.players.clear();
         this.players.addAll(players);
     }
@@ -230,67 +232,67 @@ public class Game {
         this.currentPlayer = currentPlayer;
     }
 
-    public ArrayList<TerritoryCard> getAvailableTerritoryCards() {
+    public List<TerritoryCard> getAvailableTerritoryCards() {
         return availableTerritoryCards;
     }
 
-    public void setAvailableTerritoryCards(ArrayList<TerritoryCard> availableTerritoryCards) {
-        this.availableTerritoryCards = availableTerritoryCards;
+    public void setAvailableTerritoryCards(List<TerritoryCard> availableTerritoryCards) {
+        this.availableTerritoryCards = new ArrayList<>(availableTerritoryCards);
     }
 
-    public ArrayList<BuildingCard> getAvailableBuildingCards() {
+    public List<BuildingCard> getAvailableBuildingCards() {
         return availableBuildingCards;
     }
 
-    public void setAvailableBuildingCards(ArrayList<BuildingCard> availableBuildingCards) {
-        this.availableBuildingCards = availableBuildingCards;
+    public void setAvailableBuildingCards(List<BuildingCard> availableBuildingCards) {
+        this.availableBuildingCards = new ArrayList<>(availableBuildingCards);
     }
 
-    public ArrayList<CharacterCard> getAvailableCharacterCards() {
+    public List<CharacterCard> getAvailableCharacterCards() {
         return availableCharacterCards;
     }
 
-    public void setAvailableCharacterCards(ArrayList<CharacterCard> availableCharacterCards) {
-        this.availableCharacterCards = availableCharacterCards;
+    public void setAvailableCharacterCards(List<CharacterCard> availableCharacterCards) {
+        this.availableCharacterCards = new ArrayList<>(availableCharacterCards);
     }
 
-    public ArrayList<VentureCard> getAvailableVentureCards() {
+    public List<VentureCard> getAvailableVentureCards() {
         return availableVentureCards;
     }
 
-    public void setAvailableVentureCards(ArrayList<VentureCard> availableVentureCards) {
-        this.availableVentureCards = availableVentureCards;
+    public void setAvailableVentureCards(List<VentureCard> availableVentureCards) {
+        this.availableVentureCards = new ArrayList<>(availableVentureCards);
     }
 
-    public ArrayList<Excommunication> getAvailableExcommunications() {
+    public List<Excommunication> getAvailableExcommunications() {
         return availableExcommunications;
     }
 
-    public void setAvailableExcommunications(ArrayList<Excommunication> availableExcommunications) {
-        this.availableExcommunications = availableExcommunications;
+    public void setAvailableExcommunications(List<Excommunication> availableExcommunications) {
+        this.availableExcommunications = new ArrayList<>(availableExcommunications);
     }
 
-    public ArrayList<PersonalBonusTile> getAvailablePersonalBonusTiles() {
+    public List<PersonalBonusTile> getAvailablePersonalBonusTiles() {
         return availablePersonalBonusTiles;
     }
 
-    public void setAvailablePersonalBonusTiles(ArrayList<PersonalBonusTile> availablePersonalBonusTiles) {
-        this.availablePersonalBonusTiles = availablePersonalBonusTiles;
+    public void setAvailablePersonalBonusTiles(List<PersonalBonusTile> availablePersonalBonusTiles) {
+        this.availablePersonalBonusTiles = new ArrayList<>(availablePersonalBonusTiles);
     }
 
-    public ArrayList<LeaderCard> getAvailableLeaderCards() {
+    public List<LeaderCard> getAvailableLeaderCards() {
         return availableLeaderCards;
     }
 
-    public void setAvailableLeaderCards(ArrayList<LeaderCard> availableLeaderCards) {
-        this.availableLeaderCards = availableLeaderCards;
+    public void setAvailableLeaderCards(List<LeaderCard> availableLeaderCards) {
+        this.availableLeaderCards = new ArrayList<>(availableLeaderCards);
     }
 
-    public ArrayList<ObtainedResourceSet> getCouncilPrivileges() {
+    public List<ObtainedResourceSet> getCouncilPrivileges() {
         return councilPrivileges;
     }
 
-    public void setCouncilPrivileges(ArrayList<ObtainedResourceSet> councilPrivileges) {
-        this.councilPrivileges = councilPrivileges;
+    public void setCouncilPrivileges(List<ObtainedResourceSet> councilPrivileges) {
+        this.councilPrivileges = new ArrayList<>(councilPrivileges);
     }
 }

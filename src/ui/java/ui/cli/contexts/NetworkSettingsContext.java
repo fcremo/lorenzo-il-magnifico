@@ -72,6 +72,7 @@ public class NetworkSettingsContext extends Context {
         System.out.println(String.format("Current settings: %s:%d (%s)", hostname, port, connectionMethod.name()));
     }
 
+    @SuppressWarnings("squid:S1166") // Silence "Exception handlers should preserve the original exceptions" warning
     private void connect(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 

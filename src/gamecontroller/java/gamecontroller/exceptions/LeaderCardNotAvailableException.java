@@ -5,6 +5,7 @@ package gamecontroller.exceptions;
  */
 public class LeaderCardNotAvailableException extends ActionNotAllowedException {
     public LeaderCardNotAvailableException() {
+        // Constructor with no message
     }
 
     public LeaderCardNotAvailableException(String s) {

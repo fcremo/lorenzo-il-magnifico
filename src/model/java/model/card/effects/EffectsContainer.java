@@ -4,6 +4,7 @@ import model.card.effects.interfaces.EffectInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides the data structure and accessor methods for storing effects.
@@ -36,7 +37,7 @@ public class EffectsContainer implements Serializable {
      * @param <T>
      * @return
      */
-    public <T extends EffectInterface> ArrayList<T> getEffectsImplementing(Class<T> effectInterface) {
+    public <T extends EffectInterface> List<T> getEffectsImplementing(Class<T> effectInterface) {
         ArrayList<T> returnList = new ArrayList<>();
         for (EffectInterface effect : effects) {
             if (effectInterface.isAssignableFrom(effect.getClass())) {
@@ -57,7 +58,7 @@ public class EffectsContainer implements Serializable {
      * @param <T>         the class of the effects you want to retrieve
      * @return a list of effects that are instances of the class T (effectClass)
      */
-    public <T extends EffectInterface> ArrayList<T> getInstancesOf(Class<T> effectClass) {
+    public <T extends EffectInterface> List<T> getInstancesOf(Class<T> effectClass) {
         ArrayList<T> returnList = new ArrayList<>();
         for (EffectInterface elem : effects) {
             if (elem.getClass() == effectClass) {

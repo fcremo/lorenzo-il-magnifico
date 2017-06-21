@@ -4,7 +4,7 @@ import model.card.development.DevelopmentCard;
 import model.card.effects.interfaces.EffectInterface;
 import model.resource.RequiredResourceSet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This effect modifies the set of resources necessary to take a development card
@@ -25,7 +25,7 @@ public class DevelopmentCardRequiredResourceSetModifierEffect implements EffectI
      * @param card                the card being taken
      * @return
      */
-    public ArrayList<RequiredResourceSet> modifyResources(ArrayList<RequiredResourceSet> currentResourceSets, DevelopmentCard card) {
+    public List<RequiredResourceSet> modifyResources(List<RequiredResourceSet> currentResourceSets, DevelopmentCard card) {
         // TODO
         return null;
     }

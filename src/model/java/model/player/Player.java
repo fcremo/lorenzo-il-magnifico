@@ -11,6 +11,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * This class represents the player state
@@ -87,52 +88,52 @@ public class Player {
         this.username = username;
     }
 
-    public ArrayList<LeaderCard> getAvailableLeaderCards() {
+    public List<LeaderCard> getAvailableLeaderCards() {
         return availableLeaderCards;
     }
 
-    public void setAvailableLeaderCards(ArrayList<LeaderCard> availableLeaderCards) {
-        this.availableLeaderCards = availableLeaderCards;
+    public void setAvailableLeaderCards(List<LeaderCard> availableLeaderCards) {
+        this.availableLeaderCards = new ArrayList<>(availableLeaderCards);
     }
 
-    public ArrayList<LeaderCard> getPlayedLeaderCards() {
+    public List<LeaderCard> getPlayedLeaderCards() {
         return playedLeaderCards;
     }
 
-    public void setPlayedLeaderCards(ArrayList<LeaderCard> playedLeaderCards) {
-        this.playedLeaderCards = playedLeaderCards;
+    public void setPlayedLeaderCards(List<LeaderCard> playedLeaderCards) {
+        this.playedLeaderCards = new ArrayList<>(playedLeaderCards);
     }
 
-    public ArrayList<DevelopmentCard> getTerritories() {
+    public List<DevelopmentCard> getTerritories() {
         return territories;
     }
 
-    public void setTerritories(ArrayList<DevelopmentCard> territories) {
-        this.territories = territories;
+    public void setTerritories(List<DevelopmentCard> territories) {
+        this.territories = new ArrayList<>(territories);
     }
 
-    public ArrayList<DevelopmentCard> getVentures() {
+    public List<DevelopmentCard> getVentures() {
         return ventures;
     }
 
-    public void setVentures(ArrayList<DevelopmentCard> ventures) {
-        this.ventures = ventures;
+    public void setVentures(List<DevelopmentCard> ventures) {
+        this.ventures = new ArrayList<>(ventures);
     }
 
-    public ArrayList<DevelopmentCard> getBuildings() {
+    public List<DevelopmentCard> getBuildings() {
         return buildings;
     }
 
-    public void setBuildings(ArrayList<DevelopmentCard> buildings) {
-        this.buildings = buildings;
+    public void setBuildings(List<DevelopmentCard> buildings) {
+        this.buildings = new ArrayList<>(buildings);
     }
 
-    public ArrayList<DevelopmentCard> getCharacters() {
+    public List<DevelopmentCard> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(ArrayList<DevelopmentCard> characters) {
-        this.characters = characters;
+    public void setCharacters(List<DevelopmentCard> characters) {
+        this.characters = new ArrayList<>(characters);
     }
 
     public PersonalBonusTile getBonusTile() {
@@ -143,12 +144,12 @@ public class Player {
         this.bonusTile = bonusTile;
     }
 
-    public ArrayList<Excommunication> getExcommunications() {
+    public List<Excommunication> getExcommunications() {
         return excommunications;
     }
 
-    public void setExcommunications(ArrayList<Excommunication> excommunications) {
-        this.excommunications = excommunications;
+    public void setExcommunications(List<Excommunication> excommunications) {
+        this.excommunications = new ArrayList<>(excommunications);
     }
 
     public int getSpentServants() {

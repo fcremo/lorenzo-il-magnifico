@@ -168,6 +168,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             case "InhibitActionSpace": {
                 String actionSpaceType = jsonEffect.get("actionSpace").getAsString();
                 Class<? extends ActionSpace> actionSpaceClass;
+                // TODO: implement other action space types
                 switch (actionSpaceType) {
                     case "Market":
                         actionSpaceClass = MarketActionSpace.class;

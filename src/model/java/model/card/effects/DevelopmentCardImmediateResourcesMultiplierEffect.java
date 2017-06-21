@@ -5,6 +5,7 @@ import model.resource.ObtainableResource;
 import model.resource.ObtainedResourceSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This effect multiplies the resources obtained from an immediate effect of a development card
@@ -18,7 +19,7 @@ public class DevelopmentCardImmediateResourcesMultiplierEffect implements Effect
         this.resourceType = resourceType;
     }
 
-    public ArrayList<ObtainedResourceSet> multiplyObtainedResourceSet(ArrayList<ObtainedResourceSet> currentObtainedResourceSets) {
+    public List<ObtainedResourceSet> multiplyObtainedResourceSet(List<ObtainedResourceSet> currentObtainedResourceSets) {
         return null;
         // TODO
     }

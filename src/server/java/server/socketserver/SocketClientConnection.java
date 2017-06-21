@@ -29,9 +29,9 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     }
 
     @Override
+    @SuppressWarnings("squid:S2189") // Disable infinite loop warning
     public void run() {
-        // TODO: 5/19/17 find a way to disable the infinite loop inspection
-        while ((true)) {
+        while (true) {
             try {
                 String in = input.readLine();
 

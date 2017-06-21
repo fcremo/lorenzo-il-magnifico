@@ -18,8 +18,8 @@ public class OncePerRoundFamilyMemberValueSetterEffect implements OncePerRoundEf
     private ArrayList<FamilyMemberColor> allowedFamilyMemberColor;
     private int value;
 
-    public OncePerRoundFamilyMemberValueSetterEffect(ArrayList<FamilyMemberColor> allowedFamilyMemberColor, int value) {
-        this.allowedFamilyMemberColor = allowedFamilyMemberColor;
+    public OncePerRoundFamilyMemberValueSetterEffect(List<FamilyMemberColor> allowedFamilyMemberColor, int value) {
+        this.allowedFamilyMemberColor = new ArrayList<>(allowedFamilyMemberColor);
         this.value = value;
     }
 

@@ -7,8 +7,6 @@ import ui.cli.exceptions.InvalidCommandException;
 import java.rmi.RemoteException;
 
 public class LoginContext extends Context {
-    private String username;
-
     private Callback callback;
 
     public LoginContext(Callback callback) {
@@ -21,7 +19,7 @@ public class LoginContext extends Context {
     private void login(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
         if (params.length != 1) throw new InvalidCommandException("You have to specify a username");
 
-        username = params[0];
+        String username = params[0];
         try {
             callback.login(username);
         }

@@ -15,6 +15,7 @@ import model.resource.ObtainedResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
@@ -87,7 +88,7 @@ public class GameController {
     public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
     }
 
-    public void chooseCouncilPrivileges(Player player, ArrayList<ObtainedResourceSet> councilPrivileges) {
+    public void chooseCouncilPrivileges(Player player, List<ObtainedResourceSet> councilPrivileges) {
     }
 
     public void playLeaderCard(Player player, LeaderCard leaderCard) {

@@ -24,6 +24,7 @@ public abstract class Context {
         this.helps.put(commandName, helpString);
     }
 
+    @SuppressWarnings("squid:S1166") // Suppress "rethrow this exception" warnings
     public void handleInput(String input) {
         // Ignore empty strings
         if (input.trim().equals("")) return;
@@ -37,7 +38,7 @@ public abstract class Context {
                 commands.get(command).execute(arguments);
             }
             catch (InvalidCommandException e) {
-                System.out.printf("Invalid command (%s).", e.getMessage());
+                System.out.printf("Invalid command (%s).%n", e.getMessage());
                 System.out.println("Try \"help\"");
             }
             catch (ActionNotAllowedException e) {
@@ -46,6 +47,7 @@ public abstract class Context {
             }
             catch (RemoteException | NetworkException e) {
                 e.printStackTrace();
+                // TODO: decide how to handle network exceptions
             }
         }
         else {

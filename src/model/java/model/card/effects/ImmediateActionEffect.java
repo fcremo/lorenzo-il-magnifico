@@ -4,6 +4,7 @@ import model.action.ActionType;
 import model.card.effects.interfaces.EffectInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This effect allows the player to perform an extra action when taking a card,
@@ -13,8 +14,8 @@ public class ImmediateActionEffect implements EffectInterface {
     protected ArrayList<ActionType> actionTypes;
     protected int actionValue;
 
-    public ImmediateActionEffect(ArrayList<ActionType> actionTypes, int actionValue) {
-        this.actionTypes = actionTypes;
+    public ImmediateActionEffect(List<ActionType> actionTypes, int actionValue) {
+        this.actionTypes = new ArrayList<>(actionTypes);
         this.actionValue = actionValue;
     }
 
@@ -24,7 +25,7 @@ public class ImmediateActionEffect implements EffectInterface {
      *
      * @return the types of actions that the player can perform
      */
-    public ArrayList<ActionType> getActions() {
+    public List<ActionType> getActions() {
         return actionTypes;
     }
 

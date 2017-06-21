@@ -5,6 +5,7 @@ package gamecontroller.exceptions;
  */
 public class PersonalBonusTileNotAvailableException extends ActionNotAllowedException {
     public PersonalBonusTileNotAvailableException() {
+        // constructor without error message
     }
 
     public PersonalBonusTileNotAvailableException(String s) {

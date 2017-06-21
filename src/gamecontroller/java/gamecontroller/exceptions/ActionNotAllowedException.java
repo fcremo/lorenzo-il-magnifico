@@ -5,6 +5,7 @@ package gamecontroller.exceptions;
  */
 public class ActionNotAllowedException extends Exception {
     public ActionNotAllowedException() {
+        // Generic action not allowed exception without a message
     }
 
     public ActionNotAllowedException(String s) {

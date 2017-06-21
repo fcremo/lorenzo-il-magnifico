@@ -168,7 +168,7 @@ public class ServerGameController extends GameController {
             leaderCardsDraft.put(player, playerLeaderCards);
         }
 
-        playersThatHaveToDraft = (List) getGame().getPlayers().clone();
+        playersThatHaveToDraft = new ArrayList<>(getGame().getPlayers());
 
         draftNextLeaderCard();
     }
@@ -239,7 +239,7 @@ public class ServerGameController extends GameController {
             }
 
             // Rotate the available leader cards choices
-            ArrayList<Player> players = getGame().getPlayers();
+            List<Player> players = getGame().getPlayers();
             List<LeaderCard> tmp = null;
             for (Player p : players.stream()
                                    .limit(players.size() - 1)
@@ -256,7 +256,7 @@ public class ServerGameController extends GameController {
             leaderCardsDraft.put(firstPlayer, tmp);
 
             // All the players have to draft again
-            playersThatHaveToDraft = (List) getGame().getPlayers().clone();
+            playersThatHaveToDraft = new ArrayList<>(getGame().getPlayers());
 
             // Ask the players to draft the next leader card
             draftNextLeaderCard();

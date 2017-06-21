@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -174,7 +175,7 @@ public class GameRoom implements GameEventsInterface {
         }
     }
 
-    public ArrayList<ClientConnection> getConnections() {
+    public List<ClientConnection> getConnections() {
         return connections;
     }
 
@@ -187,7 +188,7 @@ public class GameRoom implements GameEventsInterface {
     public void addPlayer(ClientConnection clientConnection) {
         connections.add(clientConnection);
         if (connections.size() >= 2 && roomTimeoutTimer == null) {
-            System.out.println("Starting room " + name + " timeout");
+            System.out.printf("Starting room %s timeout%n", name);
             roomTimeoutTimer = new Thread(new RoomTimerClass());
             roomTimeoutTimer.start();
         }
@@ -207,6 +208,7 @@ public class GameRoom implements GameEventsInterface {
 
     private class RoomTimerClass implements Runnable {
         @Override
+        @SuppressWarnings("squid:S2142") // Suppress "InterruptedException should not be ignored" warning
         public void run() {
             // The time when the timer was started, needed to handle exceptions
             long startTime;

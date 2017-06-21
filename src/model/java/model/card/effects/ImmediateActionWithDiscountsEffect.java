@@ -5,6 +5,7 @@ import model.card.effects.interfaces.EffectInterface;
 import model.resource.RequiredResourceSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This effect allows the player to perform an extra action when taking a card,
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect implements EffectInterface {
     private ArrayList<RequiredResourceSet> discounts;
 
-    public ImmediateActionWithDiscountsEffect(ArrayList<ActionType> actionTypes, int actionValue, ArrayList<RequiredResourceSet> discounts) {
+    public ImmediateActionWithDiscountsEffect(List<ActionType> actionTypes, int actionValue, List<RequiredResourceSet> discounts) {
         super(actionTypes, actionValue);
-        this.discounts = discounts;
+        this.discounts = new ArrayList<>(discounts);
     }
 
     /**
@@ -25,7 +26,7 @@ public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect im
      * @param currentRequiredResourceSets
      * @return the discounted resource set
      */
-    public ArrayList<RequiredResourceSet> modifyRequiredResourceSet(ArrayList<RequiredResourceSet> currentRequiredResourceSets) {
+    public List<RequiredResourceSet> modifyRequiredResourceSet(List<RequiredResourceSet> currentRequiredResourceSets) {
         // TODO
         return null;
     }

@@ -1,9 +1,7 @@
 package model.resource;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents an obtained/obtainable set of resources
@@ -20,15 +18,16 @@ public class ObtainedResourceSet implements Serializable {
     private HashMap<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers = new HashMap<>();
 
     public ObtainedResourceSet() {
+        // empty resource set constructor
     }
 
-    public ObtainedResourceSet(HashMap<ObtainableResource, Integer> resources) {
-        this.resources = resources;
+    public ObtainedResourceSet(Map<ObtainableResource, Integer> resources) {
+        this.resources = new HashMap<>(resources);
     }
 
-    public ObtainedResourceSet(HashMap<ObtainableResource, Integer> resources, HashMap<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers) {
-        this.resources = resources;
-        this.resourceMultipliers = resourceMultipliers;
+    public ObtainedResourceSet(Map<ObtainableResource, Integer> resources, Map<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers) {
+        this.resources = new HashMap<>(resources);
+        this.resourceMultipliers = new HashMap<>(resourceMultipliers);
     }
 
     /**
@@ -78,16 +77,16 @@ public class ObtainedResourceSet implements Serializable {
     @Override
     public String toString() {
         StringBuilder printable = new StringBuilder();
-        for (ObtainableResource resource : resources.keySet()) {
-            printable.append(resources.get(resource).toString())
+        for (Map.Entry<ObtainableResource, Integer> resource : resources.entrySet()) {
+            printable.append(resource.getValue())
                      .append(" ")
-                     .append(resource.toString())
+                     .append(resource.getKey())
                      .append(", ");
         }
-        for (RequiredResourceSet required : resourceMultipliers.keySet()) {
-            printable.append(resourceMultipliers.get(required).toString())
+        for (Map.Entry<RequiredResourceSet, ObtainedResourceSet> required : resourceMultipliers.entrySet()) {
+            printable.append(required.getKey())
                      .append(" --> ")
-                     .append(required.toString())
+                     .append(required.getValue())
                      .append(", ");
         }
         if (printable.lastIndexOf(", ") != -1) {

@@ -48,9 +48,9 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
      * NetworkSettingsContext callback.
      * Establishes a connection to the server
      *
-     * @param connectionMethod
-     * @param hostname
-     * @param port
+     * @param connectionMethod the desired connection method
+     * @param hostname the server hostname
+     * @param port the server port
      * @throws NetworkException
      * @throws RemoteException
      */
@@ -69,15 +69,17 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
      * {@link LoginContext} callback.
      * Logs in the player with the given username
      *
-     * @param username
+     * @param username the username
      * @throws NetworkException
      * @throws LoginException
      * @throws RemoteException
      */
     @Override
+    @SuppressWarnings("squid:S1166") // Suppress "rethrow this exception" warning
     public void login(String username) throws NetworkException, LoginException, RemoteException {
         clientConnection.loginPlayer(username);
 
+        // TODO: maybe handle this not-very-exceptional condition without exceptions
         try {
             clientConnection.joinFirstAvailableRoom();
         }

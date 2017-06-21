@@ -76,9 +76,9 @@ public class CLIUserInterface implements UIEventsInterface {
 
     private class KeyboardHandler implements Runnable {
         @Override
+        @SuppressWarnings("squid:S2189") // Disable infinite loop warning
         public void run() {
-            // TODO: find a way to disable the infinite loop inspection in intellij (is it bugged?)
-            while ((true)) {
+            while (true) {
                 String input = askForString(">");
                 currentContext.handleInput(input);
             }

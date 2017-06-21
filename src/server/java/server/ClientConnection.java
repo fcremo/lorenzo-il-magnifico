@@ -13,6 +13,7 @@ import model.player.Player;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -43,9 +44,9 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     /**
      * The list of rooms. Needed when the player connects for joining (or creating) one
      */
-    private ArrayList<GameRoom> gameRooms;
+    private List<GameRoom> gameRooms;
 
-    public ClientConnection(ArrayList<GameRoom> gameRooms) {
+    public ClientConnection(List<GameRoom> gameRooms) {
         LOGGER.fine("New player connection!");
         this.gameRooms = gameRooms;
     }
@@ -59,7 +60,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      */
     @Override
     public void loginPlayer(String name) throws LoginException, NetworkException, RemoteException {
-        LOGGER.fine("Player " + name + " is logging in");
+        LOGGER.fine(String.format("Player %s is logging in", name));
         username = name;
     }
 
@@ -91,8 +92,8 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      */
     @Override
     public void createAndJoinRoom() throws NetworkException, RemoteException {
-        LOGGER.fine("Player " + username + " is trying to create a room");
-        room = new GameRoom(username + "'s room");
+        LOGGER.fine(String.format("Player %s is trying to create a room", username));
+        room = new GameRoom(String.format("%s's room", username));
         room.addPlayer(this);
         gameRooms.add(room);
     }
