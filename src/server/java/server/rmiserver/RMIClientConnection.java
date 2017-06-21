@@ -44,6 +44,11 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
+    public void abortGame(String errorMessage) throws RemoteException {
+        client.abortGame(errorMessage);
+    }
+
+    @Override
     public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
         client.askToChoosePersonalBonusTile(personalBonusTiles);
     }
@@ -51,5 +56,10 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
         client.askToChooseLeaderCard(leaderCards);
+    }
+
+    @Override
+    public void showWaitingMessage(String message) throws RemoteException {
+        client.showWaitingMessage(message);
     }
 }

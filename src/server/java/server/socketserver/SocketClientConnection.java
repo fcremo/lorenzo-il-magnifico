@@ -46,7 +46,17 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     }
 
     @Override
+    public void abortGame(String errorMessage) throws RemoteException {
+
+    }
+
+    @Override
     public void onGameStateChange(GameState gameState) {
+
+    }
+
+    @Override
+    public void showWaitingMessage(String message) throws RemoteException {
 
     }
 

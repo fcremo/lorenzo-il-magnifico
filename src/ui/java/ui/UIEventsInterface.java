@@ -14,12 +14,14 @@ public interface UIEventsInterface extends GameEventsInterface {
 
     void showLoginPrompt();
 
-    void showWaitingForGameToStart();
+    void showWaitingMessage(String message);
 
     void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles);
 
     void showChooseLeaderCard(List<LeaderCard> leaderCards);
 
     void onNetworkError();
+
+    void showAbortGame(String errorMessage);
 
 }

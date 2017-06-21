@@ -28,6 +28,13 @@ public class ServerGameController extends GameController {
      */
     private Map<Player, List<LeaderCard>> leaderCardsDraft;
 
+    /**
+     * This object is used to track which players have not yet made a choice
+     * in situations which require all of them to choose simultaneously
+     * (such as during the leader cards draft)
+     */
+    private List<Player> playersThatHaveToDraft;
+
     public ServerGameController(GameRoom gameRoom) {
         super(gameRoom);
         this.gameRoom = gameRoom;
@@ -123,24 +130,27 @@ public class ServerGameController extends GameController {
 
         // Draw 4 leader cards for each player
         leaderCardsDraft = new HashMap<>();
-        ArrayList<LeaderCard> availableLeaderCards = getGame().getAvailableLeaderCards();
+        List<LeaderCard> availableLeaderCards = getGame().getAvailableLeaderCards();
         for (Player player : getGame().getPlayers()) {
-            ArrayList<LeaderCard> playerLeaderCards = new ArrayList<>();
+            List<LeaderCard> playerLeaderCards = new ArrayList<>();
             for (int i=0; i<4; i++) {
-                LeaderCard leaderCard = availableLeaderCards.get((int)(Math.random() * availableLeaderCards.size()));
+                LeaderCard leaderCard = availableLeaderCards.get(new Random().nextInt(availableLeaderCards.size()));
                 playerLeaderCards.add(leaderCard);
                 availableLeaderCards.remove(leaderCard);
             }
             leaderCardsDraft.put(player, playerLeaderCards);
         }
+
+        playersThatHaveToDraft = (List)getGame().getPlayers().clone();
+
         draftNextLeaderCard();
     }
 
     /**
-     * Draft the next leader card for all players
+     * Draft the next leader card for the remaining players
      */
     private void draftNextLeaderCard() {
-        for (Player player : getGame().getPlayers()) {
+        for (Player player : playersThatHaveToDraft) {
             ClientConnection playerConnection = gameRoom.getConnectionForPlayer(player);
 
             List<LeaderCard> playerLeaderCards = leaderCardsDraft.get(player);
@@ -164,21 +174,32 @@ public class ServerGameController extends GameController {
             throw new ActionNotAllowedException();
         }
 
+        // Check that the player has not chosen a leader card yet
+        if(!playersThatHaveToDraft.contains(player)){
+            throw new ActionNotAllowedException();
+        }
+
         // Check that the player could choose this leader card
         if(!leaderCardsDraft.get(player).contains(leaderCard)){
             throw new LeaderCardNotAvailableException();
         }
+        LeaderCard chosenLeaderCard = leaderCardsDraft.get(player).get(leaderCardsDraft.get(player).indexOf(leaderCard));
 
-        player.getAvailableLeaderCards().add(leaderCardsDraft.get(player).get(leaderCardsDraft.get(player).indexOf(leaderCard)));
+        // Add the chosen leader card to the player's available ones
+        player.getAvailableLeaderCards().add(chosenLeaderCard);
+
+        // Remove the chosen leader card from the possible choices
         leaderCardsDraft.get(player).remove(leaderCard);
 
+        // Remove the player from the ones that have to make a choice
+        playersThatHaveToDraft.remove(player);
+
         // Check if all the players have chosen their leader card
-        int remainingLeaderCards = leaderCardsDraft.get(player).size();
-        if(leaderCardsDraft.values().stream()
-                            .allMatch((list -> list.size() == remainingLeaderCards))) {
+        if(playersThatHaveToDraft.isEmpty()) {
 
             // Check if the drafting phase is concluded
-            if (remainingLeaderCards == 0) {
+            int remainingChoices = leaderCardsDraft.get(player).size();
+            if (remainingChoices == 0) {
                 // TODO: next game phase
                 System.out.println("TODO: phase after leader cards draft");
                 return;
@@ -201,8 +222,18 @@ public class ServerGameController extends GameController {
             Player firstPlayer = players.get(0);
             leaderCardsDraft.put(firstPlayer, tmp);
 
+            // All the players have to draft again
+            playersThatHaveToDraft = (List)getGame().getPlayers().clone();
+
             // Ask the players to draft the next leader card
             draftNextLeaderCard();
+        }
+        else {
+            try {
+                gameRoom.getConnectionForPlayer(player).showWaitingMessage("Waiting for other players to choose...");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
 

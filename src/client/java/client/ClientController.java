@@ -74,19 +74,7 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         } catch (NoAvailableRoomsException e) {
             clientConnection.createAndJoinRoom();
         }
-        ui.showWaitingForGameToStart();
-    }
-
-    /* ---------------------------------------
-     * GAME EVENTS
-     * --------------------------------------- */
-
-    public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
-        ui.showChoosePersonalBonusTile(personalBonusTiles);
-    }
-
-    public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
-        ui.showChooseLeaderCard(leaderCards);
+        ui.showWaitingMessage("Waiting for the game to start...");
     }
 
     @Override
@@ -103,8 +91,28 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
         clientConnection.chooseLeaderCard(leaderCard);
     }
 
-    @Override
-    public void onGameStateChange(GameState gameState) {
+    /* ---------------------------------------
+     * GAME EVENTS
+     * --------------------------------------- */
 
+    public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
+        ui.showChoosePersonalBonusTile(personalBonusTiles);
+    }
+
+    public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
+        ui.showChooseLeaderCard(leaderCards);
+    }
+
+    public void showWaitingMessage(String message) throws RemoteException {
+        ui.showWaitingMessage(message);
+    }
+
+    public void abortGame(String errorMessage) {
+        ui.showAbortGame(errorMessage);
+    }
+
+    @Override
+    public void onGameStateChange(GameState gameState) throws RemoteException {
+        ui.onGameStateChange(gameState);
     }
 }

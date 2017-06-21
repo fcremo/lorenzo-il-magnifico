@@ -9,8 +9,8 @@ import model.card.effects.interfaces.OncePerTurnEffectInterface;
 import model.card.leader.LeaderCard;
 import model.exceptions.CantPerformActionException;
 import model.player.FamilyMemberColor;
-import model.player.Player;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import model.resource.ObtainedResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -126,8 +126,7 @@ public class GameController {
         this.gameState = gameState;
     }
 
-    public void addPlayer(Player player){
-        // TODO: 6/13/17 check number of players and throw an exception if >= 4
+    public void addPlayer(Player player) {
         game.addPlayer(player);
     }
 }

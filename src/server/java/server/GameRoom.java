@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.stream.JsonReader;
 import gamecontroller.GameEventsInterface;
 import gamecontroller.GameState;
 import gamecontroller.ServerGameController;
@@ -7,15 +8,21 @@ import model.player.Player;
 import model.player.PlayerColor;
 import server.configloader.ConfigLoader;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * This class represents a game room
  */
 public class GameRoom implements GameEventsInterface {
+    private static final Logger LOGGER = Logger.getLogger("GameRoom");
+
     /**
      * The list of connections to the players
      */
@@ -33,9 +40,8 @@ public class GameRoom implements GameEventsInterface {
 
     /**
      * The time to wait (in milliseconds) before starting the game after two players have joined the room.
-     * TODO: 5/30/17 make this timeout configurable
      */
-    private int gameStartTimeout = 5000;
+    private int gameStartTimeout;
 
     private Thread roomTimeoutTimer;
 
@@ -68,11 +74,44 @@ public class GameRoom implements GameEventsInterface {
      * Load the game configuration
      */
     private void loadConfiguration() {
+        String configDirectory = "configuration";
+
+        // Load timeout
         try {
-            serverGameController.setGame(ConfigLoader.loadConfiguration("configuration"));
+            InputStreamReader timeoutFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/timeouts.json"));
+            JsonReader reader = new JsonReader(timeoutFileReader);
+            reader.beginObject();
+            while (reader.hasNext()){
+                String key = reader.nextName();
+                String val = reader.nextString();
+                if("startTimeout".equals(key)){
+                    this.gameStartTimeout = Integer.parseInt(val) * 1000;
+                }
+            }
+            reader.close();
+            timeoutFileReader.close();
+        }
+        catch (IOException e) {
+            LOGGER.warning("Cannot read timeout configuration file!");
+            this.gameStartTimeout = 5000;
+        }
+        catch (NumberFormatException e) {
+            LOGGER.warning("Error while parsing room timeout from file!");
+            this.gameStartTimeout = 5000;
+        }
+
+        // Load game configuration
+        try {
+            serverGameController.setGame(ConfigLoader.loadConfiguration(configDirectory));
         } catch (IOException e) {
-            // TODO: Handle exception
-            e.printStackTrace();
+            LOGGER.severe("Error while loading game configuration from file, cannot start the game!");
+            for (ClientConnection c: connections) {
+                try {
+                    c.abortGame("Cannot load game configuration!");
+                } catch (RemoteException e1) {
+                    // We're aborting the game, we don't really care for remote exceptions
+                }
+            }
         }
     }
 
@@ -120,12 +159,15 @@ public class GameRoom implements GameEventsInterface {
     }
 
     public ClientConnection getConnectionForPlayer (Player player) {
-        for (ClientConnection connection : connections) {
-            // TODO: 6/13/17 implement equals for players
-            if (connection.getPlayer().getUsername().equals(player.getUsername()))
-                return connection;
+        Optional<ClientConnection> connection = connections.stream()
+                                                            .filter(p -> p.getPlayer().equals(player))
+                                                            .findFirst();
+        if(connection.isPresent()){
+            return connection.get();
         }
-        throw new NoSuchElementException();
+        else {
+            throw new NoSuchElementException();
+        }
     }
 
     public ArrayList<ClientConnection> getConnections() {

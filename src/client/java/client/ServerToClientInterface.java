@@ -14,7 +14,11 @@ import java.util.List;
 public interface ServerToClientInterface extends GameEventsInterface, Remote {
     void pingClient() throws RemoteException;
 
+    void abortGame(String errorMessage) throws RemoteException;
+
     void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException;
 
     void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException;
+
+    void showWaitingMessage(String message) throws RemoteException;
 }

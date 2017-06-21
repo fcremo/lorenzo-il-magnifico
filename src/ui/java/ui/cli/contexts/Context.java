@@ -41,8 +41,7 @@ public abstract class Context {
     }
 
     public void printHelp() {
-        // TODO: 5/22/17 rewrite this not using this ugly hack
-        this.handleInput("help");
+        handleInput("help");
     }
 
     private class HelpCommand implements Command {

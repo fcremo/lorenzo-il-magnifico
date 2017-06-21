@@ -84,6 +84,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
+    public void abortGame(String errorMessage) throws RemoteException {
+        clientController.abortGame(errorMessage);
+    }
+
+    @Override
     public void askToChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) throws RemoteException {
         clientController.showChoosePersonalBonusTile(personalBonusTiles);
     }
@@ -94,7 +99,12 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void onGameStateChange(GameState gameState) throws RemoteException {
+    public void showWaitingMessage(String message) throws RemoteException {
+        clientController.showWaitingMessage(message);
+    }
 
+    @Override
+    public void onGameStateChange(GameState gameState) throws RemoteException {
+        clientController.onGameStateChange(gameState);
     }
 }

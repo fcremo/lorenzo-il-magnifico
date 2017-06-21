@@ -69,8 +69,8 @@ public class CLIUserInterface implements UIEventsInterface {
     }
 
     @Override
-    public void showWaitingForGameToStart() {
-        currentContext = new WaitingForGameToStartContext();
+    public void showWaitingMessage(String message) {
+        currentContext = new WaitingContext(message);
     }
 
     @Override
@@ -81,6 +81,12 @@ public class CLIUserInterface implements UIEventsInterface {
     @Override
     public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
         currentContext = new ChooseLeaderCardContext(controller, leaderCards);
+    }
+
+    @Override
+    public void showAbortGame(String errorMessage) {
+        System.out.println("The server is aborting the game!");
+        System.out.println("Error: " + errorMessage);
     }
 
     private class KeyboardHandler implements Runnable {

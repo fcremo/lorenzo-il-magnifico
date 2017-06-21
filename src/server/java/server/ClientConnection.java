@@ -111,9 +111,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     }
 
     private boolean isThisPlayerTurn(){
-        return true;
-        // TODO: 6/13/17 implement equals for player objects
-        // return player.equals(room.getServerGameController().getGame().getCurrentPlayer());
+        return player.equals(room.getServerGameController().getGame().getCurrentPlayer());
     }
 
     public Player getPlayer() {
