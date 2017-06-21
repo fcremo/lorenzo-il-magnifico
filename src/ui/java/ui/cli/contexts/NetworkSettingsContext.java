@@ -2,7 +2,7 @@ package ui.cli.contexts;
 
 import client.ConnectionMethod;
 import client.exceptions.NetworkException;
-import ui.cli.InvalidCommandException;
+import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
 
@@ -27,51 +27,58 @@ public class NetworkSettingsContext extends Context {
     }
 
     private void setHostname(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+        if (params.length != 1) throw new InvalidCommandException("You have to specify a hostname");
 
         this.hostname = params[0];
     }
 
     private void setPort(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+        if (params.length != 1) throw new InvalidCommandException("You have to specify the port");
+
+        int port;
 
         try {
-            this.port = Integer.parseInt(params[0]);
-        } catch (NumberFormatException e) {
-            throw new InvalidCommandException();
+             port = Integer.parseInt(params[0]);
+        }
+        catch (NumberFormatException e) {
+            throw new InvalidCommandException("Invalid port number");
         }
 
+        if(port < 1 || port > 65535){
+            throw new InvalidCommandException("Port number must be between 1 and 65535");
+        }
+
+        this.port = port;
     }
 
     private void setMethod(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+        if (params.length != 1) throw new InvalidCommandException("You have to specify a connection method");
 
-        switch (params[0]) {
-            case "SOCKET":
+        switch (params[0].toLowerCase()) {
             case "socket":
                 this.connectionMethod = ConnectionMethod.SOCKET;
                 break;
-            case "RMI":
             case "rmi":
                 this.connectionMethod = ConnectionMethod.RMI;
                 break;
             default:
-                throw new InvalidCommandException();
+                throw new InvalidCommandException("Invalid connection method");
         }
     }
 
     private void showSettings(String[] params) throws InvalidCommandException {
-        if (params.length != 0) throw new InvalidCommandException();
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
         System.out.println(String.format("Current settings: %s:%d (%s)", hostname, port, connectionMethod.name()));
     }
 
     private void connect(String[] params) throws InvalidCommandException {
-        if (params.length != 0) throw new InvalidCommandException();
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
         try {
             callback.connect(connectionMethod, hostname, port);
-        } catch (NetworkException | RemoteException e) {
+        }
+        catch (NetworkException | RemoteException e) {
             System.out.println("Connection error! Please double check the settings.");
         }
     }

@@ -4,7 +4,7 @@ import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
 import model.player.PersonalBonusTile;
-import ui.cli.InvalidCommandException;
+import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ChooseBonusTileContext extends Context {
     }
 
     private void showBonusTiles(String[] params) throws InvalidCommandException {
-        if (params.length != 0) throw new InvalidCommandException();
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
         printBonusTiles();
     }
 
@@ -34,25 +34,17 @@ public class ChooseBonusTileContext extends Context {
         }
     }
 
-    private void chooseBonusTile(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+    private void chooseBonusTile(String[] params) throws InvalidCommandException, RemoteException, PersonalBonusTileNotAvailableException, NetworkException, ActionNotAllowedException {
+        if (params.length != 1) throw new InvalidCommandException("You have to choose a bonus tile!");
         try {
             int chosenBonusTileIndex = Integer.parseInt(params[0]);
             if(chosenBonusTileIndex < 1 || chosenBonusTileIndex > personalBonusTiles.size()){
-                throw new InvalidCommandException();
+                throw new InvalidCommandException("You chose an invalid bonus tile");
             }
             callback.chooseBonusTile(personalBonusTiles.get(chosenBonusTileIndex-1));
         }
         catch (NumberFormatException e) {
-            throw new InvalidCommandException();
-        } catch (NetworkException | RemoteException e) {
-            e.printStackTrace();
-        }
-        catch (ActionNotAllowedException e) {
-            e.printStackTrace();
-        }
-        catch (PersonalBonusTileNotAvailableException e) {
-            e.printStackTrace();
+            throw new InvalidCommandException("Input a valid number please");
         }
     }
 

@@ -8,7 +8,6 @@ import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
-import model.exceptions.CantPerformActionException;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
@@ -107,7 +106,7 @@ public class GameController {
      * @param familyMemberValue the family member value used for performing the action
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
-    ArrayList<ObtainedResourceSet> performAction(Player player, int familyMemberValue, Action action) throws CantPerformActionException {
+    ArrayList<ObtainedResourceSet> performAction(Player player, int familyMemberValue, Action action) throws ActionNotAllowedException {
         throw new NotImplementedException();
     }
 

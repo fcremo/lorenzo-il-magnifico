@@ -2,7 +2,7 @@
   <configuration default="false" name="Run CLI" type="Application" factoryName="Application">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
       <pattern>
-        <option name="PATTERN" value="ui.cli.*" />
+        <option name="PATTERN" value="ui.cli.exceptions.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

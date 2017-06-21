@@ -1,7 +1,10 @@
 package ui.cli.contexts;
 
-import ui.cli.InvalidCommandException;
+import client.exceptions.NetworkException;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import ui.cli.exceptions.InvalidCommandException;
 
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -32,10 +35,20 @@ public abstract class Context {
         if (commands.containsKey(command)) {
             try {
                 commands.get(command).execute(arguments);
-            } catch (InvalidCommandException e) {
-                System.out.println("Invalid command. Try \"help\".");
             }
-        } else {
+            catch (InvalidCommandException e) {
+                System.out.printf("Invalid command (%s).", e.getMessage());
+                System.out.println("Try \"help\"");
+            }
+            catch (ActionNotAllowedException e) {
+                System.out.println("The server said you did something illegal:");
+                System.out.println(e.getMessage());
+            }
+            catch (RemoteException | NetworkException e) {
+                    e.printStackTrace();
+            }
+        }
+        else {
             System.out.println("This command does not exist. Try \"help\"");
         }
     }
@@ -46,14 +59,21 @@ public abstract class Context {
 
     private class HelpCommand implements Command {
         public void execute(String[] arguments) throws InvalidCommandException {
-            if (arguments.length == 1 && helps.containsKey(arguments[0])) {
-                System.out.println(helps.get(arguments[0]));
-            } else if (arguments.length == 0) {
+            if (arguments.length == 1) {
+                if(helps.containsKey(arguments[0])) {
+                    System.out.println(helps.get(arguments[0]));
+                }
+                else {
+                    System.out.println(String.format("Command %s does not exist", arguments[0]));
+                }
+            }
+            else if (arguments.length == 0) {
                 for (String command : helps.keySet()) {
                     System.out.println("\t" + command + ": " + helps.get(command));
                 }
-            } else {
-                throw new InvalidCommandException();
+            }
+            else {
+                throw new InvalidCommandException("Command \"help\" takes 0 or 1 argument");
             }
         }
     }

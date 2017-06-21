@@ -4,7 +4,7 @@ import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import model.card.leader.LeaderCard;
-import ui.cli.InvalidCommandException;
+import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ChooseLeaderCardContext extends Context {
     }
 
     private void showLeaderCards(String[] params) throws InvalidCommandException {
-        if (params.length != 0) throw new InvalidCommandException();
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
         printLeaderCards();
     }
 
@@ -34,16 +34,17 @@ public class ChooseLeaderCardContext extends Context {
         }
     }
 
-    private void chooseLeaderCard(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+    private void chooseLeaderCard(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+        if (params.length != 1) throw new InvalidCommandException("You have to choose a leader card!");
         try {
             int chosenLeaderCard = Integer.parseInt(params[0]);
-            callback.chooseLeaderCard(leaderCards.get(chosenLeaderCard-1));
+            if(chosenLeaderCard < 1 || chosenLeaderCard > leaderCards.size()){
+                throw new InvalidCommandException("You chose an invalid leader card");
+            }
+            callback.chooseLeaderCard(leaderCards.get(chosenLeaderCard - 1));
         }
         catch (NumberFormatException e) {
-            throw new InvalidCommandException();
-        } catch (NetworkException | RemoteException | LeaderCardNotAvailableException | ActionNotAllowedException e) {
-            e.printStackTrace();
+            throw new InvalidCommandException("Input a valid number please");
         }
     }
 

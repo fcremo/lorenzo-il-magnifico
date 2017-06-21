@@ -2,7 +2,7 @@ package ui.cli.contexts;
 
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
-import ui.cli.InvalidCommandException;
+import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
 
@@ -18,16 +18,14 @@ public class LoginContext extends Context {
         this.printHelp();
     }
 
-    private void login(String[] params) throws InvalidCommandException {
-        if (params.length != 1) throw new InvalidCommandException();
+    private void login(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
+        if (params.length != 1) throw new InvalidCommandException("You have to specify a username");
 
         username = params[0];
         try {
             callback.login(username);
-        } catch (NetworkException | RemoteException e) {
-            // TODO: 5/19/17 how to handle network exceptions? 
-            e.printStackTrace();
-        } catch (LoginException e) {
+        }
+        catch (LoginException e) {
             System.out.println("Login failed! Try with a different username.");
         }
     }
