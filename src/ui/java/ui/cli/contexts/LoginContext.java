@@ -30,7 +30,6 @@ public class LoginContext extends Context {
         } catch (LoginException e) {
             System.out.println("Login failed! Try with a different username.");
         }
-
     }
 
     @FunctionalInterface

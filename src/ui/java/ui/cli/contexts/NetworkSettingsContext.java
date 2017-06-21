@@ -21,8 +21,7 @@ public class NetworkSettingsContext extends Context {
         this.addCommand("show-settings", this::showSettings, "Show current settings");
         this.addCommand("connect", this::connect, "Connect to the server");
         System.out.println("Network settings");
-        // TODO: 5/22/17 find a way to call internal methods without ugly hacks like this
-        this.printHelp();
+        printHelp();
         System.out.println();
         this.handleInput("show-settings");
     }

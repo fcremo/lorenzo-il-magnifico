@@ -23,8 +23,13 @@ import ui.cli.contexts.NetworkSettingsContext;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback, LoginContext.Callback,
-                                            ChooseBonusTileContext.Callback, ChooseLeaderCardContext.Callback {
+/**
+ * This class bridges the network interface and the UI
+ */
+public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback,
+                                                                LoginContext.Callback,
+                                                                ChooseBonusTileContext.Callback,
+                                                                ChooseLeaderCardContext.Callback {
     private UIEventsInterface ui;
 
     private GameController gameController;

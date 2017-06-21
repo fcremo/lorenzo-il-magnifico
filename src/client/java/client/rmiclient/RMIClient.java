@@ -22,6 +22,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
+/**
+ * This class implements the ClientToServer and ServerToClient interfaces via RMI
+ */
 public class RMIClient implements ClientToServerInterface, ServerToClientInterface, Remote {
     private ClientController clientController;
 

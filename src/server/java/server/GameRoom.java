@@ -103,12 +103,14 @@ public class GameRoom implements GameEventsInterface {
         // Load game configuration
         try {
             serverGameController.setGame(ConfigLoader.loadConfiguration(configDirectory));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.severe("Error while loading game configuration from file, cannot start the game!");
             for (ClientConnection c: connections) {
                 try {
                     c.abortGame("Cannot load game configuration!");
-                } catch (RemoteException e1) {
+                }
+                catch (RemoteException e1) {
                     // We're aborting the game, we don't really care for remote exceptions
                 }
             }
