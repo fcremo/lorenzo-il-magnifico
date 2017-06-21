@@ -1,3 +1,3 @@
 # What is this?
-In here you find the files responsible for the client funcionality: connection to the server via RMI or socket,
-event notifications to the UI that subscribe to them.
+In here you find the code responsible for the client functionality: 
+connecting to the server via RMI or socket, sending and receiving messages
