@@ -2,6 +2,8 @@ package model.resource;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class represents an obtained/obtainable set of resources
@@ -93,7 +95,16 @@ public class ObtainedResourceSet implements Serializable {
 
         ObtainedResourceSet otherResourceSet = (ObtainedResourceSet) o;
 
-        return this.resources.equals(otherResourceSet.resources) &&
-                this.resourceMultipliers.equals(otherResourceSet.resourceMultipliers);
+        // Ensure static resources are equal
+        Set<ObtainableResource> allResources = new HashSet<>(resources.keySet());
+        allResources.addAll(otherResourceSet.resources.keySet());
+        for (ObtainableResource r: allResources) {
+            if(resources.getOrDefault(r, 0) != otherResourceSet.resources.getOrDefault(r, 0)){
+                return false;
+            }
+        }
+
+        // Check multipliers
+        return this.resourceMultipliers.equals(otherResourceSet.resourceMultipliers);
     }
 }
