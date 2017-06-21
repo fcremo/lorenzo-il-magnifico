@@ -3,7 +3,7 @@
     "id": "L1", "name": "Francesco Sforza",
     "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 5}],
     "effects": [
-      {"effectType": "OncePerTurnAction", "action": "HARVEST", "value": 1}
+      {"effectType": "OncePerRoundAction", "actionType": "HARVEST", "value": 1}
     ]
   },
   {
@@ -24,49 +24,49 @@
     "id": "L4", "name": "Federico da Montefeltro",
     "requiredResourceSet": [{"REQUIRED_TERRITORY_CARDS": 5}],
     "effects": [
-      {"effectType": "OncePerTurnFamilyMemberValueSetter", "value": 6, "allowedFamilyMemberColor": ["BLACK", "WHITE", "ORANGE"]}
+      {"effectType": "OncePerRoundFamilyMemberValueSetter", "value": 6, "allowedFamilyMemberColor": ["BLACK", "WHITE", "ORANGE"]}
     ]
   },
   {
     "id": "L5", "name": "Girolamo Savonarola",
     "requiredResourceSet": [{"REQUIRED_GOLD": 18}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"FAITH_POINTS": 1}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"FAITH_POINTS": 1}}
     ]
   },
   {
     "id": "L6", "name": "Giovanni dalle Bande Nere",
     "requiredResourceSet": [{"REQUIRED_MILITARY_POINTS": 12}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"GOLD": 1, "WOOD": 1, "STONE": 1}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"GOLD": 1, "WOOD": 1, "STONE": 1}}
     ]
   },
   {
     "id": "L7", "name": "Sandro Botticelli",
     "requiredResourceSet": [{"REQUIRED_WOOD": 10}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"MILITARY_POINTS": 2, "VICTORY_POINTS": 1}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"MILITARY_POINTS": 2, "VICTORY_POINTS": 1}}
     ]
   },
   {
     "id": "L8", "name": "Michelangelo Buonarroti",
     "requiredResourceSet": [{"REQUIRED_STONE": 10}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"GOLD": 3}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"GOLD": 3}}
     ]
   },
   {
     "id": "L9", "name": "Ludovico III Gonzaga",
     "requiredResourceSet": [{"REQUIRED_SERVANTS": 15}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"COUNCIL_PRIVILEGES": 1}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"COUNCIL_PRIVILEGES": 1}}
     ]
   },
   {
     "id": "L10", "name": "Leonardo da Vinci",
     "requiredResourceSet": [{"REQUIRED_CHARACTER_CARDS": 4, "REQUIRED_TERRITORY_CARDS": 2}],
     "effects": [
-      {"effectType": "OncePerTurnAction", "action": "PRODUCTION", "value": 0}
+      {"effectType": "OncePerRoundAction", "actionType": "PRODUCTION", "value": 0}
     ]
   },
   {
@@ -139,14 +139,14 @@
     "id": "L19", "name": "Cosimo de' Medici",
     "requiredResourceSet": [{"REQUIRED_CHARACTER_CARDS": 2, "REQUIRED_BUILDING_CARDS": 4}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"SERVANTS": 3, "VICTORY_POINTS": 1}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"SERVANTS": 3, "VICTORY_POINTS": 1}}
     ]
   },
   {
     "id": "L20", "name": "Bartolomeo Colleoni",
     "requiredResourceSet": [{"REQUIRED_VENTURE_CARDS": 2, "REQUIRED_TERRITORY_CARDS": 4}],
     "effects": [
-      {"effectType": "OncePerTurnBonusResources", "resources": {"VICTORY_POINTS": 4}}
+      {"effectType": "OncePerRoundBonusResources", "resources": {"VICTORY_POINTS": 4}}
     ]
   }
 ]

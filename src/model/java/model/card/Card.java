@@ -93,7 +93,7 @@ public class Card implements Serializable {
     @Override
     public String toString() {
         return name  +
-                "\n requirements:" + requiredResourceSet +
-                "\n effects:" + effects;
+                "\n requirements: " + requiredResourceSet +
+                "\n effects: " + effects;
     }
 }

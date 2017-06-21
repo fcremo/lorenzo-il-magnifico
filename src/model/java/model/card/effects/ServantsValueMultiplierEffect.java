@@ -15,4 +15,9 @@ public class ServantsValueMultiplierEffect implements EffectInterface {
     public int multiplyServantValue(int currentValue) {
         return (int)Math.round(((double) currentValue) * multiplier);
     }
+
+    @Override
+    public String toString() {
+        return "You have to spend " + (int)Math.round(1.0 / multiplier) + " servants to increase your action value by 1";
+    }
 }

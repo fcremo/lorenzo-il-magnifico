@@ -7,5 +7,10 @@ public enum ActionType {
     TAKE_CHARACTER_CARD,
     TAKE_VENTURE_CARD,
     PRODUCTION,
-    HARVEST
+    HARVEST;
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

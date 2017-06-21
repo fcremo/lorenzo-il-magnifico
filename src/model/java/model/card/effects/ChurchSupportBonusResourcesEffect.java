@@ -16,4 +16,9 @@ public class ChurchSupportBonusResourcesEffect implements EffectInterface {
     public ObtainedResourceSet getBonusResources() {
         return bonusResources;
     }
+
+    @Override
+    public String toString() {
+        return "You gain " + bonusResources + " when you support the Church in a Vatican Report phase.";
+    }
 }

@@ -22,4 +22,9 @@ public class DevelopmentCardImmediateResourcesMultiplierEffect implements Effect
         return null;
         // TODO
     }
+
+    @Override
+    public String toString() {
+        return "Each time you receive " + resourceType + " as an immediate effect from Development Cards, you receive the resources " + multiplier + " times.";
+    }
 }

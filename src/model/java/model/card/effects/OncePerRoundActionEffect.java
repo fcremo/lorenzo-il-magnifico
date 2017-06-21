@@ -1,35 +1,33 @@
 package model.card.effects;
 
 import model.action.ActionType;
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
-
-import java.util.ArrayList;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 
 /**
  * This effect allows the player to perform one extra action per turn
  */
-public class OncePerTurnActionEffect implements OncePerTurnEffectInterface {
+public class OncePerRoundActionEffect implements OncePerRoundEffectInterface {
     /**
      * The turn when the effect was last activated
      */
     private int lastActivatedAt = 0;
 
-    private ArrayList<ActionType> actionTypes;
+    private ActionType actionType;
     private int actionValue;
 
-    public OncePerTurnActionEffect(ArrayList<ActionType> actionTypes, int actionValue) {
-        this.actionTypes = actionTypes;
+    public OncePerRoundActionEffect(ActionType actionType, int actionValue) {
+        this.actionType = actionType;
         this.actionValue = actionValue;
     }
 
     /**
-     * Returns the types of actions that the player can perform.
+     * Returns the type of action that the player can perform.
      * N.B: The player can choose only one.
      *
-     * @return the types of actions that the player can perform
+     * @return the type of action that the player can perform
      */
-    public ArrayList<ActionType> getActionTypes() {
-        return actionTypes;
+    public ActionType getActionType() {
+        return actionType;
     }
 
     /**
@@ -48,4 +46,8 @@ public class OncePerTurnActionEffect implements OncePerTurnEffectInterface {
     public void markActivated(int currentTurn) {
         lastActivatedAt = currentTurn;
     }
-}
+
+    @Override
+    public String toString() {
+        return "Once per round perform a " + actionType + " with value " + actionValue + " without placing a Family Member.";
+    }}

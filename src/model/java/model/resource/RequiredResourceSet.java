@@ -26,6 +26,10 @@ public class RequiredResourceSet implements Serializable {
         requiredResources.put(resourceType, requirement);
     }
 
+    public boolean isEmpty() {
+        return (requiredResources.isEmpty());
+    }
+
     @Override
     public String toString() {
         StringBuilder printable = new StringBuilder();
@@ -35,8 +39,8 @@ public class RequiredResourceSet implements Serializable {
                     .append(resource.toString())
                     .append(", ");
         }
-        if (printable.lastIndexOf(",") != -1){
-            printable.deleteCharAt(printable.lastIndexOf(","));
+        if (printable.lastIndexOf(", ") != -1) {
+            printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
         }
         return printable.toString();
     }

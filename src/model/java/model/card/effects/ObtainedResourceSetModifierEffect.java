@@ -32,4 +32,14 @@ public class ObtainedResourceSetModifierEffect implements EffectInterface {
         }
         return newResourceSets;
     }
+
+    @Override
+    public String toString() {
+        if (modifier > 0) {
+            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " more.";
+        }
+        else {
+            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " less.";
+        }
+    }
 }

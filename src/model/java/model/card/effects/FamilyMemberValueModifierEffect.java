@@ -29,4 +29,13 @@ public class FamilyMemberValueModifierEffect implements EffectInterface {
             return currentValue;
         }
     }
+
+    @Override
+    public String toString() {
+        if (modifier > 0) {
+            return "Increase your " + familyMember + " Family Member value by " + modifier + ".";
+        }
+        else {
+            return "Decrease your " + familyMember + " Family Member value by " + Math.abs(modifier) + ".";
+        }    }
 }

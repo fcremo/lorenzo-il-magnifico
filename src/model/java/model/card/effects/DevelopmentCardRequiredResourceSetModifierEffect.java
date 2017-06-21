@@ -28,4 +28,9 @@ public class DevelopmentCardRequiredResourceSetModifierEffect implements EffectI
         // TODO
         return  null;
     }
+
+    @Override
+    public String toString() {
+        return "You get a discount of " + discount + " when you take a " + cardType + ".";
+    }
 }

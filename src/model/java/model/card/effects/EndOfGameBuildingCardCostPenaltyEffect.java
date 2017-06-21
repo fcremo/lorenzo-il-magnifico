@@ -16,4 +16,9 @@ public class EndOfGameBuildingCardCostPenaltyEffect implements EffectInterface {
         // TODO
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "At the end of the game, you lose 1 Victory Point for every wood and stone on your Building Cards’ costs.";
+    }
 }

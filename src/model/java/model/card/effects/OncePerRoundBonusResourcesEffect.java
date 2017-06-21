@@ -1,17 +1,17 @@
 package model.card.effects;
 
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.resource.ObtainedResourceSet;
 
 /**
- * This effect gives the player some bonus resources once per turn
+ * This effect gives the player some bonus resources once per round
  */
-public class OncePerTurnBonusResourcesEffect implements OncePerTurnEffectInterface {
+public class OncePerRoundBonusResourcesEffect implements OncePerRoundEffectInterface {
     private int lastActivatedAt = 0;
 
     private ObtainedResourceSet resources;
 
-    public OncePerTurnBonusResourcesEffect(ObtainedResourceSet resources) {
+    public OncePerRoundBonusResourcesEffect(ObtainedResourceSet resources) {
         this.resources = resources;
     }
 
@@ -30,5 +30,10 @@ public class OncePerTurnBonusResourcesEffect implements OncePerTurnEffectInterfa
     @Override
     public void markActivated(int currentTurn) {
         lastActivatedAt = currentTurn;
+    }
+
+    @Override
+    public String toString() {
+        return "Once per round receive " + resources + ".";
     }
 }

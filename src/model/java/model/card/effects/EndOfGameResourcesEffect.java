@@ -18,4 +18,9 @@ public class EndOfGameResourcesEffect implements EffectInterface {
     public ObtainedResourceSet getResourceSet() {
         return resourceSet;
     }
+
+    @Override
+    public String toString() {
+        return "At the end of the game you get " + resourceSet + ".";
+    }
 }

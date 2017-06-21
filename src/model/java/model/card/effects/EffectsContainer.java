@@ -29,8 +29,8 @@ public class EffectsContainer implements Serializable {
 
     /**
      * Get all effects implementing a given interface, directly or indirectly.
-     * That means that getEffectsImplementing(OncePerTurnEffectInterface.class) will return all effects which
-     * can be activated once per turn.
+     * That means that getEffectsImplementing(OncePerRoundEffectInterface.class) will return all effects which
+     * can be activated once per round.
      *
      * @param effectInterface
      * @param <T>
@@ -51,7 +51,7 @@ public class EffectsContainer implements Serializable {
      * Warning: if you pass an interface to this method you will always get an empty list,
      * as interfaces can't be instantiated.
      * You probably want to use the {@code getEffectsImplementing} method instead.
-     * Example usage: effectsContainer.getInstancesOf(OncePerTurnGetResources.class)
+     * Example usage: effectsContainer.getInstancesOf(OncePerRoundGetResources.class)
      *
      * @param effectClass the class of the effects you want to retrieve
      * @param <T>         the class of the effects you want to retrieve
@@ -65,5 +65,13 @@ public class EffectsContainer implements Serializable {
             }
         }
         return returnList;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder printable = new StringBuilder();
+        for (int i = 0; i < effects.size(); i++)
+            printable.append(effects.get(i));
+        return printable.toString();
     }
 }

@@ -6,7 +6,7 @@ import model.Game;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
-import model.card.effects.interfaces.OncePerTurnEffectInterface;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.exceptions.CantPerformActionException;
 import model.player.FamilyMemberColor;
@@ -97,7 +97,7 @@ public class GameController {
     public void discardLeaderCard(Player player, LeaderCard leaderCard) {
     }
 
-    public <T extends OncePerTurnEffectInterface> void activateOncePerTurnEffect(Player player, T effect) {
+    public <T extends OncePerRoundEffectInterface> void activateOncePerRoundEffect(Player player, T effect) {
     }
 
     /**
