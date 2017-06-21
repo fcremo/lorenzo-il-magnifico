@@ -15,11 +15,9 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
     private static final Logger LOGGER = Logger.getLogger("RMIServer");
 
     private static Registry registry;
-
+    private final String NAME = "LORENZO_SERVER";
     private boolean createLocalRegistry = true;
     private int REGISTRY_PORT = 1099;
-
-    private final String NAME = "LORENZO_SERVER";
     private int port;
     private ArrayList<GameRoom> rooms;
 
@@ -29,7 +27,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
 
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
 
-        if(createLocalRegistry){
+        if (createLocalRegistry) {
             registry = LocateRegistry.createRegistry(REGISTRY_PORT);
             // No need to export objects if the registry is
             // created by the same JVM where the server runs
@@ -38,7 +36,8 @@ public class RMIServer extends UnicastRemoteObject implements ServerInterface {
             registry = LocateRegistry.getRegistry();
             try {
                 UnicastRemoteObject.exportObject(this, 0);
-            } catch (RemoteException e) {
+            }
+            catch (RemoteException e) {
                 LOGGER.fine("RMIServer object already exported");
             }
         }

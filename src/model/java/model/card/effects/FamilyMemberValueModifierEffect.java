@@ -17,12 +17,13 @@ public class FamilyMemberValueModifierEffect implements EffectInterface {
 
     /**
      * Modify the value of the family member, if it is targeted by this effect
+     *
      * @param familyMember the family member color
      * @param currentValue the current value of the family member
      * @return the new family member value
      */
-    public int modifyFamilyMemberValue(FamilyMemberColor familyMember, int currentValue){
-        if(this.familyMember == familyMember){
+    public int modifyFamilyMemberValue(FamilyMemberColor familyMember, int currentValue) {
+        if (this.familyMember == familyMember) {
             return currentValue + modifier;
         }
         else {
@@ -37,5 +38,6 @@ public class FamilyMemberValueModifierEffect implements EffectInterface {
         }
         else {
             return "Decrease your " + familyMember + " Family Member value by " + Math.abs(modifier) + ".";
-        }    }
+        }
+    }
 }

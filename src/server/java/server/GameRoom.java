@@ -81,10 +81,10 @@ public class GameRoom implements GameEventsInterface {
             InputStreamReader timeoutFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/timeouts.json"));
             JsonReader reader = new JsonReader(timeoutFileReader);
             reader.beginObject();
-            while (reader.hasNext()){
+            while (reader.hasNext()) {
                 String key = reader.nextName();
                 String val = reader.nextString();
-                if("startTimeout".equals(key)){
+                if ("startTimeout".equals(key)) {
                     this.gameStartTimeout = Integer.parseInt(val) * 1000;
                 }
             }
@@ -106,7 +106,7 @@ public class GameRoom implements GameEventsInterface {
         }
         catch (IOException e) {
             LOGGER.severe("Error while loading game configuration from file, cannot start the game!");
-            for (ClientConnection c: connections) {
+            for (ClientConnection c : connections) {
                 try {
                     c.abortGame("Cannot load game configuration!");
                 }
@@ -139,14 +139,16 @@ public class GameRoom implements GameEventsInterface {
 
     /**
      * Signal state change to all players
+     *
      * @param gameState
      */
     @Override
     public void onGameStateChange(GameState gameState) {
-        for (ClientConnection connection: connections) {
+        for (ClientConnection connection : connections) {
             try {
                 connection.onGameStateChange(gameState);
-            } catch (RemoteException e) {
+            }
+            catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
@@ -160,11 +162,11 @@ public class GameRoom implements GameEventsInterface {
         return (connections.size() >= 4);
     }
 
-    public ClientConnection getConnectionForPlayer (Player player) {
+    public ClientConnection getConnectionForPlayer(Player player) {
         Optional<ClientConnection> connection = connections.stream()
-                                                            .filter(p -> p.getPlayer().equals(player))
-                                                            .findFirst();
-        if(connection.isPresent()){
+                                                           .filter(p -> p.getPlayer().equals(player))
+                                                           .findFirst();
+        if (connection.isPresent()) {
             return connection.get();
         }
         else {
@@ -179,6 +181,7 @@ public class GameRoom implements GameEventsInterface {
     /**
      * Adds a player to the room, starting the room timeout if
      * there are at least 2 players connected
+     *
      * @param clientConnection
      */
     public void addPlayer(ClientConnection clientConnection) {
@@ -209,13 +212,14 @@ public class GameRoom implements GameEventsInterface {
             long startTime;
             long remainingTime = gameStartTimeout;
 
-            while(true){
+            while (true) {
                 startTime = System.currentTimeMillis();
                 try {
                     Thread.sleep(remainingTime);
                     onRoomTimeout();
                     break;
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     // If somehow the thread is woken up early compute the
                     // remaining time and go back to sleep again
                     remainingTime = remainingTime - (System.currentTimeMillis() - startTime);

@@ -38,13 +38,13 @@ public class NetworkSettingsContext extends Context {
         int port;
 
         try {
-             port = Integer.parseInt(params[0]);
+            port = Integer.parseInt(params[0]);
         }
         catch (NumberFormatException e) {
             throw new InvalidCommandException("Invalid port number");
         }
 
-        if(port < 1 || port > 65535){
+        if (port < 1 || port > 65535) {
             throw new InvalidCommandException("Port number must be between 1 and 65535");
         }
 

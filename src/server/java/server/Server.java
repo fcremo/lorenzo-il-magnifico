@@ -29,7 +29,8 @@ public class Server {
         if (enableRMIServer) {
             try {
                 rmiServer = new RMIServer(rmiServerPort, rooms);
-            } catch (RemoteException e) {
+            }
+            catch (RemoteException e) {
                 LOGGER.severe("Error while trying to create the RMI server: " + e.getMessage());
             }
         }

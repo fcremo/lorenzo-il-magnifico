@@ -19,7 +19,8 @@ public class PersonalBonusTile implements Serializable {
     }
 
     // Empty private constructor to allow automatic deserialization
-    private PersonalBonusTile() {}
+    private PersonalBonusTile() {
+    }
 
     public ObtainedResourceSet getProductionObtainedResourceSet() {
         return productionObtainedResourceSet;
@@ -49,7 +50,7 @@ public class PersonalBonusTile implements Serializable {
 
     @Override
     public String toString() {
-        return  "Production: " + productionObtainedResourceSet +
+        return "Production: " + productionObtainedResourceSet +
                 "\n\tHarvest: " + harvestObtainedResourceSet;
     }
 }

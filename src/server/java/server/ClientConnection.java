@@ -52,8 +52,9 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
 
     /**
      * Login the player
+     *
      * @param name the username chosen by the user
-     * @throws LoginException thrown if the name provided is already used or invalid
+     * @throws LoginException   thrown if the name provided is already used or invalid
      * @throws NetworkException
      */
     @Override
@@ -64,6 +65,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
 
     /**
      * Join the first available room
+     *
      * @throws NoAvailableRoomsException thrown if there are no rooms available
      * @throws NetworkException
      * @throws RemoteException
@@ -83,6 +85,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
 
     /**
      * Create a room and join it
+     *
      * @throws NetworkException
      * @throws RemoteException
      */
@@ -96,6 +99,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
 
     /**
      * Choose a personal bonus tile
+     *
      * @param personalBonusTile
      * @throws NetworkException
      * @throws RemoteException
@@ -110,7 +114,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
         room.getServerGameController().addLeaderCard(player, leaderCard);
     }
 
-    private boolean isThisPlayerTurn(){
+    private boolean isThisPlayerTurn() {
         return player.equals(room.getServerGameController().getGame().getCurrentPlayer());
     }
 

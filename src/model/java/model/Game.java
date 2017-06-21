@@ -6,8 +6,8 @@ import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
-import model.player.Player;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import model.resource.ObtainedResourceSet;
 
 import java.util.ArrayList;

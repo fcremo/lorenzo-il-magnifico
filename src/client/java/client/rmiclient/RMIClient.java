@@ -37,14 +37,16 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
 
         try {
             UnicastRemoteObject.exportObject(this, 0);
-        } catch (RemoteException e) {
+        }
+        catch (RemoteException e) {
             System.out.println("RMIClient already exported");
         }
 
         try {
             ServerInterface server = (ServerInterface) registry.lookup("LORENZO_SERVER");
             connection = server.getServerConnection(this);
-        } catch (NotBoundException e) {
+        }
+        catch (NotBoundException e) {
             System.err.println("Server not found (remote object lookup failed)");
         }
     }

@@ -40,7 +40,8 @@ public class SocketServer implements Runnable {
                 Thread handler = new Thread(clientConnection);
                 handler.start();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.severe("Error while trying to create the socket server: " + e.getMessage());
         }
     }

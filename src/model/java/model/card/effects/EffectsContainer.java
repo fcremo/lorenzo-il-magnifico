@@ -70,8 +70,9 @@ public class EffectsContainer implements Serializable {
     @Override
     public String toString() {
         StringBuilder printable = new StringBuilder();
-        for (int i = 0; i < effects.size(); i++)
+        for (int i = 0; i < effects.size(); i++) {
             printable.append(effects.get(i));
+        }
         return printable.toString();
     }
 }

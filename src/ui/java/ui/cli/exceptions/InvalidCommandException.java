@@ -4,7 +4,7 @@ package ui.cli.exceptions;
  * This exception signals that the user tried to execute an invalid command
  */
 public class InvalidCommandException extends Exception {
-public InvalidCommandException(String s) {
+    public InvalidCommandException(String s) {
         super(s);
     }
 

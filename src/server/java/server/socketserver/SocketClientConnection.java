@@ -35,7 +35,8 @@ public class SocketClientConnection extends ClientConnection implements Runnable
             try {
                 String in = input.readLine();
 
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
             }
         }
     }

@@ -15,7 +15,7 @@ public class EffectsContainerDeserializer implements JsonDeserializer<EffectsCon
 
         EffectsContainer container = new EffectsContainer();
 
-        for(JsonElement e: effectsJsonArray){
+        for (JsonElement e : effectsJsonArray) {
             container.addEffect(effectDeserializer.deserialize(e, EffectInterface.class, context));
         }
 

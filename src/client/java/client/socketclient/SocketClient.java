@@ -34,7 +34,8 @@ public class SocketClient implements ClientToServerInterface {
             connection = new Socket(server, port);
             outputStream = connection.getOutputStream();
             inputStream = connection.getInputStream();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NetworkException();
         }
 
@@ -45,7 +46,8 @@ public class SocketClient implements ClientToServerInterface {
     public void loginPlayer(String name) throws LoginException, NetworkException {
         try {
             outputStream.write(SocketProtocol.loginPlayer(name));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NetworkException();
         }
     }

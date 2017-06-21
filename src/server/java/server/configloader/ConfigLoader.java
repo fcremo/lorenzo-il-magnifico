@@ -27,7 +27,8 @@ import java.util.ArrayList;
  * This is the helper class used for loading configuration from json files
  */
 public class ConfigLoader {
-    private ConfigLoader() { }
+    private ConfigLoader() {
+    }
 
     public static Game loadConfiguration(String configDirectory) throws IOException {
         Game game = new Game();
@@ -46,7 +47,8 @@ public class ConfigLoader {
          * Step 1: Deserialize personal bonus tiles
          * ----------------------------------------------------------- */
         InputStreamReader bonusTilesFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/bonusTiles.json"));
-        ArrayList<PersonalBonusTile> personalBonusTiles = gson.fromJson(bonusTilesFileReader, new TypeToken<ArrayList<PersonalBonusTile>>(){}.getType());
+        ArrayList<PersonalBonusTile> personalBonusTiles = gson.fromJson(bonusTilesFileReader, new TypeToken<ArrayList<PersonalBonusTile>>() {
+        }.getType());
         game.setAvailablePersonalBonusTiles(personalBonusTiles);
         bonusTilesFileReader.close();
 
@@ -55,19 +57,23 @@ public class ConfigLoader {
          * Step 2: Deserialize development cards
          * ----------------------------------------------------------- */
         InputStreamReader territoryCardsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/territoryCards.json"));
-        ArrayList<TerritoryCard> territoryCards =  gson.fromJson(territoryCardsFileReader, new TypeToken<ArrayList<TerritoryCard>>(){}.getType());
+        ArrayList<TerritoryCard> territoryCards = gson.fromJson(territoryCardsFileReader, new TypeToken<ArrayList<TerritoryCard>>() {
+        }.getType());
         territoryCardsFileReader.close();
 
         InputStreamReader buildingCardsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/buildingCards.json"));
-        ArrayList<BuildingCard> buildingCards =  gson.fromJson(buildingCardsFileReader, new TypeToken<ArrayList<BuildingCard>>(){}.getType());
+        ArrayList<BuildingCard> buildingCards = gson.fromJson(buildingCardsFileReader, new TypeToken<ArrayList<BuildingCard>>() {
+        }.getType());
         buildingCardsFileReader.close();
 
         InputStreamReader characterCardsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/characterCards.json"));
-        ArrayList<CharacterCard> characterCards =  gson.fromJson(characterCardsFileReader, new TypeToken<ArrayList<CharacterCard>>(){}.getType());
+        ArrayList<CharacterCard> characterCards = gson.fromJson(characterCardsFileReader, new TypeToken<ArrayList<CharacterCard>>() {
+        }.getType());
         characterCardsFileReader.close();
 
         InputStreamReader ventureCardsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/ventureCards.json"));
-        ArrayList<VentureCard> ventureCards =  gson.fromJson(ventureCardsFileReader, new TypeToken<ArrayList<VentureCard>>(){}.getType());
+        ArrayList<VentureCard> ventureCards = gson.fromJson(ventureCardsFileReader, new TypeToken<ArrayList<VentureCard>>() {
+        }.getType());
         ventureCardsFileReader.close();
 
         game.setAvailableTerritoryCards(territoryCards);
@@ -79,21 +85,24 @@ public class ConfigLoader {
          * Step 3: Deserialize leader cards
          * ----------------------------------------------------------- */
         InputStreamReader leaderCardsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/leaderCards.json"));
-        ArrayList<LeaderCard> leaderCards = gson.fromJson(leaderCardsFileReader, new TypeToken<ArrayList<LeaderCard>>(){}.getType());
+        ArrayList<LeaderCard> leaderCards = gson.fromJson(leaderCardsFileReader, new TypeToken<ArrayList<LeaderCard>>() {
+        }.getType());
         game.setAvailableLeaderCards(leaderCards);
 
         /* -----------------------------------------------------------
          * Step 4: Deserialize excommunications
          * ----------------------------------------------------------- */
         InputStreamReader excommunicationsFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/excommunications.json"));
-        ArrayList<Excommunication> excommunications = gson.fromJson(excommunicationsFileReader, new TypeToken<ArrayList<Excommunication>>(){}.getType());
+        ArrayList<Excommunication> excommunications = gson.fromJson(excommunicationsFileReader, new TypeToken<ArrayList<Excommunication>>() {
+        }.getType());
         game.setAvailableExcommunications(excommunications);
 
         /* -----------------------------------------------------------
          * Step 5: Deserialize council privileges
          * ----------------------------------------------------------- */
         InputStreamReader councilPrivilegesFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/councilPrivileges.json"));
-        ArrayList<ObtainedResourceSet> councilPrivileges = gson.fromJson(councilPrivilegesFileReader, new TypeToken<ArrayList<ObtainedResourceSet>>(){}.getType());
+        ArrayList<ObtainedResourceSet> councilPrivileges = gson.fromJson(councilPrivilegesFileReader, new TypeToken<ArrayList<ObtainedResourceSet>>() {
+        }.getType());
         game.setCouncilPrivileges(councilPrivileges);
 
         /* -----------------------------------------------------------

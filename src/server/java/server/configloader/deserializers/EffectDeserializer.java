@@ -7,7 +7,6 @@ import model.board.actionspace.ActionSpace;
 import model.board.actionspace.MarketActionSpace;
 import model.card.development.*;
 import model.card.effects.*;
-import model.card.effects.DevelopmentCardRequiredResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResource;
@@ -27,7 +26,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
 
         // TODO: 5/25/17 check if it's possible to use reflection instead of a switch-case construct
         // Curly braces are used to create a new scope for variables declared in each case
-        switch (effectType){
+        switch (effectType) {
             case "ImmediateResources": {
                 ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.getAsJsonObject("resources"), ObtainedResourceSet.class);
                 effect = new ImmediateResourcesEffect(obtainedResourceSet);
@@ -46,8 +45,9 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             }
             case "ImmediateAction": {
                 ArrayList<ActionType> actionTypes;
-                if(jsonEffect.get("actionType").isJsonArray()){
-                    actionTypes = context.deserialize(jsonEffect.getAsJsonArray("actionType"), new TypeToken<ArrayList<ActionType>>(){}.getType());
+                if (jsonEffect.get("actionType").isJsonArray()) {
+                    actionTypes = context.deserialize(jsonEffect.getAsJsonArray("actionType"), new TypeToken<ArrayList<ActionType>>() {
+                    }.getType());
                 }
                 else {
                     actionTypes = new ArrayList<>();
@@ -60,8 +60,9 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             }
             case "ImmediateActionWithDiscounts": {
                 ArrayList<ActionType> actionTypes;
-                if(jsonEffect.get("actionType").isJsonArray()){
-                    actionTypes = context.deserialize(jsonEffect.getAsJsonArray("actionType"), new TypeToken<ArrayList<ActionType>>(){}.getType());
+                if (jsonEffect.get("actionType").isJsonArray()) {
+                    actionTypes = context.deserialize(jsonEffect.getAsJsonArray("actionType"), new TypeToken<ArrayList<ActionType>>() {
+                    }.getType());
                 }
                 else {
                     actionTypes = new ArrayList<>();
@@ -69,7 +70,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 }
                 int actionValue = jsonEffect.get("value").getAsInt();
 
-                ArrayList<RequiredResourceSet> discounts = context.deserialize(jsonEffect.getAsJsonArray("discounts"), new TypeToken<ArrayList<RequiredResourceSet>>(){}.getType());
+                ArrayList<RequiredResourceSet> discounts = context.deserialize(jsonEffect.getAsJsonArray("discounts"), new TypeToken<ArrayList<RequiredResourceSet>>() {
+                }.getType());
 
                 effect = new ImmediateActionWithDiscountsEffect(actionTypes, actionValue, discounts);
                 break;
@@ -102,7 +104,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 RequiredResourceSet resources = context.deserialize(jsonEffect.get("resources"), RequiredResourceSet.class);
                 String cardType = jsonEffect.get("cardType").getAsString();
                 Class<? extends DevelopmentCard> cardClass;
-                switch (cardType){
+                switch (cardType) {
                     case "BUILDING":
                         cardClass = BuildingCard.class;
                         break;
@@ -145,7 +147,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 break;
             }
             case "OncePerRoundFamilyMemberValueSetter": {
-                ArrayList<FamilyMemberColor> allowedFamilyMemberColors = context.deserialize(jsonEffect.getAsJsonArray("allowedFamilyMemberColor"), new TypeToken<ArrayList<FamilyMemberColor>>(){}.getType());
+                ArrayList<FamilyMemberColor> allowedFamilyMemberColors = context.deserialize(jsonEffect.getAsJsonArray("allowedFamilyMemberColor"), new TypeToken<ArrayList<FamilyMemberColor>>() {
+                }.getType());
                 int value = jsonEffect.get("value").getAsInt();
                 effect = new OncePerRoundFamilyMemberValueSetterEffect(allowedFamilyMemberColors, value);
                 break;
@@ -165,7 +168,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             case "InhibitActionSpace": {
                 String actionSpaceType = jsonEffect.get("actionSpace").getAsString();
                 Class<? extends ActionSpace> actionSpaceClass;
-                switch (actionSpaceType){
+                switch (actionSpaceType) {
                     case "Market":
                         actionSpaceClass = MarketActionSpace.class;
                         break;
@@ -199,7 +202,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 effect = new IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect(developmentCardClass);
                 break;
             }
-            case "EndOfGameBuildingCardCostPenalty":{
+            case "EndOfGameBuildingCardCostPenalty": {
                 effect = new EndOfGameBuildingCardCostPenaltyEffect();
                 break;
             }

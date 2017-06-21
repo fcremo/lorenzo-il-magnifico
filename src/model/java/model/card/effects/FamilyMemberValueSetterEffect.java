@@ -15,8 +15,8 @@ public class FamilyMemberValueSetterEffect implements EffectInterface {
         this.value = value;
     }
 
-    public int setFamilyMemberValue(FamilyMemberColor familyMember, int currentValue){
-        if(familyMemberColor == familyMember){
+    public int setFamilyMemberValue(FamilyMemberColor familyMember, int currentValue) {
+        if (familyMemberColor == familyMember) {
             return value;
         }
         else {

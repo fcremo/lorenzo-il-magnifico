@@ -1,16 +1,12 @@
 package ui.cli;
 
 import client.ClientController;
-import client.ConnectionMethod;
-import client.exceptions.LoginException;
-import client.exceptions.NetworkException;
 import gamecontroller.GameState;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import ui.UIEventsInterface;
 import ui.cli.contexts.*;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,6 +19,11 @@ public class CLIUserInterface implements UIEventsInterface {
     private Context currentContext;
 
     private Runnable keyboardHandler;
+
+    private static String askForString(String prompt) {
+        System.out.print(prompt + " ");
+        return new Scanner(System.in).nextLine();
+    }
 
     /**
      * This is the entry point for the user interface
@@ -82,10 +83,5 @@ public class CLIUserInterface implements UIEventsInterface {
                 currentContext.handleInput(input);
             }
         }
-    }
-
-    private static String askForString(String prompt) {
-        System.out.print(prompt + " ");
-        return new Scanner(System.in).nextLine();
     }
 }

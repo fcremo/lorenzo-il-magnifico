@@ -23,7 +23,7 @@ public class BuildingCardDeserializer implements JsonDeserializer<BuildingCard> 
 
         ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions = new ArrayList<>();
         JsonArray productionsJsonArray = buildingCardJsonObject.getAsJsonArray("productions");
-        for (JsonElement o: productionsJsonArray) {
+        for (JsonElement o : productionsJsonArray) {
             JsonObject priceJsonObject = o.getAsJsonObject().getAsJsonObject("price");
             RequiredResourceSet price = new RequiredResourceSetDeserializer().deserialize(priceJsonObject, RequiredResourceSet.class, context);
 

@@ -20,13 +20,14 @@ public class DevelopmentCardRequiredResourceSetModifierEffect implements EffectI
 
     /**
      * Modify the set of resources needed to take a certain development card
+     *
      * @param currentResourceSets the current computed cost of the card
-     * @param card the card being taken
+     * @param card                the card being taken
      * @return
      */
-    public ArrayList<RequiredResourceSet> modifyResources(ArrayList<RequiredResourceSet> currentResourceSets, DevelopmentCard card){
+    public ArrayList<RequiredResourceSet> modifyResources(ArrayList<RequiredResourceSet> currentResourceSets, DevelopmentCard card) {
         // TODO
-        return  null;
+        return null;
     }
 
     @Override

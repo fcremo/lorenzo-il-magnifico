@@ -21,7 +21,7 @@ public class InhibitActionSpaceEffect implements EffectInterface {
      * <b>If true no further checks have to be performed, the player can't go there</b>
      */
     public boolean isInhibited(ActionSpace actionSpace) {
-        if(actionSpaceType.isAssignableFrom(actionSpace.getClass())){
+        if (actionSpaceType.isAssignableFrom(actionSpace.getClass())) {
             return true;
         }
         else {

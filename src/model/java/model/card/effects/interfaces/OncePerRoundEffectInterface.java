@@ -6,6 +6,7 @@ package model.card.effects.interfaces;
 public interface OncePerRoundEffectInterface extends EffectInterface {
     /**
      * Checks if the effect has not been activated during the current turn
+     *
      * @param currentTurn
      * @return
      */
@@ -13,6 +14,7 @@ public interface OncePerRoundEffectInterface extends EffectInterface {
 
     /**
      * Marks the effect activated during the current turn
+     *
      * @param currentTurn
      */
     void markActivated(int currentTurn);

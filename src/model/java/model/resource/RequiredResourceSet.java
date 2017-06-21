@@ -18,11 +18,11 @@ public class RequiredResourceSet implements Serializable {
         this.requiredResources = requiredResources;
     }
 
-    public int getResourceRequirement(ResourceType resourceType){
+    public int getResourceRequirement(ResourceType resourceType) {
         return requiredResources.getOrDefault(resourceType, 0);
     }
 
-    public void setResourceRequirement(ResourceType resourceType, int requirement){
+    public void setResourceRequirement(ResourceType resourceType, int requirement) {
         requiredResources.put(resourceType, requirement);
     }
 
@@ -35,9 +35,9 @@ public class RequiredResourceSet implements Serializable {
         StringBuilder printable = new StringBuilder();
         for (ResourceType resource : requiredResources.keySet()) {
             printable.append(requiredResources.get(resource).toString())
-                    .append(" ")
-                    .append(resource.toString())
-                    .append(", ");
+                     .append(" ")
+                     .append(resource.toString())
+                     .append(", ");
         }
         if (printable.lastIndexOf(", ") != -1) {
             printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);

@@ -29,8 +29,8 @@ public class ChooseLeaderCardContext extends Context {
     }
 
     private void printLeaderCards() {
-        for(int i = 1; i<= leaderCards.size(); i++){
-            System.out.println(i + ") " + leaderCards.get(i-1).toString());
+        for (int i = 1; i <= leaderCards.size(); i++) {
+            System.out.println(i + ") " + leaderCards.get(i - 1).toString());
         }
     }
 
@@ -38,7 +38,7 @@ public class ChooseLeaderCardContext extends Context {
         if (params.length != 1) throw new InvalidCommandException("You have to choose a leader card!");
         try {
             int chosenLeaderCard = Integer.parseInt(params[0]);
-            if(chosenLeaderCard < 1 || chosenLeaderCard > leaderCards.size()){
+            if (chosenLeaderCard < 1 || chosenLeaderCard > leaderCards.size()) {
                 throw new InvalidCommandException("You chose an invalid leader card");
             }
             callback.chooseLeaderCard(leaderCards.get(chosenLeaderCard - 1));

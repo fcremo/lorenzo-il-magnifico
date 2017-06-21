@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * This class implements the ClientToServerInterface for RMI.
  * Clients will get a stub that will call (via RMI) methods on a server side instance of this class.
- *
+ * <p>
  * The server can also use this object to push messages to the clients using the ServerToClientInterface.
  */
 public class RMIClientConnection extends ClientConnection implements ServerToClientInterface, ClientToServerInterface, Remote {
@@ -28,7 +28,8 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
         this.client = client;
         try {
             UnicastRemoteObject.exportObject(this, 0);
-        } catch (RemoteException e) {
+        }
+        catch (RemoteException e) {
             System.out.println("RMIClientConnection already exported");
         }
     }

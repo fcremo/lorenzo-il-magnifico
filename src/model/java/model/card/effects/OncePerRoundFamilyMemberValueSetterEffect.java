@@ -33,13 +33,14 @@ public class OncePerRoundFamilyMemberValueSetterEffect implements OncePerRoundEf
 
     /**
      * Set the value of the family member
+     *
      * @param currentValue      the current value
      * @param familyMemberColor the family member used
      * @return the new value of the family member
      */
     @Override
     public int setValue(int currentValue, FamilyMemberColor familyMemberColor) {
-        if(this.familyMemberColor == familyMemberColor){
+        if (this.familyMemberColor == familyMemberColor) {
             return value;
         }
         else {

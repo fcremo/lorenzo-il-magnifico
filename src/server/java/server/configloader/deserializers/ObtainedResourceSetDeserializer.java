@@ -11,15 +11,15 @@ import java.util.HashMap;
 
 /**
  * This class is responsible for deserializing an obtained resource set.
- *
+ * <p>
  * Having this custom deserializer allows a more compact representation of
  * the resource sets that don't have resources that get multiplied,
  * by letting you specify the static resources in the root of the object.
- *
+ * <p>
  * Example: a resource set that does not have multipliers is represented like this:
- *          {"GOLD": 1} instead of {"resources": {"GOLD": 1}}.
- *          A resource set that has (also) multipliers is represented like this:
- *          {"GOLD": 1, "multipliers": {"requirement": {"buildings": 1}, "resources": {"GOLD": 1}}}
+ * {"GOLD": 1} instead of {"resources": {"GOLD": 1}}.
+ * A resource set that has (also) multipliers is represented like this:
+ * {"GOLD": 1, "multipliers": {"requirement": {"buildings": 1}, "resources": {"GOLD": 1}}}
  */
 public class ObtainedResourceSetDeserializer implements JsonDeserializer<ObtainedResourceSet> {
     @Override
@@ -42,16 +42,17 @@ public class ObtainedResourceSetDeserializer implements JsonDeserializer<Obtaine
         /*
          * Cycle on the types of static resources
         */
-        for(ObtainableResource obtainableResource : ObtainableResource.values()){
+        for (ObtainableResource obtainableResource : ObtainableResource.values()) {
             // Get the number of resources of the current type
             JsonElement jsonObtainedResource = jsonObtainedResourceSet.get(obtainableResource.name());
-            if(jsonObtainedResource != null){
+            if (jsonObtainedResource != null) {
                 int nObtained = jsonObtainedResource.getAsInt();
                 jsonStaticResourcesObject.addProperty(obtainableResource.name(), nObtained);
             }
         }
 
-        Type staticResourcesType = new TypeToken<HashMap<ObtainableResource, Integer>>(){}.getType();
+        Type staticResourcesType = new TypeToken<HashMap<ObtainableResource, Integer>>() {
+        }.getType();
         HashMap<ObtainableResource, Integer> staticResources = context.deserialize(jsonStaticResourcesObject, staticResourcesType);
 
         /* ----------------------------------------------------------------------------
@@ -62,8 +63,8 @@ public class ObtainedResourceSetDeserializer implements JsonDeserializer<Obtaine
          */
         HashMap<RequiredResourceSet, ObtainedResourceSet> multiplierResources = new HashMap<>();
         JsonArray jsonMultiplierResourcesArray = jsonObtainedResourceSet.getAsJsonArray("multipliers");
-        if(jsonMultiplierResourcesArray != null){
-            for(JsonElement jsonMultiplier: jsonMultiplierResourcesArray){
+        if (jsonMultiplierResourcesArray != null) {
+            for (JsonElement jsonMultiplier : jsonMultiplierResourcesArray) {
                 JsonObject jsonRequirements = jsonMultiplier.getAsJsonObject().getAsJsonObject("requirements");
                 JsonObject jsonResources = jsonMultiplier.getAsJsonObject().getAsJsonObject("resources");
 

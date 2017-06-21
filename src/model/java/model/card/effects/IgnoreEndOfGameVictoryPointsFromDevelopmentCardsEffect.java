@@ -15,11 +15,10 @@ public class IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect implements E
     }
 
     /**
-     *
      * @param developmentCardType
      * @return true if the victory points from the provided type of development cards must be ignored
      */
-    public boolean ignoreVictoryPointsFromDevelopmentCard(Class<? extends DevelopmentCard> developmentCardType){
+    public boolean ignoreVictoryPointsFromDevelopmentCard(Class<? extends DevelopmentCard> developmentCardType) {
         return developmentCardType == this.developmentCardType;
     }
 

@@ -21,6 +21,7 @@ public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect im
 
     /**
      * Modify the required resource sets for the performed action
+     *
      * @param currentRequiredResourceSets
      * @return the discounted resource set
      */
@@ -34,14 +35,14 @@ public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect im
         StringBuilder effects = new StringBuilder("Perform a ");
         for (ActionType action : actionTypes) {
             effects.append(action)
-                    .append(" or ");
+                   .append(" or ");
         }
         effects.delete(effects.lastIndexOf(" or "), effects.lastIndexOf(" or ") + 4);
         effects.append(" with value ")
-                .append(actionValue)
-                .append(" without placing a Family Member. In addition, the cost of the card you take is reduced by ")
-                .append(discounts)
-                .append(".");
+               .append(actionValue)
+               .append(" without placing a Family Member. In addition, the cost of the card you take is reduced by ")
+               .append(discounts)
+               .append(".");
         return effects.toString();
     }
 }

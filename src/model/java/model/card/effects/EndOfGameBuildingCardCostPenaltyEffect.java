@@ -12,7 +12,7 @@ import model.resource.RequiredResourceSet;
  * For example, if all your Building Cards cost 7 wood and 6 stone, you lose 13 Victory Points"
  */
 public class EndOfGameBuildingCardCostPenaltyEffect implements EffectInterface {
-    public RequiredResourceSet computePenalty(Player player){
+    public RequiredResourceSet computePenalty(Player player) {
         // TODO
         return null;
     }

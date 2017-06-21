@@ -13,7 +13,7 @@ public class FloorBonusResourcesSetterEffect implements EffectInterface {
         this.obtainedResourceSet = obtainedResourceSet;
     }
 
-    public ObtainedResourceSet setObtainedResourceSet(){
+    public ObtainedResourceSet setObtainedResourceSet() {
         return obtainedResourceSet;
     }
 

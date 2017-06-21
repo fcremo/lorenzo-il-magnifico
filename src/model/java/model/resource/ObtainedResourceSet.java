@@ -33,9 +33,10 @@ public class ObtainedResourceSet implements Serializable {
 
     /**
      * Copy constructor
+     *
      * @param obtainedResourceSet
      */
-    public ObtainedResourceSet(ObtainedResourceSet obtainedResourceSet){
+    public ObtainedResourceSet(ObtainedResourceSet obtainedResourceSet) {
         this.resources = new HashMap<>(obtainedResourceSet.resources);
         // TODO: 5/25/17 this works until nothing modifies multipliers. Implement proper deep cloning.
         this.resourceMultipliers = new HashMap<>(obtainedResourceSet.resourceMultipliers);
@@ -59,12 +60,12 @@ public class ObtainedResourceSet implements Serializable {
      * N.B: this method returns a deep copy of the current object, it does not modify it
      *
      * @param resource the type of resource you want to modify
-     * @param qty the quantity of the resource
+     * @param qty      the quantity of the resource
      */
     public ObtainedResourceSet addResource(ObtainableResource resource, int qty) {
         ObtainedResourceSet newResourceSet = new ObtainedResourceSet(this);
         int currentQty = resources.getOrDefault(resource, 0);
-        if(currentQty + qty >= 0){
+        if (currentQty + qty >= 0) {
             newResourceSet.resources.put(resource, currentQty + qty);
         }
         return newResourceSet;
@@ -79,15 +80,15 @@ public class ObtainedResourceSet implements Serializable {
         StringBuilder printable = new StringBuilder();
         for (ObtainableResource resource : resources.keySet()) {
             printable.append(resources.get(resource).toString())
-                    .append(" ")
-                    .append(resource.toString())
-                    .append(", ");
+                     .append(" ")
+                     .append(resource.toString())
+                     .append(", ");
         }
         for (RequiredResourceSet required : resourceMultipliers.keySet()) {
             printable.append(resourceMultipliers.get(required).toString())
-                    .append(" --> ")
-                    .append(required.toString())
-                    .append(", ");
+                     .append(" --> ")
+                     .append(required.toString())
+                     .append(", ");
         }
         if (printable.lastIndexOf(", ") != -1) {
             printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
@@ -104,8 +105,8 @@ public class ObtainedResourceSet implements Serializable {
         // Ensure static resources are equal
         Set<ObtainableResource> allResources = new HashSet<>(resources.keySet());
         allResources.addAll(otherResourceSet.resources.keySet());
-        for (ObtainableResource r: allResources) {
-            if(resources.getOrDefault(r, 0) != otherResourceSet.resources.getOrDefault(r, 0)){
+        for (ObtainableResource r : allResources) {
+            if (resources.getOrDefault(r, 0) != otherResourceSet.resources.getOrDefault(r, 0)) {
                 return false;
             }
         }

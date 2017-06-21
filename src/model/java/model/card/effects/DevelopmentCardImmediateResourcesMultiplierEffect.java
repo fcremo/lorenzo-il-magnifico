@@ -18,7 +18,7 @@ public class DevelopmentCardImmediateResourcesMultiplierEffect implements Effect
         this.resourceType = resourceType;
     }
 
-    public ArrayList<ObtainedResourceSet> multiplyObtainedResourceSet(ArrayList<ObtainedResourceSet> currentObtainedResourceSets){
+    public ArrayList<ObtainedResourceSet> multiplyObtainedResourceSet(ArrayList<ObtainedResourceSet> currentObtainedResourceSets) {
         return null;
         // TODO
     }

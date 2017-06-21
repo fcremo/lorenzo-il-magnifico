@@ -43,6 +43,7 @@ public interface ClientToServerInterface extends Remote {
 
     /**
      * Chooses a personal bonus tile
+     *
      * @param personalBonusTile
      * @throws NetworkException
      * @throws RemoteException
@@ -51,6 +52,7 @@ public interface ClientToServerInterface extends Remote {
 
     /**
      * Chooses a leader card
+     *
      * @param leaderCard
      * @throws NetworkException
      * @throws RemoteException

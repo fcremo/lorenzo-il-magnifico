@@ -27,9 +27,9 @@ import java.util.List;
  * This class bridges the network interface and the UI
  */
 public class ClientController implements GameEventsInterface, NetworkSettingsContext.Callback,
-                                                                LoginContext.Callback,
-                                                                ChooseBonusTileContext.Callback,
-                                                                ChooseLeaderCardContext.Callback {
+                                         LoginContext.Callback,
+                                         ChooseBonusTileContext.Callback,
+                                         ChooseLeaderCardContext.Callback {
     private UIEventsInterface ui;
 
     private GameController gameController;
@@ -43,9 +43,11 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     /* ---------------------------------------
      * CALLBACKS
      * --------------------------------------- */
+
     /**
      * NetworkSettingsContext callback.
      * Establishes a connection to the server
+     *
      * @param connectionMethod
      * @param hostname
      * @param port
@@ -56,7 +58,8 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
         if (connectionMethod == ConnectionMethod.SOCKET) {
             clientConnection = new SocketClient(hostname, port, this);
-        } else if (connectionMethod == ConnectionMethod.RMI) {
+        }
+        else if (connectionMethod == ConnectionMethod.RMI) {
             clientConnection = new RMIClient(hostname, port, this);
         }
         ui.showLoginPrompt();
@@ -65,6 +68,7 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     /**
      * {@link LoginContext} callback.
      * Logs in the player with the given username
+     *
      * @param username
      * @throws NetworkException
      * @throws LoginException
@@ -76,7 +80,8 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
 
         try {
             clientConnection.joinFirstAvailableRoom();
-        } catch (NoAvailableRoomsException e) {
+        }
+        catch (NoAvailableRoomsException e) {
             clientConnection.createAndJoinRoom();
         }
         ui.showWaitingMessage("Waiting for the game to start...");

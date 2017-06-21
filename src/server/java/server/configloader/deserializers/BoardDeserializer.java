@@ -24,10 +24,14 @@ public class BoardDeserializer implements JsonDeserializer<Board> {
         /* ---------------------------------------------------------
          * Step 1: Deserialize towers
          * --------------------------------------------------------- */
-        Tower greenTower = new TowerDeserializer().deserialize(jsonBoardObject.get("greenTower"), new TypeToken<Tower<TerritoryCard>>(){}.getType(), context);
-        Tower blueTower = new TowerDeserializer().deserialize(jsonBoardObject.get("blueTower"), new TypeToken<Tower<CharacterCard>>(){}.getType(), context);
-        Tower yellowTower = new TowerDeserializer().deserialize(jsonBoardObject.get("yellowTower"), new TypeToken<Tower<BuildingCard>>(){}.getType(), context);
-        Tower purpleTower = new TowerDeserializer().deserialize(jsonBoardObject.get("purpleTower"), new TypeToken<Tower<VentureCard>>(){}.getType(), context);
+        Tower greenTower = new TowerDeserializer().deserialize(jsonBoardObject.get("greenTower"), new TypeToken<Tower<TerritoryCard>>() {
+        }.getType(), context);
+        Tower blueTower = new TowerDeserializer().deserialize(jsonBoardObject.get("blueTower"), new TypeToken<Tower<CharacterCard>>() {
+        }.getType(), context);
+        Tower yellowTower = new TowerDeserializer().deserialize(jsonBoardObject.get("yellowTower"), new TypeToken<Tower<BuildingCard>>() {
+        }.getType(), context);
+        Tower purpleTower = new TowerDeserializer().deserialize(jsonBoardObject.get("purpleTower"), new TypeToken<Tower<VentureCard>>() {
+        }.getType(), context);
 
         /* ---------------------------------------------------------
          * Step 2: Deserialize the other action spaces

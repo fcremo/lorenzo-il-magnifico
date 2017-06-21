@@ -40,12 +40,12 @@ public class ImmediateActionEffect implements EffectInterface {
         StringBuilder effects = new StringBuilder("Perform a ");
         for (ActionType action : actionTypes) {
             effects.append(action)
-                    .append(" or ");
+                   .append(" or ");
         }
         effects.delete(effects.lastIndexOf(" or "), effects.lastIndexOf(" or ") + 4);
         effects.append(" with value ")
-                .append(actionValue)
-                .append(" without placing a Family Member.");
+               .append(actionValue)
+               .append(" without placing a Family Member.");
         return effects.toString();
     }
 }

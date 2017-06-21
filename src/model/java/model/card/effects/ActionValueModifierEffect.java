@@ -18,12 +18,13 @@ public class ActionValueModifierEffect implements EffectInterface {
 
     /**
      * Modify the value of the family member for a given action
+     *
      * @param currentValue the current value of the family member
-     * @param action the action being performed
+     * @param action       the action being performed
      * @return
      */
     public int modifyValue(int currentValue, Action action) {
-        if(action.getActionType() == actionType){
+        if (action.getActionType() == actionType) {
             return action.getActionValue() + value;
         }
         else {

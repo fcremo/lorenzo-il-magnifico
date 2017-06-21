@@ -45,7 +45,7 @@ public abstract class Context {
                 System.out.println(e.getMessage());
             }
             catch (RemoteException | NetworkException e) {
-                    e.printStackTrace();
+                e.printStackTrace();
             }
         }
         else {
@@ -60,7 +60,7 @@ public abstract class Context {
     private class HelpCommand implements Command {
         public void execute(String[] arguments) throws InvalidCommandException {
             if (arguments.length == 1) {
-                if(helps.containsKey(arguments[0])) {
+                if (helps.containsKey(arguments[0])) {
                     System.out.println(helps.get(arguments[0]));
                 }
                 else {

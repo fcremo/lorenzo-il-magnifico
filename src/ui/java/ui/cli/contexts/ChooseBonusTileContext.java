@@ -29,8 +29,8 @@ public class ChooseBonusTileContext extends Context {
     }
 
     private void printBonusTiles() {
-        for(int i=1; i<=personalBonusTiles.size(); i++){
-            System.out.println(i + ") " + personalBonusTiles.get(i-1).toString());
+        for (int i = 1; i <= personalBonusTiles.size(); i++) {
+            System.out.println(i + ") " + personalBonusTiles.get(i - 1).toString());
         }
     }
 
@@ -38,10 +38,10 @@ public class ChooseBonusTileContext extends Context {
         if (params.length != 1) throw new InvalidCommandException("You have to choose a bonus tile!");
         try {
             int chosenBonusTileIndex = Integer.parseInt(params[0]);
-            if(chosenBonusTileIndex < 1 || chosenBonusTileIndex > personalBonusTiles.size()){
+            if (chosenBonusTileIndex < 1 || chosenBonusTileIndex > personalBonusTiles.size()) {
                 throw new InvalidCommandException("You chose an invalid bonus tile");
             }
-            callback.chooseBonusTile(personalBonusTiles.get(chosenBonusTileIndex-1));
+            callback.chooseBonusTile(personalBonusTiles.get(chosenBonusTileIndex - 1));
         }
         catch (NumberFormatException e) {
             throw new InvalidCommandException("Input a valid number please");

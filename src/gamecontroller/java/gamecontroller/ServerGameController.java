@@ -43,31 +43,31 @@ public class ServerGameController extends GameController {
     /**
      * Set a random player order and update current player
      */
-    public void shufflePlayers(){
+    public void shufflePlayers() {
         Collections.shuffle(getGame().getPlayers());
-        Player nextPlayer = getGame().getPlayers().get(getGame().getPlayers().size()-1);
+        Player nextPlayer = getGame().getPlayers().get(getGame().getPlayers().size() - 1);
         getGame().setCurrentPlayer(nextPlayer);
     }
 
     /**
      * Draw three random excommunications
      */
-    public void drawExcommunications(){
+    public void drawExcommunications() {
         Game game = getGame();
 
         // First period
         List<Excommunication> firstPeriodExcommunications = game.getAvailableExcommunications().stream()
-                .filter(e -> e.getPeriod() == 1).collect(Collectors.toList());
+                                                                .filter(e -> e.getPeriod() == 1).collect(Collectors.toList());
         Excommunication firstPeriodExcommunication = firstPeriodExcommunications.get(new Random().nextInt(firstPeriodExcommunications.size()));
 
         // Second period
         List<Excommunication> secondPeriodExcommunications = game.getAvailableExcommunications().stream()
-                .filter(e -> e.getPeriod() == 2).collect(Collectors.toList());
+                                                                 .filter(e -> e.getPeriod() == 2).collect(Collectors.toList());
         Excommunication secondPeriodExcommunication = secondPeriodExcommunications.get(new Random().nextInt(secondPeriodExcommunications.size()));
 
         // Third period
         List<Excommunication> thirdPeriodExcommunications = game.getAvailableExcommunications().stream()
-                .filter(e -> e.getPeriod() == 3).collect(Collectors.toList());
+                                                                .filter(e -> e.getPeriod() == 3).collect(Collectors.toList());
         Excommunication thirdPeriodExcommunication = thirdPeriodExcommunications.get(new Random().nextInt(thirdPeriodExcommunications.size()));
 
         // Set chosen excommunications in the game
@@ -84,14 +84,15 @@ public class ServerGameController extends GameController {
     /**
      * Start drafting the personal bonus tiles
      */
-    public void draftNextBonusTile(){
+    public void draftNextBonusTile() {
         setGameState(GameState.DRAFTING_BONUS_TILES);
 
         // Ask the first player to choose a bonus tile
         ClientConnection connection = gameRoom.getConnectionForPlayer(getGame().getCurrentPlayer());
         try {
             connection.askToChoosePersonalBonusTile(getGame().getAvailablePersonalBonusTiles());
-        } catch (RemoteException e) {
+        }
+        catch (RemoteException e) {
             e.printStackTrace();
         }
 
@@ -99,30 +100,31 @@ public class ServerGameController extends GameController {
         getGame().getPlayers().stream()
                  .filter(player -> !player.equals(getGame().getCurrentPlayer()))
                  .forEach(player -> {
-                            try {
-                                gameRoom.getConnectionForPlayer(player).showWaitingMessage("Wait for other players to choose a bonus tile");
-                            }
-                            catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
+                     try {
+                         gameRoom.getConnectionForPlayer(player).showWaitingMessage("Wait for other players to choose a bonus tile");
+                     }
+                     catch (RemoteException e) {
+                         e.printStackTrace();
+                     }
                  });
     }
 
     /**
      * Called when a player chooses his personal bonus tile
+     *
      * @param player
      * @param personalBonusTile
      */
     public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException, ActionNotAllowedException {
         // Check that the game phase is right
-        if(getGameState() != GameState.DRAFTING_BONUS_TILES){
+        if (getGameState() != GameState.DRAFTING_BONUS_TILES) {
             throw new ActionNotAllowedException();
         }
 
         // Check that the bonus tile is available
         Optional<PersonalBonusTile> optChosenPersonalBonusTile = getGame().getAvailablePersonalBonusTiles().stream()
-                                                                       .filter(tile -> tile.equals(personalBonusTile))
-                                                                       .findFirst();
+                                                                          .filter(tile -> tile.equals(personalBonusTile))
+                                                                          .findFirst();
 
         if (!optChosenPersonalBonusTile.isPresent()) {
             throw new PersonalBonusTileNotAvailableException();
@@ -137,7 +139,7 @@ public class ServerGameController extends GameController {
 
         // Draft next bonus tile
         int currentPlayerIndex = getGame().getPlayers().indexOf(player);
-        if(currentPlayerIndex > 0) {
+        if (currentPlayerIndex > 0) {
             Player nextPlayer = getGame().getPlayers().get(currentPlayerIndex - 1);
             getGame().setCurrentPlayer(nextPlayer);
             draftNextBonusTile();
@@ -150,7 +152,7 @@ public class ServerGameController extends GameController {
     /**
      * Start drafting the leader cards
      */
-    private void startLeaderCardsDraft(){
+    private void startLeaderCardsDraft() {
         setGameState(GameState.DRAFTING_LEADER_CARDS);
 
         // Draw 4 leader cards for each player
@@ -158,7 +160,7 @@ public class ServerGameController extends GameController {
         List<LeaderCard> availableLeaderCards = getGame().getAvailableLeaderCards();
         for (Player player : getGame().getPlayers()) {
             List<LeaderCard> playerLeaderCards = new ArrayList<>();
-            for (int i=0; i<4; i++) {
+            for (int i = 0; i < 4; i++) {
                 LeaderCard leaderCard = availableLeaderCards.get(new Random().nextInt(availableLeaderCards.size()));
                 playerLeaderCards.add(leaderCard);
                 availableLeaderCards.remove(leaderCard);
@@ -166,7 +168,7 @@ public class ServerGameController extends GameController {
             leaderCardsDraft.put(player, playerLeaderCards);
         }
 
-        playersThatHaveToDraft = (List)getGame().getPlayers().clone();
+        playersThatHaveToDraft = (List) getGame().getPlayers().clone();
 
         draftNextLeaderCard();
     }
@@ -182,7 +184,8 @@ public class ServerGameController extends GameController {
 
             try {
                 playerConnection.askToChooseLeaderCard(playerLeaderCards);
-            } catch (RemoteException e) {
+            }
+            catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
@@ -190,24 +193,25 @@ public class ServerGameController extends GameController {
 
     /**
      * Called when a player chooses his leader card
+     *
      * @param player
      * @param leaderCard
      */
     public void addLeaderCard(Player player, LeaderCard leaderCard) throws LeaderCardNotAvailableException, ActionNotAllowedException {
         // Check that the game phase is right
-        if(getGameState() != GameState.DRAFTING_LEADER_CARDS){
+        if (getGameState() != GameState.DRAFTING_LEADER_CARDS) {
             throw new ActionNotAllowedException();
         }
 
         // Check that the player has not chosen a leader card yet
-        if(!playersThatHaveToDraft.contains(player)){
+        if (!playersThatHaveToDraft.contains(player)) {
             throw new ActionNotAllowedException();
         }
 
         // Check that the player could choose this leader card
         Optional<LeaderCard> optChosenLeaderCard = leaderCardsDraft.get(player).stream()
-                                                                    .filter(tile -> tile.equals(leaderCard))
-                                                                    .findFirst();
+                                                                   .filter(tile -> tile.equals(leaderCard))
+                                                                   .findFirst();
 
         if (!optChosenLeaderCard.isPresent()) {
             throw new LeaderCardNotAvailableException();
@@ -224,7 +228,7 @@ public class ServerGameController extends GameController {
         playersThatHaveToDraft.remove(player);
 
         // Check if all the players have chosen their leader card
-        if(playersThatHaveToDraft.isEmpty()) {
+        if (playersThatHaveToDraft.isEmpty()) {
 
             // Check if the drafting phase is concluded
             int remainingChoices = leaderCardsDraft.get(player).size();
@@ -237,9 +241,9 @@ public class ServerGameController extends GameController {
             // Rotate the available leader cards choices
             ArrayList<Player> players = getGame().getPlayers();
             List<LeaderCard> tmp = null;
-            for(Player p: players.stream()
-                                    .limit(players.size() - 1)
-                                    .collect(Collectors.toList())){
+            for (Player p : players.stream()
+                                   .limit(players.size() - 1)
+                                   .collect(Collectors.toList())) {
 
                 int nextPlayerIndex = players.indexOf(p) + 1;
                 Player nextPlayer = players.get(nextPlayerIndex);
@@ -252,7 +256,7 @@ public class ServerGameController extends GameController {
             leaderCardsDraft.put(firstPlayer, tmp);
 
             // All the players have to draft again
-            playersThatHaveToDraft = (List)getGame().getPlayers().clone();
+            playersThatHaveToDraft = (List) getGame().getPlayers().clone();
 
             // Ask the players to draft the next leader card
             draftNextLeaderCard();
@@ -260,11 +264,11 @@ public class ServerGameController extends GameController {
         else {
             try {
                 gameRoom.getConnectionForPlayer(player).showWaitingMessage("Waiting for other players to choose...");
-            } catch (RemoteException e) {
+            }
+            catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-
 
 
     }
