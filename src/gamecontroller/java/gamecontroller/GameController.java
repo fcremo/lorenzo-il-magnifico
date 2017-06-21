@@ -1,5 +1,6 @@
 package gamecontroller;
 
+import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
 import model.Game;
 import model.action.Action;
@@ -46,7 +47,7 @@ public class GameController {
         return gameState == GameState.INITIALIZING;
     }
 
-    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException {
+    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException, ActionNotAllowedException {
         player.setBonusTile(personalBonusTile);
     }
 

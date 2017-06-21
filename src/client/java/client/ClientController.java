@@ -83,12 +83,8 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     }
 
     @Override
-    public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException {
-        try {
-            clientConnection.choosePersonalBonusTile(bonusTile);
-        } catch (PersonalBonusTileNotAvailableException e) {
-            e.printStackTrace();
-        }
+    public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException {
+        clientConnection.choosePersonalBonusTile(bonusTile);
     }
 
     @Override

@@ -26,8 +26,6 @@ public class CLIUserInterface implements UIEventsInterface {
 
     /**
      * This is the entry point for the user interface
-     *
-     * @throws NetworkException
      */
     public void start() {
         controller = new ClientController(this);
@@ -38,6 +36,7 @@ public class CLIUserInterface implements UIEventsInterface {
         keyboardHandler.run();
     }
 
+    @Override
     public void onNetworkError() {
         System.out.println("Network error!");
         System.exit(1);

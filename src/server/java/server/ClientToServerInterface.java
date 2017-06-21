@@ -47,7 +47,7 @@ public interface ClientToServerInterface extends Remote {
      * @throws NetworkException
      * @throws RemoteException
      */
-    void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException;
+    void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException;
 
     /**
      * Chooses a leader card

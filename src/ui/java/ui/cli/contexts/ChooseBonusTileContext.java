@@ -1,6 +1,8 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
 import model.player.PersonalBonusTile;
 import ui.cli.InvalidCommandException;
 
@@ -35,18 +37,27 @@ public class ChooseBonusTileContext extends Context {
     private void chooseBonusTile(String[] params) throws InvalidCommandException {
         if (params.length != 1) throw new InvalidCommandException();
         try {
-            int chosenBonusTile = Integer.parseInt(params[0]);
-            callback.chooseBonusTile(personalBonusTiles.get(chosenBonusTile-1));
+            int chosenBonusTileIndex = Integer.parseInt(params[0]);
+            if(chosenBonusTileIndex < 1 || chosenBonusTileIndex > personalBonusTiles.size()){
+                throw new InvalidCommandException();
+            }
+            callback.chooseBonusTile(personalBonusTiles.get(chosenBonusTileIndex-1));
         }
         catch (NumberFormatException e) {
             throw new InvalidCommandException();
         } catch (NetworkException | RemoteException e) {
             e.printStackTrace();
         }
+        catch (ActionNotAllowedException e) {
+            e.printStackTrace();
+        }
+        catch (PersonalBonusTileNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @FunctionalInterface
     public interface Callback {
-        void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException;
+        void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException;
     }
 }

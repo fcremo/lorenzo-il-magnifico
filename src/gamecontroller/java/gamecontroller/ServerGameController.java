@@ -99,16 +99,27 @@ public class ServerGameController extends GameController {
      * @param player
      * @param personalBonusTile
      */
-    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException {
-        // Check that the personal bonus tile is available
-        if (!getGame().getAvailablePersonalBonusTiles().contains(personalBonusTile)) {
+    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws PersonalBonusTileNotAvailableException, ActionNotAllowedException {
+        // Check that the game phase is right
+        if(getGameState() != GameState.DRAFTING_BONUS_TILES){
+            throw new ActionNotAllowedException();
+        }
+
+        // Check that the bonus tile is available
+        Optional<PersonalBonusTile> optChosenPersonalBonusTile = getGame().getAvailablePersonalBonusTiles().stream()
+                                                                       .filter(tile -> tile.equals(personalBonusTile))
+                                                                       .findFirst();
+
+        if (!optChosenPersonalBonusTile.isPresent()) {
             throw new PersonalBonusTileNotAvailableException();
         }
 
-        super.setPersonalBonusTile(player, personalBonusTile);
+        PersonalBonusTile chosenPersonalBonusTile = optChosenPersonalBonusTile.get();
+
+        super.setPersonalBonusTile(player, chosenPersonalBonusTile);
 
         // Remove the chosen bonus tile from the available ones
-        getGame().getAvailablePersonalBonusTiles().remove(personalBonusTile);
+        getGame().getAvailablePersonalBonusTiles().remove(chosenPersonalBonusTile);
 
         // Draft next bonus tile
         int currentPlayerIndex = getGame().getPlayers().indexOf(player);
@@ -180,16 +191,20 @@ public class ServerGameController extends GameController {
         }
 
         // Check that the player could choose this leader card
-        if(!leaderCardsDraft.get(player).contains(leaderCard)){
+        Optional<LeaderCard> optChosenLeaderCard = leaderCardsDraft.get(player).stream()
+                                                                    .filter(tile -> tile.equals(leaderCard))
+                                                                    .findFirst();
+
+        if (!optChosenLeaderCard.isPresent()) {
             throw new LeaderCardNotAvailableException();
         }
-        LeaderCard chosenLeaderCard = leaderCardsDraft.get(player).get(leaderCardsDraft.get(player).indexOf(leaderCard));
+        LeaderCard chosenLeaderCard = optChosenLeaderCard.get();
 
         // Add the chosen leader card to the player's available ones
         player.getAvailableLeaderCards().add(chosenLeaderCard);
 
         // Remove the chosen leader card from the possible choices
-        leaderCardsDraft.get(player).remove(leaderCard);
+        leaderCardsDraft.get(player).remove(chosenLeaderCard);
 
         // Remove the player from the ones that have to make a choice
         playersThatHaveToDraft.remove(player);

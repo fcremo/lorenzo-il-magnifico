@@ -101,7 +101,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * @throws RemoteException
      */
     @Override
-    public void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException {
+    public void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException {
         room.getServerGameController().setPersonalBonusTile(player, personalBonusTile);
     }
 

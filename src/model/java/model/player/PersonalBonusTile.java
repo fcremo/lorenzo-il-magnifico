@@ -8,6 +8,8 @@ import java.io.Serializable;
  * This class represents a personal bonus tile
  */
 public class PersonalBonusTile implements Serializable {
+    private String id;
+
     private ObtainedResourceSet productionObtainedResourceSet;
     private ObtainedResourceSet harvestObtainedResourceSet;
 
@@ -37,12 +39,12 @@ public class PersonalBonusTile implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (! (o instanceof PersonalBonusTile)) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        PersonalBonusTile otherBonusTile = (PersonalBonusTile) o;
+        PersonalBonusTile that = (PersonalBonusTile) o;
 
-        return productionObtainedResourceSet.equals(otherBonusTile.getProductionObtainedResourceSet()) &&
-                harvestObtainedResourceSet.equals(otherBonusTile.getHarvestObtainedResourceSet());
+        return id.equals(that.id);
     }
 
     @Override
