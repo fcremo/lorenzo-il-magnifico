@@ -38,21 +38,6 @@ public class CLIUserInterface implements UIEventsInterface {
         keyboardHandler.run();
     }
 
-    public void start(String username) {
-        controller = new ClientController(this);
-
-        try {
-            controller.connect(ConnectionMethod.RMI, "localhost", 1099);
-            controller.login(username);
-        } catch (NetworkException | RemoteException | LoginException e) {
-            e.printStackTrace();
-        }
-
-        keyboardHandler = new KeyboardHandler();
-        keyboardHandler.run();
-    }
-
-
     public void onNetworkError() {
         System.out.println("Network error!");
         System.exit(1);
