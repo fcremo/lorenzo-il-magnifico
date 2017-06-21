@@ -86,12 +86,26 @@ public class ServerGameController extends GameController {
      */
     public void draftNextBonusTile(){
         setGameState(GameState.DRAFTING_BONUS_TILES);
+
+        // Ask the first player to choose a bonus tile
         ClientConnection connection = gameRoom.getConnectionForPlayer(getGame().getCurrentPlayer());
         try {
             connection.askToChoosePersonalBonusTile(getGame().getAvailablePersonalBonusTiles());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        // Put the other players in wait
+        getGame().getPlayers().stream()
+                 .filter(player -> !player.equals(getGame().getCurrentPlayer()))
+                 .forEach(player -> {
+                            try {
+                                gameRoom.getConnectionForPlayer(player).showWaitingMessage("Wait for other players to choose a bonus tile");
+                            }
+                            catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                 });
     }
 
     /**
