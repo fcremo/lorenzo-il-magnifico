@@ -177,6 +177,26 @@ public class ServerGameController extends GameController {
      * Draft the next leader card for the remaining players
      */
     private void draftNextLeaderCard() {
+        // Rotate the available leader cards choices
+        List<Player> players = getGame().getPlayers();
+        List<LeaderCard> tmp = null;
+        for (Player p : players.stream()
+                               .limit(players.size() - 1)
+                               .collect(Collectors.toList())) {
+
+            int nextPlayerIndex = players.indexOf(p) + 1;
+            Player nextPlayer = players.get(nextPlayerIndex);
+            tmp = leaderCardsDraft.get(nextPlayer);
+            leaderCardsDraft.put(nextPlayer, leaderCardsDraft.get(p));
+        }
+
+        // Pass the last player's cards to the first
+        Player firstPlayer = players.get(0);
+        leaderCardsDraft.put(firstPlayer, tmp);
+
+        // All the players have to draft
+        playersThatHaveToDraft = new ArrayList<>(getGame().getPlayers());
+
         for (Player player : playersThatHaveToDraft) {
             ClientConnection playerConnection = gameRoom.getConnectionForPlayer(player);
 
@@ -229,7 +249,6 @@ public class ServerGameController extends GameController {
 
         // Check if all the players have chosen their leader card
         if (playersThatHaveToDraft.isEmpty()) {
-
             // Check if the drafting phase is concluded
             int remainingChoices = leaderCardsDraft.get(player).size();
             if (remainingChoices == 0) {
@@ -237,29 +256,10 @@ public class ServerGameController extends GameController {
                 System.out.println("TODO: phase after leader cards draft");
                 return;
             }
-
-            // Rotate the available leader cards choices
-            List<Player> players = getGame().getPlayers();
-            List<LeaderCard> tmp = null;
-            for (Player p : players.stream()
-                                   .limit(players.size() - 1)
-                                   .collect(Collectors.toList())) {
-
-                int nextPlayerIndex = players.indexOf(p) + 1;
-                Player nextPlayer = players.get(nextPlayerIndex);
-                tmp = leaderCardsDraft.get(nextPlayer);
-                leaderCardsDraft.put(nextPlayer, leaderCardsDraft.get(p));
+            else {
+                // Ask the players to draft the next leader card
+                draftNextLeaderCard();
             }
-
-            // Pass the last player's cards to the first
-            Player firstPlayer = players.get(0);
-            leaderCardsDraft.put(firstPlayer, tmp);
-
-            // All the players have to draft again
-            playersThatHaveToDraft = new ArrayList<>(getGame().getPlayers());
-
-            // Ask the players to draft the next leader card
-            draftNextLeaderCard();
         }
         else {
             try {
@@ -269,7 +269,16 @@ public class ServerGameController extends GameController {
                 e.printStackTrace();
             }
         }
+    }
 
-
+    private void sendGameConfigurationToPlayers(){
+        getGame().getPlayers().forEach(player -> {
+            try {
+                gameRoom.getConnectionForPlayer(player).setGameConfiguration(getGame());
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

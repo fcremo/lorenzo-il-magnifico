@@ -1,6 +1,7 @@
 package client;
 
 import gamecontroller.GameEventsInterface;
+import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 
@@ -50,4 +51,11 @@ public interface ServerToClientInterface extends GameEventsInterface, Remote {
      * @throws RemoteException
      */
     void showWaitingMessage(String message) throws RemoteException;
+
+    /**
+     * Called when the server sends game configuration to a player
+     * @param game
+     * @throws RemoteException
+     */
+    void setGameConfiguration(Game game) throws RemoteException;
 }
