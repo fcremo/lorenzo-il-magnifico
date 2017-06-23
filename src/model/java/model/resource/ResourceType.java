@@ -1,5 +1,9 @@
 package model.resource;
 
-public interface ResourceType {
+import java.io.Serializable;
 
+/**
+ * Empty interface for resources
+ */
+public interface ResourceType extends Serializable {
 }

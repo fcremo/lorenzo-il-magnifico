@@ -9,10 +9,12 @@ import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.resource.ObtainedResourceSet;
 
+import java.io.Serializable;
+
 /**
  * This class represents the state of the board.
  */
-public class Board {
+public class Board implements Serializable {
     private Game game;
     private ActionSpace councilPalace;
     private ActionSpace smallProductionArea;

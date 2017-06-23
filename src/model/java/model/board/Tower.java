@@ -3,24 +3,16 @@ package model.board;
 import model.board.actionspace.Floor;
 import model.card.development.DevelopmentCard;
 import model.player.Player;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class represents the state of one tower
  */
-public class Tower<T extends DevelopmentCard> {
+public class Tower<T extends DevelopmentCard> implements Serializable {
     private ArrayList<Floor<T>> floors = new ArrayList<>();
-
-    /**
-     * Sets the floors
-     */
-    public void setFloors(List<Floor<T>> floors) {
-        // TODO: 5/9/17 perform checks (e.g. for the correct number of floors)
-        throw new NotImplementedException();
-    }
 
     /**
      * Returns the card on the specified floor
@@ -29,22 +21,31 @@ public class Tower<T extends DevelopmentCard> {
      * @returns the card
      */
     public T getCard(int floor) {
-        // TODO: 5/9/17
-        throw new NotImplementedException();
+        return floors.get(floor).getCard();
     }
 
     public void setCards(List<T> developmentCards) {
-        // TODO: 4/13/17
-        throw new NotImplementedException();
+        for(int i=0; i<developmentCards.size(); i++){
+            floors.get(i).setCard(developmentCards.get(i));
+        }
     }
 
+    /**
+     * @param player the player you want to check
+     * @return true if the player is occupying the tower with any of his family members
+     */
     public boolean isOccupiedBy(Player player) {
-        // TODO: 4/13/17
-        throw new NotImplementedException();
+        return floors.stream().anyMatch(
+                floor -> floor.getOccupants().stream().map(occupation -> occupation.first).equals(player)
+        );
     }
 
+    /**
+     * @return true if no players are occupying any floor
+     */
     public boolean isOccupied() {
-        // TODO: 4/13/17
-        throw new NotImplementedException();
+        return floors.stream().noneMatch(
+                floor -> floor.getOccupants().isEmpty()
+        );
     }
 }

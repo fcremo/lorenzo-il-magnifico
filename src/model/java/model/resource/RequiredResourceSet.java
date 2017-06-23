@@ -2,20 +2,24 @@ package model.resource;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * This interface represents a set of required resources
+ */
 public class RequiredResourceSet implements Serializable {
-    private HashMap<ResourceType, Integer> requiredResources = new HashMap<>();
+    private Map<ResourceType, Integer> requiredResources = new HashMap<>();
 
-    public RequiredResourceSet(HashMap<ResourceType, Integer> requiredResources) {
-        this.requiredResources = requiredResources;
+    public RequiredResourceSet(Map<ResourceType, Integer> requiredResources) {
+        this.requiredResources = new HashMap<>(requiredResources);
     }
 
-    public HashMap<ResourceType, Integer> getRequiredResources() {
+    public Map<ResourceType, Integer> getRequiredResources() {
         return requiredResources;
     }
 
-    public void setRequiredResources(HashMap<ResourceType, Integer> requiredResources) {
-        this.requiredResources = requiredResources;
+    public void setRequiredResources(Map<ResourceType, Integer> requiredResources) {
+        this.requiredResources = new HashMap<>(requiredResources);
     }
 
     public int getResourceRequirement(ResourceType resourceType) {
@@ -26,8 +30,11 @@ public class RequiredResourceSet implements Serializable {
         requiredResources.put(resourceType, requirement);
     }
 
+    /**
+     * @return true if the resource set is empty
+     */
     public boolean isEmpty() {
-        return (requiredResources.isEmpty());
+        return requiredResources.values().stream().allMatch(val -> val.equals(0));
     }
 
     @Override

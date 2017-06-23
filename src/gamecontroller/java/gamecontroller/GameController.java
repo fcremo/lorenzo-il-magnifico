@@ -130,4 +130,8 @@ public class GameController {
     public void addPlayer(Player player) {
         game.addPlayer(player);
     }
+
+    public void onPlayerTurnStarted(Player player) {
+
+    }
 }

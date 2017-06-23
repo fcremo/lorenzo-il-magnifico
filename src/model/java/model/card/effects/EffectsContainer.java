@@ -71,8 +71,8 @@ public class EffectsContainer implements Serializable {
     @Override
     public String toString() {
         StringBuilder printable = new StringBuilder();
-        for (int i = 0; i < effects.size(); i++) {
-            printable.append(effects.get(i));
+        for (EffectInterface effect : effects) {
+            printable.append(effect);
         }
         return printable.toString();
     }

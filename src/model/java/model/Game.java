@@ -10,13 +10,14 @@ import model.player.PersonalBonusTile;
 import model.player.Player;
 import model.resource.ObtainedResourceSet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This is the root object representing the state of the game
  */
-public class Game {
+public class Game implements Serializable {
     /**
      * The players of the game, *in turn order*
      */
@@ -173,6 +174,10 @@ public class Game {
 
     public int getCurrentRound() {
         return currentRound;
+    }
+
+    public int getCurrentPeriod() {
+        return ((int) Math.ceil(((float) currentRound) / 2));
     }
 
     /**

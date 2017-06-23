@@ -1,6 +1,8 @@
 package model.util;
 
-public class Tuple<T1, T2> {
+import java.io.Serializable;
+
+public class Tuple<T1, T2> implements Serializable {
     public T1 first;
     public T2 second;
 

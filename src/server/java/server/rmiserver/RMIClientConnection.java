@@ -2,8 +2,10 @@ package server.rmiserver;
 
 import client.ServerToClientInterface;
 import gamecontroller.GameState;
+import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import server.ClientConnection;
 import server.ClientToServerInterface;
 import server.GameRoom;
@@ -62,5 +64,20 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void showWaitingMessage(String message) throws RemoteException {
         client.showWaitingMessage(message);
+    }
+
+    @Override
+    public void setGameConfiguration(Game game) throws RemoteException {
+        client.setGameConfiguration(game);
+    }
+
+    @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+        client.onTurnOrderChanged(playerOrder);
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+        client.onPlayerTurnStarted(player);
     }
 }

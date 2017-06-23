@@ -1,6 +1,8 @@
 package model.player;
 
-public enum FamilyMemberColor {
+import java.io.Serializable;
+
+public enum FamilyMemberColor implements Serializable {
     BLACK, WHITE, ORANGE, NEUTRAL;
 
     @Override

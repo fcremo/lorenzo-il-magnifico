@@ -12,7 +12,6 @@ import model.player.PersonalBonusTile;
 import model.player.Player;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     private Player player;
 
     /**
-     * The player's username
+     * The player's username, used when the Player object is not yet ready
      */
     private String username;
 
@@ -75,7 +74,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     public void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException {
         LOGGER.fine("Player " + username + " is trying to join a room");
         for (GameRoom room : gameRooms) {
-            if (room.isAvailable()) {
+            if (room.isJoinable()) {
                 room.addPlayer(this);
                 this.room = room;
                 return;
@@ -113,10 +112,6 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     @Override
     public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
         room.getServerGameController().addLeaderCard(player, leaderCard);
-    }
-
-    private boolean isThisPlayerTurn() {
-        return player.equals(room.getServerGameController().getGame().getCurrentPlayer());
     }
 
     public Player getPlayer() {

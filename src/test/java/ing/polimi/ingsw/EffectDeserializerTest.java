@@ -60,7 +60,7 @@ public class EffectDeserializerTest {
      * Tries to deserialize the provided string as a certain kind of effect
      *
      * @param serializedEffect
-     * @param <T               extends EffectInterface> the kind of effect that should be deserialized
+     * @param <T> the kind of effect that should be deserialized
      * @return
      */
     private <T extends EffectInterface> T deserializeEffect(String serializedEffect) {

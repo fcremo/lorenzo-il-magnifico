@@ -4,9 +4,11 @@ import client.ClientController;
 import gamecontroller.GameState;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import ui.UIEventsInterface;
 import ui.cli.contexts.*;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -46,6 +48,19 @@ public class CLIUserInterface implements UIEventsInterface {
     @Override
     public void onGameStateChange(GameState gameState) {
         System.out.println("Game state changed to " + gameState.name());
+    }
+
+    @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+        StringBuilder s = new StringBuilder("Player order is now ");
+        playerOrder.stream().forEach(player -> s.append(player.getUsername()).append(", "));
+        s.setLength(s.length() - 2); // Remove last ", "
+        System.out.println(s);
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+        System.out.println(String.format("It's %s turn", player.getUsername()));
     }
 
     @Override

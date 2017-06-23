@@ -8,6 +8,7 @@ import model.card.leader.LeaderCard;
 import model.resource.ObtainableResource;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * This class represents the player state
  */
-public class Player {
+public class Player implements Serializable {
     /**
      * The servants spent to increase the value of the next action
      */
@@ -158,6 +159,10 @@ public class Player {
 
     public void setSpentServants(int spentServants) {
         this.spentServants = spentServants;
+    }
+
+    public HashMap<ObtainableResource, Integer> getResources() {
+        return resources;
     }
 
     @Override

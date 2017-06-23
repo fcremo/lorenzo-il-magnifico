@@ -105,7 +105,9 @@ public class ObtainedResourceSet implements Serializable {
         Set<ObtainableResource> allResources = new HashSet<>(resources.keySet());
         allResources.addAll(otherResourceSet.resources.keySet());
         for (ObtainableResource r : allResources) {
-            if (resources.getOrDefault(r, 0) != otherResourceSet.resources.getOrDefault(r, 0)) {
+            Integer qty1 = resources.getOrDefault(r, 0);
+            Integer qty2 = otherResourceSet.resources.getOrDefault(r, 0);
+            if (!qty1.equals(qty2)) {
                 return false;
             }
         }

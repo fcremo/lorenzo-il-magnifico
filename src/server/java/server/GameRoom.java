@@ -61,14 +61,8 @@ public class GameRoom implements GameEventsInterface {
         // Create players and set colors
         createPlayers();
 
-        // Extract excommunications
-        serverGameController.drawExcommunications();
-
-        // Set random turn order
-        serverGameController.shufflePlayers();
-
-        // Start personal bonus tile draft
-        serverGameController.draftNextBonusTile();
+        // Start the game
+        serverGameController.startGame();
     }
 
     /**
@@ -155,14 +149,39 @@ public class GameRoom implements GameEventsInterface {
         }
     }
 
-    public boolean isAvailable() {
+    @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+        for (ClientConnection connection : connections) {
+            connection.onTurnOrderChanged(playerOrder);
+        }
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+        for(ClientConnection connection : connections) {
+            connection.onPlayerTurnStarted(player);
+        }
+    }
+
+    /**
+     * @return true if the room can be joined
+     */
+    public boolean isJoinable() {
         return (serverGameController.isGameStarting() && !this.isFull());
     }
 
-    public boolean isFull() {
+    /**
+     * @return true if the room is full
+     */
+    private boolean isFull() {
         return (connections.size() >= 4);
     }
 
+    /**
+     * Get the connection to the specified player
+     * @param player
+     * @return
+     */
     public ClientConnection getConnectionForPlayer(Player player) {
         Optional<ClientConnection> connection = connections.stream()
                                                            .filter(p -> p.getPlayer().equals(player))
@@ -173,10 +192,6 @@ public class GameRoom implements GameEventsInterface {
         else {
             throw new NoSuchElementException();
         }
-    }
-
-    public List<ClientConnection> getConnections() {
-        return connections;
     }
 
     /**
@@ -192,6 +207,15 @@ public class GameRoom implements GameEventsInterface {
             roomTimeoutTimer = new Thread(new RoomTimerClass());
             roomTimeoutTimer.start();
         }
+    }
+
+
+    /**
+     * Get a list of the connections to all the players in the room
+     * @return
+     */
+    public List<ClientConnection> getConnections() {
+        return connections;
     }
 
     public ServerGameController getServerGameController() {

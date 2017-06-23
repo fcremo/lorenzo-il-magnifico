@@ -3,17 +3,25 @@ package gamecontroller;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
+import model.board.Board;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import model.player.Player;
+import model.resource.ObtainableResource;
 import server.ClientConnection;
 import server.GameRoom;
 
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class extends {@link GameController} to provide server specific functionality
@@ -41,9 +49,23 @@ public class ServerGameController extends GameController {
     }
 
     /**
+     * Start the game
+     */
+    public void startGame() {
+        // Extract excommunications
+        drawExcommunications();
+
+        // Set random turn order
+        shufflePlayers();
+
+        // Start personal bonus tile draft
+        draftNextBonusTile();
+    }
+
+    /**
      * Set a random player order and update current player
      */
-    public void shufflePlayers() {
+    private void shufflePlayers() {
         Collections.shuffle(getGame().getPlayers());
         Player nextPlayer = getGame().getPlayers().get(getGame().getPlayers().size() - 1);
         getGame().setCurrentPlayer(nextPlayer);
@@ -52,7 +74,7 @@ public class ServerGameController extends GameController {
     /**
      * Draw three random excommunications
      */
-    public void drawExcommunications() {
+    private void drawExcommunications() {
         Game game = getGame();
 
         // First period
@@ -252,9 +274,14 @@ public class ServerGameController extends GameController {
             // Check if the drafting phase is concluded
             int remainingChoices = leaderCardsDraft.get(player).size();
             if (remainingChoices == 0) {
-                // TODO: next game phase
-                System.out.println("TODO: phase after leader cards draft");
-                return;
+                // Assign resources to players
+                assignInitialResourcesToPlayers();
+
+                // Send game configuration to players
+                sendGameConfigurationToPlayers();
+
+                // Start first round
+                startNewRound();
             }
             else {
                 // Ask the players to draft the next leader card
@@ -271,7 +298,23 @@ public class ServerGameController extends GameController {
         }
     }
 
-    private void sendGameConfigurationToPlayers(){
+    /**
+     * Assign initial resources
+     */
+    private void assignInitialResourcesToPlayers() {
+        for (int i=0; i<getGame().getPlayers().size(); i++) {
+            Player player = getGame().getPlayers().get(i);
+            player.getResources().put(ObtainableResource.WOOD, 2);
+            player.getResources().put(ObtainableResource.STONE, 2);
+            player.getResources().put(ObtainableResource.SERVANTS, 3);
+            player.getResources().put(ObtainableResource.GOLD, 5 + i);
+        }
+    }
+
+    /**
+     * Send game configuration to the players
+     */
+    private void sendGameConfigurationToPlayers() {
         getGame().getPlayers().forEach(player -> {
             try {
                 gameRoom.getConnectionForPlayer(player).setGameConfiguration(getGame());
@@ -280,5 +323,93 @@ public class ServerGameController extends GameController {
                 e.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Start new round
+     */
+    private void startNewRound() {
+        updateTurnOrder();
+        drawDevelopmentCards();
+        getGame().setCurrentPlayer(getGame().getPlayers().get(0));
+        try {
+            gameRoom.onPlayerTurnStarted(getGame().getCurrentPlayer());
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update the turn order
+     *
+     * Sets each player in the council palace (*from right to left*) as first, so that the
+     * leftmost (the first that has occupied the council palace) will be first in the new turn order.
+     */
+    private void updateTurnOrder() {
+        List<Player> councilPalaceOccupants = getGame().getBoard()
+                                                       .getCouncilPalace()
+                                                       .getOccupants()
+                                                       .stream()
+                                                       .map(tuple -> tuple.first)
+                                                       .collect(Collectors.toList());
+
+        for(int i = councilPalaceOccupants.size() - 1; i >= 0; i--){
+            getGame().setFirstPlayer(councilPalaceOccupants.get(i));
+        }
+
+        try {
+            gameRoom.onTurnOrderChanged(getGame().getPlayers());
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Draw development cards
+     *
+     * Place 4 random cards of the appropriate era in each tower
+     */
+    private void drawDevelopmentCards() {
+        Board board = getGame().getBoard();
+
+        Stream<TerritoryCard> currentPeriodTerritoryCards = getGame().getAvailableTerritoryCards()
+                                                                     .stream()
+                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<TerritoryCard> territoryCards = StreamUtils.takeRandomElements(currentPeriodTerritoryCards,4)
+                                                        .collect(Collectors.toList());
+        board.getGreenTower().setCards(territoryCards);
+
+
+
+        Stream<CharacterCard> currentPeriodCharacterCards = getGame().getAvailableCharacterCards()
+                                                                     .stream()
+                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<CharacterCard> characterCards = StreamUtils.takeRandomElements(currentPeriodCharacterCards,4)
+                                                        .collect(Collectors.toList());
+        board.getBlueTower().setCards(characterCards);
+
+
+
+        Stream<BuildingCard> currentPeriodBuildingCards = getGame().getAvailableBuildingCards()
+                                                                   .stream()
+                                                                   .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<BuildingCard> buildingCards = StreamUtils.takeRandomElements(currentPeriodBuildingCards,4)
+                                                        .collect(Collectors.toList());
+        board.getYellowTower().setCards(buildingCards);
+
+
+
+        Stream<VentureCard> currentPeriodVentureCards = getGame().getAvailableVentureCards()
+                                                                   .stream()
+                                                                   .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<VentureCard> ventureCards = StreamUtils.takeRandomElements(currentPeriodVentureCards,4)
+                                                        .collect(Collectors.toList());
+        board.getPurpleTower().setCards(ventureCards);
     }
 }

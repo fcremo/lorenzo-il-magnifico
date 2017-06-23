@@ -9,8 +9,10 @@ import gamecontroller.GameState;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import server.ClientToServerInterface;
 import server.rmiserver.ServerInterface;
 
@@ -81,8 +83,8 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     /* ----------------------------------------------------------
-         * SERVER TO CLIENT INTERFACE
-         * ---------------------------------------------------------- */
+     * SERVER TO CLIENT INTERFACE
+     * ---------------------------------------------------------- */
     @Override
     public void pingClient() throws RemoteException {
         System.out.println("Client pinged by the server");
@@ -111,5 +113,20 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onGameStateChange(GameState gameState) throws RemoteException {
         clientController.onGameStateChange(gameState);
+    }
+
+    @Override
+    public void setGameConfiguration(Game game) throws RemoteException {
+        clientController.onSetGameConfiguration(game);
+    }
+
+    @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+        clientController.onTurnOrderChanged(playerOrder);
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+        clientController.onPlayerTurnStarted(player);
     }
 }

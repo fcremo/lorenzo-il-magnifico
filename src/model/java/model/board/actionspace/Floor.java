@@ -34,11 +34,18 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
      * Returns the resources needed to occupy the floor.
      * The player has to pay 3 gold if the tower is occupied
      *
-     * @param player the player that wants to occupy the action space
      * @return the resources needed to occupy the action space
      */
     public RequiredResourceSet getRequiredResourceSet() {
         throw new NotImplementedException();
+    }
+
+    public T getCard() {
+        return card;
+    }
+
+    public void setCard(T card) {
+        this.card = card;
     }
 
     public boolean isOccupied() {

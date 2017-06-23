@@ -2,10 +2,12 @@ package model;
 
 import model.card.effects.EffectsContainer;
 
+import java.io.Serializable;
+
 /**
  * This class represents an excommunication
  */
-public class Excommunication {
+public class Excommunication implements Serializable {
     private int period;
 
     private EffectsContainer effects;

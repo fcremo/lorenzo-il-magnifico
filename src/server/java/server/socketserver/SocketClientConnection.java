@@ -1,8 +1,10 @@
 package server.socketserver;
 
 import gamecontroller.GameState;
+import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import server.ClientConnection;
 import server.GameRoom;
 
@@ -57,6 +59,16 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     }
 
     @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+
+    }
+
+    @Override
     public void showWaitingMessage(String message) throws RemoteException {
 
     }
@@ -68,6 +80,11 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
+
+    }
+
+    @Override
+    public void setGameConfiguration(Game game) throws RemoteException {
 
     }
 }

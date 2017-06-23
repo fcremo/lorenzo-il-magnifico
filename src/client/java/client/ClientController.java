@@ -11,8 +11,10 @@ import gamecontroller.GameState;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.LeaderCardNotAvailableException;
 import gamecontroller.exceptions.PersonalBonusTileNotAvailableException;
+import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.player.Player;
 import server.ClientToServerInterface;
 import ui.UIEventsInterface;
 import ui.cli.contexts.ChooseBonusTileContext;
@@ -122,5 +124,20 @@ public class ClientController implements GameEventsInterface, NetworkSettingsCon
     @Override
     public void onGameStateChange(GameState gameState) throws RemoteException {
         ui.onGameStateChange(gameState);
+    }
+
+    public void onSetGameConfiguration(Game game){
+        gameController = new GameController(this);
+        gameController.setGame(game);
+    }
+
+    @Override
+    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
+        gameController.getGame().setPlayers(playerOrder);
+    }
+
+    @Override
+    public void onPlayerTurnStarted(Player player) throws RemoteException {
+        gameController.onPlayerTurnStarted(player);
     }
 }

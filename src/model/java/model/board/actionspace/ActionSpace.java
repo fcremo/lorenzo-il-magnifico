@@ -5,18 +5,19 @@ import model.player.Player;
 import model.resource.ObtainedResourceSet;
 import model.util.Tuple;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class represents an action space
  */
-public abstract class ActionSpace {
+public abstract class ActionSpace implements Serializable {
     /**
      * List of the players occupying the action space
      * Note that in some cases more players can occupy the same action space
      */
-    private ArrayList<Tuple<Player, FamilyMemberColor>> occupants;
+    private ArrayList<Tuple<Player, FamilyMemberColor>> occupants = new ArrayList<>();
 
     /**
      * The bonus resources obtained when occupying the action space (e.g. top floors and market bonuses)
