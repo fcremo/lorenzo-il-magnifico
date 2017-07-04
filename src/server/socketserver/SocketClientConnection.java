@@ -1,6 +1,10 @@
 package server.socketserver;
 
 import gamecontroller.GameState;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
 import server.ServerGameController;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -84,6 +88,16 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void setGameConfiguration(Game game) throws RemoteException {
+
+    }
+
+    @Override
+    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
+
+    }
+
+    @Override
+    public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
 
     }
 }

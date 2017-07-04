@@ -12,10 +12,13 @@ import java.util.HashMap;
  * Base class for a UI context
  */
 public abstract class Context {
+    protected PrintInterface printer;
+
     HashMap<String, Command> commands = new HashMap<>();
     HashMap<String, String> helps = new HashMap<>();
 
-    public Context() {
+    public Context(PrintInterface printInterface) {
+        this.printer = printInterface;
         commands.put("help", new HelpCommand());
     }
 
@@ -25,7 +28,7 @@ public abstract class Context {
     }
 
     @SuppressWarnings("squid:S1166") // Suppress "rethrow this exception" warnings
-    public void handleInput(String input) {
+    public void handleInput(String input, boolean reprintPrompt) {
         // Ignore empty strings
         if (input.trim().equals("")) return;
 
@@ -38,12 +41,12 @@ public abstract class Context {
                 commands.get(command).execute(arguments);
             }
             catch (InvalidCommandException e) {
-                System.out.printf("Invalid command (%s).%n", e.getMessage());
-                System.out.println("Try \"help\"");
+                printer.println("Invalid command (" + e.getMessage() + ")");
+                printer.println("Try \"help\"");
             }
             catch (ActionNotAllowedException e) {
-                System.out.println("The server said you did something illegal:");
-                System.out.println(e.getMessage());
+                printer.println("The server said you did something illegal:");
+                printer.println(e.getMessage());
             }
             catch (RemoteException | NetworkException e) {
                 e.printStackTrace();
@@ -51,27 +54,29 @@ public abstract class Context {
             }
         }
         else {
-            System.out.println("This command does not exist. Try \"help\"");
+            printer.println("This command does not exist. Try \"help\"");
         }
+
+        if(reprintPrompt) printer.printPrompt();
     }
 
-    public void printHelp() {
-        handleInput("help");
+    public void printHelp(boolean reprintPrompt) {
+        handleInput("help", reprintPrompt);
     }
 
     private class HelpCommand implements Command {
         public void execute(String[] arguments) throws InvalidCommandException {
             if (arguments.length == 1) {
                 if (helps.containsKey(arguments[0])) {
-                    System.out.println(helps.get(arguments[0]));
+                    printer.println(helps.get(arguments[0]));
                 }
                 else {
-                    System.out.println(String.format("Command %s does not exist", arguments[0]));
+                    printer.println(String.format("Command %s does not exist", arguments[0]));
                 }
             }
             else if (arguments.length == 0) {
                 for (String command : helps.keySet()) {
-                    System.out.println("\t" + command + ": " + helps.get(command));
+                    printer.println("\t" + command + ": " + helps.get(command));
                 }
             }
             else {

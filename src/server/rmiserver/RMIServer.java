@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class RMIServer extends UnicastRemoteObject implements ServerInterface {
+public class RMIServer extends UnicastRemoteObject implements RMIServerInterface {
     private static final Logger LOGGER = Logger.getLogger("RMIServer");
 
     private static Registry registry;

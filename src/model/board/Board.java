@@ -21,14 +21,14 @@ public class Board implements Serializable {
     private ActionSpace bigProductionArea;
     private ActionSpace smallHarvestArea;
     private ActionSpace bigHarvestArea;
-    private ActionSpace marketGold;
-    private ActionSpace marketServants;
-    private ActionSpace marketMilitaryAndGold;
-    private ActionSpace marketCouncilPrivileges;
-    private Tower<TerritoryCard> greenTower = new Tower<>();
-    private Tower<CharacterCard> blueTower = new Tower<>();
-    private Tower<BuildingCard> yellowTower = new Tower<>();
-    private Tower<VentureCard> purpleTower = new Tower<>();
+    private ActionSpace market1;
+    private ActionSpace market2;
+    private ActionSpace market3;
+    private ActionSpace market4;
+    private Tower<TerritoryCard> territoryTower = new Tower<>();
+    private Tower<CharacterCard> characterTower = new Tower<>();
+    private Tower<BuildingCard> buildingTower = new Tower<>();
+    private Tower<VentureCard> ventureTower = new Tower<>();
     private Excommunication[] excommunications = new Excommunication[3];
     private ObtainedResourceSet[] faithTrackBonus = new ObtainedResourceSet[16];
 
@@ -76,68 +76,68 @@ public class Board implements Serializable {
         this.bigHarvestArea = bigHarvestArea;
     }
 
-    public ActionSpace getMarketGold() {
-        return marketGold;
+    public ActionSpace getMarket1() {
+        return market1;
     }
 
-    public void setMarketGold(ActionSpace marketGold) {
-        this.marketGold = marketGold;
+    public void setMarket1(ActionSpace market1) {
+        this.market1 = market1;
     }
 
-    public ActionSpace getMarketServants() {
-        return marketServants;
+    public ActionSpace getMarket2() {
+        return market2;
     }
 
-    public void setMarketServants(ActionSpace marketServants) {
-        this.marketServants = marketServants;
+    public void setMarket2(ActionSpace market2) {
+        this.market2 = market2;
     }
 
-    public ActionSpace getMarketMilitaryAndGold() {
-        return marketMilitaryAndGold;
+    public ActionSpace getMarket3() {
+        return market3;
     }
 
-    public void setMarketMilitaryAndGold(ActionSpace marketMilitaryAndGold) {
-        this.marketMilitaryAndGold = marketMilitaryAndGold;
+    public void setMarket3(ActionSpace market3) {
+        this.market3 = market3;
     }
 
-    public ActionSpace getMarketCouncilPrivileges() {
-        return marketCouncilPrivileges;
+    public ActionSpace getMarket4() {
+        return market4;
     }
 
-    public void setMarketCouncilPrivileges(ActionSpace marketCouncilPrivileges) {
-        this.marketCouncilPrivileges = marketCouncilPrivileges;
+    public void setMarket4(ActionSpace market4) {
+        this.market4 = market4;
     }
 
-    public Tower<TerritoryCard> getGreenTower() {
-        return greenTower;
+    public Tower<TerritoryCard> getTerritoryTower() {
+        return territoryTower;
     }
 
-    public void setGreenTower(Tower<TerritoryCard> greenTower) {
-        this.greenTower = greenTower;
+    public void setTerritoryTower(Tower<TerritoryCard> territoryTower) {
+        this.territoryTower = territoryTower;
     }
 
-    public Tower<CharacterCard> getBlueTower() {
-        return blueTower;
+    public Tower<CharacterCard> getCharacterTower() {
+        return characterTower;
     }
 
-    public void setBlueTower(Tower<CharacterCard> blueTower) {
-        this.blueTower = blueTower;
+    public void setCharacterTower(Tower<CharacterCard> characterTower) {
+        this.characterTower = characterTower;
     }
 
-    public Tower<BuildingCard> getYellowTower() {
-        return yellowTower;
+    public Tower<BuildingCard> getBuildingTower() {
+        return buildingTower;
     }
 
-    public void setYellowTower(Tower<BuildingCard> yellowTower) {
-        this.yellowTower = yellowTower;
+    public void setBuildingTower(Tower<BuildingCard> buildingTower) {
+        this.buildingTower = buildingTower;
     }
 
-    public Tower<VentureCard> getPurpleTower() {
-        return purpleTower;
+    public Tower<VentureCard> getVentureTower() {
+        return ventureTower;
     }
 
-    public void setPurpleTower(Tower<VentureCard> purpleTower) {
-        this.purpleTower = purpleTower;
+    public void setVentureTower(Tower<VentureCard> ventureTower) {
+        this.ventureTower = ventureTower;
     }
 
     public Excommunication[] getExcommunications() {

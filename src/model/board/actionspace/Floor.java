@@ -2,8 +2,6 @@ package model.board.actionspace;
 
 import model.board.Tower;
 import model.card.development.DevelopmentCard;
-import model.player.FamilyMemberColor;
-import model.player.Player;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -22,12 +20,6 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
         super(bonus, requiredFamilyMemberValue);
         this.tower = tower;
         this.card = card;
-    }
-
-    @Override
-    public boolean canGoThere(Player player, FamilyMemberColor familyMember) {
-        // TODO: 5/10/17
-        throw new NotImplementedException();
     }
 
     /**
@@ -54,5 +46,13 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
 
     public void setOccupied(boolean occupied) {
         isOccupied = occupied;
+    }
+
+    public Tower<T> getTower() {
+        return tower;
+    }
+
+    public void setTower(Tower<T> tower) {
+        this.tower = tower;
     }
 }

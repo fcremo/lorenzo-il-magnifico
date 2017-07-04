@@ -2,6 +2,10 @@ package server.rmiserver;
 
 import client.ServerToClientInterface;
 import gamecontroller.GameState;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
 import server.ServerGameController;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -82,5 +86,15 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void onPlayerTurnStarted(Player player) throws RemoteException {
         client.onPlayerTurnStarted(player);
+    }
+
+    @Override
+    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
+        client.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+    }
+
+    @Override
+    public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
+        client.onDiceThrown(blackDie, whiteDie, orangeDie);
     }
 }

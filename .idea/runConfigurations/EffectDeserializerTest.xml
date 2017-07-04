@@ -9,8 +9,8 @@
     <module name="lorenzo-il-magnifico" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="PACKAGE_NAME" value="ing.polimi.ingsw" />
-    <option name="MAIN_CLASS_NAME" value="ing.polimi.ingsw.EffectDeserializerTest" />
+    <option name="PACKAGE_NAME" value="tests" />
+    <option name="MAIN_CLASS_NAME" value="tests.EffectDeserializerTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea" />

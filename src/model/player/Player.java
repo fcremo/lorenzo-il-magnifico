@@ -3,16 +3,19 @@ package model.player;
 import model.Excommunication;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
-import model.card.development.DevelopmentCard;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
+import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
 import model.resource.ObtainableResource;
+import model.resource.RequiredResourceSet;
+import model.resource.ResourceType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class represents the player state
@@ -28,15 +31,15 @@ public class Player implements Serializable {
     /**
      * The available (not already played) leader cards
      */
-    private ArrayList<LeaderCard> availableLeaderCards = new ArrayList<>();
+    private List<LeaderCard> availableLeaderCards = new ArrayList<>();
     /**
      * The played leader cards
      */
-    private ArrayList<LeaderCard> playedLeaderCards = new ArrayList<>();
-    private ArrayList<DevelopmentCard> territories = new ArrayList<>();
-    private ArrayList<DevelopmentCard> ventures = new ArrayList<>();
-    private ArrayList<DevelopmentCard> buildings = new ArrayList<>();
-    private ArrayList<DevelopmentCard> characters = new ArrayList<>();
+    private List<LeaderCard> playedLeaderCards = new ArrayList<>();
+    private List<TerritoryCard> territories = new ArrayList<>();
+    private List<VentureCard> ventures = new ArrayList<>();
+    private List<BuildingCard> buildings = new ArrayList<>();
+    private List<CharacterCard> characters = new ArrayList<>();
     /**
      * The available (not placed in this turn) family members
      */
@@ -49,7 +52,7 @@ public class Player implements Serializable {
     /**
      * The excommunications
      */
-    private ArrayList<Excommunication> excommunications = new ArrayList<>();
+    private List<Excommunication> excommunications = new ArrayList<>();
 
     public Player(String username) {
         this.username = username;
@@ -105,35 +108,35 @@ public class Player implements Serializable {
         this.playedLeaderCards = new ArrayList<>(playedLeaderCards);
     }
 
-    public List<DevelopmentCard> getTerritories() {
+    public List<TerritoryCard> getTerritories() {
         return territories;
     }
 
-    public void setTerritories(List<DevelopmentCard> territories) {
+    public void setTerritories(List<TerritoryCard> territories) {
         this.territories = new ArrayList<>(territories);
     }
 
-    public List<DevelopmentCard> getVentures() {
+    public List<VentureCard> getVentures() {
         return ventures;
     }
 
-    public void setVentures(List<DevelopmentCard> ventures) {
+    public void setVentures(List<VentureCard> ventures) {
         this.ventures = new ArrayList<>(ventures);
     }
 
-    public List<DevelopmentCard> getBuildings() {
+    public List<BuildingCard> getBuildings() {
         return buildings;
     }
 
-    public void setBuildings(List<DevelopmentCard> buildings) {
+    public void setBuildings(List<BuildingCard> buildings) {
         this.buildings = new ArrayList<>(buildings);
     }
 
-    public List<DevelopmentCard> getCharacters() {
+    public List<CharacterCard> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<DevelopmentCard> characters) {
+    public void setCharacters(List<CharacterCard> characters) {
         this.characters = new ArrayList<>(characters);
     }
 
@@ -173,5 +176,45 @@ public class Player implements Serializable {
         Player player = (Player) o;
 
         return username.equals(player.username);
+    }
+
+    /**
+     * Shortcut to get all the effects for the player
+     * @return all the effects for this player
+     */
+    public List<EffectInterface> getAllEffects() {
+        List<EffectInterface> effects = new ArrayList<>();
+        excommunications.forEach(excommunication -> effects.addAll(excommunication.getEffectsContainer().getEffects()));
+        playedLeaderCards.forEach(card -> effects.addAll(card.getEffectsContainer().getEffects()));
+        territories.forEach(card -> effects.addAll(card.getEffectsContainer().getEffects()));
+        characters.forEach(card -> effects.addAll(card.getEffectsContainer().getEffects()));
+        buildings.forEach(card -> effects.addAll(card.getEffectsContainer().getEffects()));
+        ventures.forEach(card -> effects.addAll(card.getEffectsContainer().getEffects()));
+        return effects;
+    }
+
+    /**
+     * Shortcut to get all the effects implementing a given interface
+     * @param effectInterface
+     * @param <T>
+     * @return
+     */
+    public <T extends EffectInterface> List<T> getEffectsImplementing(Class<T> effectInterface) {
+        List<T> effects = new ArrayList<>();
+        excommunications.forEach(excommunication -> effects.addAll(excommunication.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        playedLeaderCards.forEach(card -> effects.addAll(card.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        territories.forEach(card -> effects.addAll(card.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        characters.forEach(card -> effects.addAll(card.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        buildings.forEach(card -> effects.addAll(card.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        ventures.forEach(card -> effects.addAll(card.getEffectsContainer().getEffectsImplementing(effectInterface)));
+        return effects;
+    }
+
+    public boolean hasEnoughResources(RequiredResourceSet requirements) {
+        for(Map.Entry<ResourceType, Integer> requirement : requirements.getRequiredResources().entrySet()) {
+            if(resources.getOrDefault(requirement.getKey(), 0) < requirement.getValue()) return false;
+        }
+
+        return true;
     }
 }

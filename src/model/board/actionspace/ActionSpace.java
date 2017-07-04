@@ -13,6 +13,12 @@ import java.util.List;
  * This class represents an action space
  */
 public abstract class ActionSpace implements Serializable {
+
+    /**
+     * True if the action space is enabled
+     */
+    private boolean isEnabled = true;
+
     /**
      * List of the players occupying the action space
      * Note that in some cases more players can occupy the same action space
@@ -33,22 +39,6 @@ public abstract class ActionSpace implements Serializable {
         this.bonus = bonus;
         this.requiredFamilyMemberValue = requiredFamilyMemberValue;
     }
-
-    /**
-     * Returns true if the player can occupy the action space.
-     * Accounts for card effects and excommunications.
-     * E.G.: Ludovico Ariosto allows a user to occupy some already occupied action spaces, and there's an excommunication
-     * that forbids to go to the market action spaces.
-     * <p>
-     * N.B.:    This method does not check if the user has the resources necessary to perform
-     * the associated action! (example: taking a card)
-     * If the action space is a tower floor the rules specify that a player cannot occupy it unless
-     * he can also pay and take the card.
-     *
-     * @param player the player that wants to occupy the action space
-     * @return true if the action space can be occupied by the user
-     */
-    public abstract boolean canGoThere(Player player, FamilyMemberColor familyMember);
 
     /**
      * Returns the family member value required to occupy the action space
@@ -87,5 +77,13 @@ public abstract class ActionSpace implements Serializable {
 
     public void setBonus(ObtainedResourceSet bonus) {
         this.bonus = bonus;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

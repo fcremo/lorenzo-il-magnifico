@@ -2,14 +2,9 @@ package server;
 
 import gamecontroller.GameController;
 import gamecontroller.GameState;
-import server.exceptions.ActionNotAllowedException;
-import server.exceptions.LeaderCardNotAvailableException;
-import server.exceptions.PersonalBonusTileNotAvailableException;
-import server.exceptions.RoomNotJoinableException;
 import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
-import model.board.Board;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -20,6 +15,10 @@ import model.player.Player;
 import model.player.PlayerColor;
 import model.resource.ObtainableResource;
 import server.configloader.ConfigLoader;
+import server.exceptions.ActionNotAllowedException;
+import server.exceptions.LeaderCardNotAvailableException;
+import server.exceptions.PersonalBonusTileNotAvailableException;
+import server.exceptions.RoomNotJoinableException;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -29,15 +28,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * This class extends {@link GameController} to provide server specific functionality
+ * This class provides the server specific logic for the game,
+ * and uses the {@link GameController} class for logic shared with the clients
  */
-public class ServerGameController extends GameController implements GameRoomInterface {
+public class ServerGameController {
     private static final Logger LOGGER = Logger.getLogger("ServerGameController");
+
+    /**
+     * The controller for the game being played
+     */
+    private GameController gameController = new GameController();
 
     /**
      * The list of connections to the players
      */
-    private ArrayList<ClientConnection> connections = new ArrayList<>();
+    private List<ClientConnection> connections = new ArrayList<>();
 
     /**
      * The time to wait (in milliseconds) before starting the game after two players have joined the room.
@@ -103,7 +108,18 @@ public class ServerGameController extends GameController implements GameRoomInte
             }
         }
 
-        setGame(configLoader.getGame());
+        gameController.setGame(configLoader.getGame());
+
+        // Disable some action spaces if players are less than four
+        if(connections.size() < 4) {
+            getGame().getBoard().getMarket4().setEnabled(false);
+        }
+        if (connections.size() < 3) {
+            getGame().getBoard().getMarket3().setEnabled(false);
+            getGame().getBoard().getBigHarvestArea().setEnabled(false);
+            getGame().getBoard().getBigProductionArea().setEnabled(false);
+        }
+
         gameStartTimeout = configLoader.getGameStartTimeout();
     }
 
@@ -173,9 +189,8 @@ public class ServerGameController extends GameController implements GameRoomInte
      * Change the state of the game and inform all players
      * @param gameState
      */
-    @Override
     public void setGameState(GameState gameState) {
-        super.setGameState(gameState);
+        gameController.setGameState(gameState);
         for (ClientConnection connection : connections) {
             try {
                 connection.onGameStateChange(gameState);
@@ -231,7 +246,7 @@ public class ServerGameController extends GameController implements GameRoomInte
 
         PersonalBonusTile chosenPersonalBonusTile = optChosenPersonalBonusTile.get();
 
-        super.setPersonalBonusTile(player, chosenPersonalBonusTile);
+        player.setBonusTile(chosenPersonalBonusTile);
 
         // Remove the chosen bonus tile from the available ones
         getGame().getAvailablePersonalBonusTiles().remove(chosenPersonalBonusTile);
@@ -407,7 +422,9 @@ public class ServerGameController extends GameController implements GameRoomInte
     private void startNewRound() {
         updateTurnOrder();
         drawDevelopmentCards();
+        throwDice();
         getGame().setCurrentPlayer(getGame().getPlayers().get(0));
+        startPlayerTurn(getGame().getPlayers().get(0));
     }
 
     /**
@@ -439,21 +456,17 @@ public class ServerGameController extends GameController implements GameRoomInte
     }
 
     /**
-     * Draw development cards
+     * Draw development cards and inform the players
      *
      * Place 4 random cards of the appropriate era in each tower
      */
     private void drawDevelopmentCards() {
-        Board board = getGame().getBoard();
-
         Stream<TerritoryCard> currentPeriodTerritoryCards = getGame().getAvailableTerritoryCards()
                                                                      .stream()
                                                                      .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
         List<TerritoryCard> territoryCards = StreamUtils.takeRandomElements(currentPeriodTerritoryCards,4)
                                                         .collect(Collectors.toList());
-        board.getGreenTower().setCards(territoryCards);
-
 
 
         Stream<CharacterCard> currentPeriodCharacterCards = getGame().getAvailableCharacterCards()
@@ -462,8 +475,6 @@ public class ServerGameController extends GameController implements GameRoomInte
 
         List<CharacterCard> characterCards = StreamUtils.takeRandomElements(currentPeriodCharacterCards,4)
                                                         .collect(Collectors.toList());
-        board.getBlueTower().setCards(characterCards);
-
 
 
         Stream<BuildingCard> currentPeriodBuildingCards = getGame().getAvailableBuildingCards()
@@ -472,8 +483,6 @@ public class ServerGameController extends GameController implements GameRoomInte
 
         List<BuildingCard> buildingCards = StreamUtils.takeRandomElements(currentPeriodBuildingCards,4)
                                                         .collect(Collectors.toList());
-        board.getYellowTower().setCards(buildingCards);
-
 
 
         Stream<VentureCard> currentPeriodVentureCards = getGame().getAvailableVentureCards()
@@ -482,14 +491,60 @@ public class ServerGameController extends GameController implements GameRoomInte
 
         List<VentureCard> ventureCards = StreamUtils.takeRandomElements(currentPeriodVentureCards,4)
                                                         .collect(Collectors.toList());
-        board.getPurpleTower().setCards(ventureCards);
+
+        gameController.setDevelopmentCards(territoryCards, characterCards, buildingCards, ventureCards);
+
+        for(ClientConnection c : connections) {
+            try {
+                c.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Throws the dice and informs the players
+     */
+    private void throwDice() {
+        Random r = new Random();
+        int blackDie = r.nextInt(6) + 1;
+        int whiteDie = r.nextInt(6) + 1;
+        int orangeDie = r.nextInt(6) + 1;
+
+        gameController.setDiceValues(blackDie, whiteDie, orangeDie);
+
+        for(ClientConnection c : connections) {
+            try {
+                c.onDiceThrown(blackDie, whiteDie, orangeDie);
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Signals to all players that the turn is changed
+     * @param player
+     */
+    private void startPlayerTurn(Player player) {
+        for (ClientConnection connection : connections) {
+            try {
+                connection.onPlayerTurnStarted(player);
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
      * @return true if the room can be joined
      */
     public boolean isJoinable() {
-        return (getGameState() == GameState.WAITING_FOR_PLAYERS_TO_CONNECT && connections.size() < 4);
+        return (gameController.getGameState() == GameState.WAITING_FOR_PLAYERS_TO_CONNECT && connections.size() < 4);
     }
 
     /**
@@ -516,7 +571,7 @@ public class ServerGameController extends GameController implements GameRoomInte
      * @throws ActionNotAllowedException
      */
     private void assertGameState(GameState gameState) throws ActionNotAllowedException {
-        if (getGameState() != gameState) {
+        if (gameController.getGameState() != gameState) {
             throw new ActionNotAllowedException();
         }
     }
@@ -536,6 +591,14 @@ public class ServerGameController extends GameController implements GameRoomInte
         else {
             throw new NoSuchElementException();
         }
+    }
+
+    /**
+     * Utility method to get the game from the game controller
+     * @return
+     */
+    private Game getGame() {
+        return gameController.getGame();
     }
 
     private class RoomTimerClass implements Runnable {

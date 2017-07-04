@@ -14,14 +14,15 @@ public class ChooseLeaderCardContext extends Context {
 
     private Callback callback;
 
-    public ChooseLeaderCardContext(Callback callback, List<LeaderCard> leaderCards) {
-        this.callback = callback;
+    public ChooseLeaderCardContext(PrintInterface printInterface, List<LeaderCard> leaderCards, Callback callback) {
+        super(printInterface);
         this.leaderCards = leaderCards;
+        this.callback = callback;
         this.addCommand("show", this::showLeaderCards, "Show available leader cards");
         this.addCommand("choose", this::chooseLeaderCard, "Choose a leader card");
-        System.out.println("Choose a leader card");
+        printInterface.println("Choose a leader card");
         this.printLeaderCards();
-    }
+        }
 
     private void showLeaderCards(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
@@ -30,8 +31,9 @@ public class ChooseLeaderCardContext extends Context {
 
     private void printLeaderCards() {
         for (int i = 1; i <= leaderCards.size(); i++) {
-            System.out.println(i + ") " + leaderCards.get(i - 1).toString());
+            printer.println(i + ") " + leaderCards.get(i - 1).toString());
         }
+        printer.printPrompt();
     }
 
     private void chooseLeaderCard(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {

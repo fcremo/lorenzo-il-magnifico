@@ -29,6 +29,14 @@ public class EffectsContainer implements Serializable {
     }
 
     /**
+     * Returns all the effects
+     * @return
+     */
+    public ArrayList<EffectInterface> getEffects() {
+        return effects;
+    }
+
+    /**
      * Get all effects implementing a given interface, directly or indirectly.
      * That means that getEffectsImplementing(OncePerRoundEffectInterface.class) will return all effects which
      * can be activated once per round.
@@ -73,6 +81,7 @@ public class EffectsContainer implements Serializable {
         StringBuilder printable = new StringBuilder();
         for (EffectInterface effect : effects) {
             printable.append(effect);
+            printable.append("\n");
         }
         return printable.toString();
     }

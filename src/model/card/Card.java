@@ -29,7 +29,7 @@ public class Card implements Serializable {
     /**
      * The effects of the card
      */
-    private EffectsContainer effects;
+    private EffectsContainer effectsContainer;
 
     public Card(String id, String name, List<RequiredResourceSet> requiredResourceSet) {
         this.id = id;
@@ -67,12 +67,12 @@ public class Card implements Serializable {
         this.name = name;
     }
 
-    public EffectsContainer getEffects() {
-        return effects;
+    public EffectsContainer getEffectsContainer() {
+        return effectsContainer;
     }
 
-    public void setEffects(EffectsContainer effects) {
-        this.effects = effects;
+    public void setEffectsContainer(EffectsContainer effectsContainer) {
+        this.effectsContainer = effectsContainer;
     }
 
     @Override
@@ -94,6 +94,6 @@ public class Card implements Serializable {
     public String toString() {
         return name +
                 "\n requirements: " + requiredResourceSet +
-                "\n effects: " + effects;
+                "\n effects: " + effectsContainer;
     }
 }

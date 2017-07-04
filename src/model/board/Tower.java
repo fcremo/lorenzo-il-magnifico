@@ -48,4 +48,12 @@ public class Tower<T extends DevelopmentCard> implements Serializable {
                 floor -> floor.getOccupants().isEmpty()
         );
     }
+
+    public void setFloors(ArrayList<Floor<T>> floors) {
+        this.floors = floors;
+    }
+
+    public ArrayList<Floor<T>> getFloors() {
+        return floors;
+    }
 }

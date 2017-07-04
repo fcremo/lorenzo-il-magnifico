@@ -19,7 +19,7 @@ public class ExcommunicationDeserializer implements JsonDeserializer<Excommunica
         EffectsContainer effects = context.deserialize(jsonExcommunicationObject.getAsJsonArray("effects"), EffectsContainer.class);
 
         Excommunication excommunication = new Excommunication(period);
-        excommunication.setEffects(effects);
+        excommunication.setEffectsContainer(effects);
 
         return excommunication;
     }

@@ -1,12 +1,12 @@
 package model.card.effects;
 
-import model.card.effects.interfaces.EffectInterface;
+import model.card.effects.interfaces.FamilyMemberValueSetterEffectInterface;
 import model.player.FamilyMemberColor;
 
 /**
  * This effect sets the value of a family member
  */
-public class FamilyMemberValueSetterEffect implements EffectInterface {
+public class FamilyMemberValueSetterEffect implements FamilyMemberValueSetterEffectInterface {
     private FamilyMemberColor familyMemberColor;
     private int value;
 
@@ -15,8 +15,9 @@ public class FamilyMemberValueSetterEffect implements EffectInterface {
         this.value = value;
     }
 
-    public int setFamilyMemberValue(FamilyMemberColor familyMember, int currentValue) {
-        if (familyMemberColor == familyMember) {
+    @Override
+    public int setValue(int currentValue, FamilyMemberColor familyMemberColor) {
+        if (this.familyMemberColor == familyMemberColor) {
             return value;
         }
         else {

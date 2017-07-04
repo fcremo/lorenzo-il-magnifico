@@ -40,14 +40,14 @@ public class BoardDeserializer implements JsonDeserializer<Board> {
         ActionSpace councilPalace = new CouncilPalace(councilPalaceBonus, 1);
 
         ObtainedResourceSet smallProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallProductionArea"), ObtainedResourceSet.class, context);
-        ActionSpace smallProductionArea = new SmallProductionHarvestArea(smallProductionAreaBonus, 1);
+        ActionSpace smallProductionArea = new SmallProductionArea(smallProductionAreaBonus, 1);
         ObtainedResourceSet smallHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallHarvestArea"), ObtainedResourceSet.class, context);
-        ActionSpace smallHarvestArea = new SmallProductionHarvestArea(smallHarvestAreaBonus, 1);
+        ActionSpace smallHarvestArea = new SmallHarvestArea(smallHarvestAreaBonus, 1);
 
         ObtainedResourceSet bigProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigProductionArea"), ObtainedResourceSet.class, context);
-        ActionSpace bigProductionArea = new BigProductionHarvestArea(bigProductionAreaBonus, 1);
+        ActionSpace bigProductionArea = new BigProductionArea(bigProductionAreaBonus, 1);
         ObtainedResourceSet bigHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigHarvestArea"), ObtainedResourceSet.class, context);
-        ActionSpace bigHarvestArea = new BigProductionHarvestArea(bigHarvestAreaBonus, 1);
+        ActionSpace bigHarvestArea = new BigHarvestArea(bigHarvestAreaBonus, 1);
 
         ObtainedResourceSet marketGoldBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("marketGold"), ObtainedResourceSet.class, context);
         ActionSpace marketGold = new MarketActionSpace(marketGoldBonus, 1);
@@ -67,19 +67,19 @@ public class BoardDeserializer implements JsonDeserializer<Board> {
          * Step 4: Set the attributes of the board
          * --------------------------------------------------------- */
         Board board = new Board(null);
-        board.setGreenTower(greenTower);
-        board.setBlueTower(blueTower);
-        board.setYellowTower(yellowTower);
-        board.setPurpleTower(purpleTower);
+        board.setTerritoryTower(greenTower);
+        board.setCharacterTower(blueTower);
+        board.setBuildingTower(yellowTower);
+        board.setVentureTower(purpleTower);
         board.setCouncilPalace(councilPalace);
         board.setSmallProductionArea(smallProductionArea);
         board.setSmallHarvestArea(smallHarvestArea);
         board.setBigHarvestArea(bigHarvestArea);
         board.setBigProductionArea(bigProductionArea);
-        board.setMarketGold(marketGold);
-        board.setMarketServants(marketServants);
-        board.setMarketMilitaryAndGold(marketMilitaryAndGold);
-        board.setMarketCouncilPrivileges(marketCouncilPrivileges);
+        board.setMarket1(marketGold);
+        board.setMarket2(marketServants);
+        board.setMarket3(marketMilitaryAndGold);
+        board.setMarket4(marketCouncilPrivileges);
         board.setFaithTrackBonus(faithTrackBonuses);
 
         return board;

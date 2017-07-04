@@ -6,6 +6,7 @@ import model.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class BuildingCard extends DevelopmentCard {
     private ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions;
@@ -39,5 +40,43 @@ public class BuildingCard extends DevelopmentCard {
 
     public void setRequiredValueForProduction(int requiredValueForProduction) {
         this.requiredValueForProduction = requiredValueForProduction;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder returnString = new StringBuilder();
+        returnString.append(getName() + "\n");
+
+        if(!getRequiredResourceSet().isEmpty()) {
+            returnString.append("Requires: ");
+            StringJoiner sj = new StringJoiner(" or ");
+            for(RequiredResourceSet requiredResourceSet : getRequiredResourceSet()) {
+                sj.add(requiredResourceSet.toString());
+            }
+            returnString.append(sj)
+                        .append("\n");
+        }
+
+        returnString.append("Effects: ")
+                    .append(getEffectsContainer())
+                    .append("\n");
+
+        if(!getProductions().isEmpty()) {
+            returnString.append(String.format("Production (at %d):", getRequiredValueForProduction()));
+            StringJoiner sj = new StringJoiner(" or ");
+
+            for(Tuple<RequiredResourceSet, ObtainedResourceSet> production : getProductions()) {
+                RequiredResourceSet requirement = production.first;
+                ObtainedResourceSet obtained = production.second;
+
+                sj.add(requirement + " => " + obtained);
+            }
+
+            returnString.append(sj)
+                        .append("\n");
+        }
+
+
+        return returnString.toString();
     }
 }

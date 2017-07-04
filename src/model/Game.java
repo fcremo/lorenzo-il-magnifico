@@ -197,7 +197,7 @@ public class Game implements Serializable {
         return blackDice;
     }
 
-    public void setBlackDice(int blackDice) {
+    public void setBlackDie(int blackDice) {
         this.blackDice = blackDice;
     }
 
@@ -211,7 +211,7 @@ public class Game implements Serializable {
         return whiteDice;
     }
 
-    public void setWhiteDice(int whiteDice) {
+    public void setWhiteDie(int whiteDice) {
         this.whiteDice = whiteDice;
     }
 
@@ -225,7 +225,7 @@ public class Game implements Serializable {
         return orangeDice;
     }
 
-    public void setOrangeDice(int orangeDice) {
+    public void setOrangeDie(int orangeDice) {
         this.orangeDice = orangeDice;
     }
 

@@ -1,5 +1,9 @@
 package gamecontroller;
 
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
 import model.player.Player;
 
 import java.rmi.RemoteException;
@@ -20,6 +24,28 @@ public interface GameEventsInterface {
      * @throws RemoteException
      */
     void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException;
+
+    /**
+     * Called when new development cards are drawn
+     *
+     * The list of territory cards must be ordered from lower to higher floors
+     *
+     * @param territoryCards
+     * @param characterCards
+     * @param buildingCards
+     * @param ventureCards
+     * @throws RemoteException
+     */
+    void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException;
+
+    /**
+     * Called when the dice are thrown
+     * @param blackDie black die value
+     * @param whiteDie white die value
+     * @param orangeDie orange die value
+     * @throws RemoteException
+     */
+    void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException;
 
     /**
      * Called when the turn of a player starts

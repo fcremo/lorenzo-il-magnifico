@@ -11,6 +11,7 @@ public class ObtainedResourceSet implements Serializable {
      * The set of static resources
      */
     private HashMap<ObtainableResource, Integer> resources = new HashMap<>();
+
     /**
      * The set of multiplied resources.
      * The player gets an ObtainedResourceSet for each RequiredResourceSet he/she has

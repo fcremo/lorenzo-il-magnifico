@@ -1,6 +1,5 @@
 package model.card.effects;
 
-import model.action.Action;
 import model.action.ActionType;
 import model.card.effects.interfaces.EffectInterface;
 
@@ -20,12 +19,12 @@ public class ActionValueModifierEffect implements EffectInterface {
      * Modify the value of the family member for a given action
      *
      * @param currentValue the current value of the family member
-     * @param action       the action being performed
+     * @param actionType   the type of action being performed
      * @return
      */
-    public int modifyValue(int currentValue, Action action) {
-        if (action.getActionType() == actionType) {
-            return action.getActionValue() + value;
+    public int modifyValue(int currentValue, ActionType actionType) {
+        if (this.actionType == actionType) {
+            return currentValue + value;
         }
         else {
             return currentValue;

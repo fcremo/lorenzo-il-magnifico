@@ -29,6 +29,8 @@ public class TowerDeserializer implements JsonDeserializer<Tower> {
             Floor floor = new Floor(obtainedResourceSets.get(i), i * 2 + 1, tower, null);
             floors.add(floor);
         }
+        tower.setFloors(floors);
+
         return tower;
     }
 }

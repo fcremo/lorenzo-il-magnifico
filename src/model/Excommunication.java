@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Excommunication implements Serializable {
     private int period;
 
-    private EffectsContainer effects;
+    private EffectsContainer effectsContainer;
 
     public Excommunication(int period) {
         this.period = period;
@@ -24,11 +24,11 @@ public class Excommunication implements Serializable {
         this.period = period;
     }
 
-    public EffectsContainer getEffects() {
-        return effects;
+    public EffectsContainer getEffectsContainer() {
+        return effectsContainer;
     }
 
-    public void setEffects(EffectsContainer effects) {
-        this.effects = effects;
+    public void setEffectsContainer(EffectsContainer effectsContainer) {
+        this.effectsContainer = effectsContainer;
     }
 }

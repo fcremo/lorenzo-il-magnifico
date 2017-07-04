@@ -6,6 +6,10 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameState;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.TerritoryCard;
+import model.card.development.VentureCard;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -14,7 +18,7 @@ import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
 import model.player.Player;
 import server.ClientToServerInterface;
-import server.rmiserver.ServerInterface;
+import server.rmiserver.RMIServerInterface;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -45,7 +49,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         }
 
         try {
-            ServerInterface server = (ServerInterface) registry.lookup("LORENZO_SERVER");
+            RMIServerInterface server = (RMIServerInterface) registry.lookup("LORENZO_SERVER");
             connection = server.getServerConnection(this);
         }
         catch (NotBoundException e) {
@@ -128,5 +132,15 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onPlayerTurnStarted(Player player) throws RemoteException {
         clientController.onPlayerTurnStarted(player);
+    }
+
+    @Override
+    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
+        clientController.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+    }
+
+    @Override
+    public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
+        clientController.onDiceThrown(blackDie, whiteDie, orangeDie);
     }
 }
