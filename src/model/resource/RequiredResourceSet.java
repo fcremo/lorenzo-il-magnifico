@@ -14,20 +14,17 @@ public class RequiredResourceSet implements Serializable {
         this.requiredResources = new HashMap<>(requiredResources);
     }
 
-    public Map<ResourceType, Integer> getRequiredResources() {
-        return requiredResources;
-    }
+    /**
+     * Empty constructor
+     */
+    public RequiredResourceSet() {}
 
-    public void setRequiredResources(Map<ResourceType, Integer> requiredResources) {
-        this.requiredResources = new HashMap<>(requiredResources);
-    }
-
-    public int getResourceRequirement(ResourceType resourceType) {
-        return requiredResources.getOrDefault(resourceType, 0);
-    }
-
-    public void setResourceRequirement(ResourceType resourceType, int requirement) {
-        requiredResources.put(resourceType, requirement);
+    /**
+     * Copy constructor
+     */
+    public RequiredResourceSet(RequiredResourceSet requiredResourceSet) {
+        this.requiredResources = new HashMap<>(requiredResourceSet.requiredResources);
+        // TODO: 5/25/17 this works until nothing modifies multipliers. Implement proper deep cloning.
     }
 
     /**
@@ -59,5 +56,21 @@ public class RequiredResourceSet implements Serializable {
         RequiredResourceSet otherResourceSet = (RequiredResourceSet) o;
 
         return requiredResources.equals(otherResourceSet.requiredResources);
+    }
+
+    public Map<ResourceType, Integer> getRequiredResources() {
+        return requiredResources;
+    }
+
+    public void setRequiredResources(Map<ResourceType, Integer> requiredResources) {
+        this.requiredResources = new HashMap<>(requiredResources);
+    }
+
+    public int getRequiredAmount(ResourceType resourceType) {
+        return requiredResources.getOrDefault(resourceType, 0);
+    }
+
+    public void setRequiredAmount(ResourceType resourceType, int requirement) {
+        requiredResources.put(resourceType, requirement);
     }
 }

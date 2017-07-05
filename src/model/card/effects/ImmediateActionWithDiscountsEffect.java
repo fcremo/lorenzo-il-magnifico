@@ -3,6 +3,7 @@ package model.card.effects;
 import model.action.ActionType;
 import model.card.effects.interfaces.EffectInterface;
 import model.resource.RequiredResourceSet;
+import model.resource.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,22 @@ public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect im
      * @return the discounted resource set
      */
     public List<RequiredResourceSet> modifyRequiredResourceSet(List<RequiredResourceSet> currentRequiredResourceSets) {
-        // TODO
-        return null;
+        List<RequiredResourceSet> newResourceSets = new ArrayList<>();
+
+        for (RequiredResourceSet requiredResourceSet : currentRequiredResourceSets) {
+            RequiredResourceSet newRequiredResourceSet = new RequiredResourceSet(requiredResourceSet);
+
+            for (RequiredResourceSet discount : discounts) {
+                for (ResourceType resource : newRequiredResourceSet.getRequiredResources().keySet()) {
+                    int newValue = newRequiredResourceSet.getRequiredAmount(resource) + discount.getRequiredAmount(resource);
+                    newRequiredResourceSet.setRequiredAmount(resource, newValue);
+                }
+
+                newResourceSets.add(newRequiredResourceSet);
+            }
+        }
+
+        return newResourceSets;
     }
 
     @Override

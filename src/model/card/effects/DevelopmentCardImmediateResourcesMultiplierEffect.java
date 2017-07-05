@@ -4,6 +4,7 @@ import model.card.effects.interfaces.EffectInterface;
 import model.resource.ObtainableResource;
 import model.resource.ObtainedResourceSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,22 @@ public class DevelopmentCardImmediateResourcesMultiplierEffect implements Effect
         this.resourceType = resourceType;
     }
 
+    /**
+     * Modifies the resource set obtained from the card according to multipliers
+     * @param currentObtainedResourceSets the current obtained resource set
+     * @return the updated obtained resource set
+     */
     public List<ObtainedResourceSet> multiplyObtainedResourceSet(List<ObtainedResourceSet> currentObtainedResourceSets) {
-        return null;
-        // TODO
+        List<ObtainedResourceSet> newResourceSets = new ArrayList<>();
+
+        for (ObtainedResourceSet obtainedResourceSet : currentObtainedResourceSets) {
+            ObtainedResourceSet newObtainedResourceSet = new ObtainedResourceSet(obtainedResourceSet);
+            int newValue = obtainedResourceSet.getObtainedAmount(resourceType) * multiplier;
+            newObtainedResourceSet.setObtainedAmount(resourceType, newValue);
+            newResourceSets.add(obtainedResourceSet);
+        }
+
+        return newResourceSets;
     }
 
     @Override
