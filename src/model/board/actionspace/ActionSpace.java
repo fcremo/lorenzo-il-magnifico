@@ -13,6 +13,10 @@ import java.util.List;
  * This class represents an action space
  */
 public abstract class ActionSpace implements Serializable {
+    /**
+     * A unique id of the action space
+     */
+    private String id;
 
     /**
      * True if the action space is enabled
@@ -35,9 +39,10 @@ public abstract class ActionSpace implements Serializable {
      */
     private int requiredFamilyMemberValue;
 
-    public ActionSpace(ObtainedResourceSet bonus, int requiredFamilyMemberValue) {
+    public ActionSpace(ObtainedResourceSet bonus, int requiredFamilyMemberValue, String id) {
         this.bonus = bonus;
         this.requiredFamilyMemberValue = requiredFamilyMemberValue;
+        this.id = id;
     }
 
     /**
@@ -85,5 +90,9 @@ public abstract class ActionSpace implements Serializable {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public String getId() {
+        return id;
     }
 }

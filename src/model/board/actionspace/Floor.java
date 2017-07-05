@@ -16,8 +16,8 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
 
     private boolean isOccupied;
 
-    public Floor(ObtainedResourceSet bonus, int requiredFamilyMemberValue, Tower<T> tower, T card) {
-        super(bonus, requiredFamilyMemberValue);
+    public Floor(ObtainedResourceSet bonus, int requiredFamilyMemberValue, Tower<T> tower, T card, String id) {
+        super(bonus, requiredFamilyMemberValue, id);
         this.tower = tower;
         this.card = card;
     }

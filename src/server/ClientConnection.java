@@ -4,6 +4,8 @@ import client.ServerToClientInterface;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
+import model.board.actionspace.ActionSpace;
+import model.player.FamilyMemberColor;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.RoomNotJoinableException;
 import model.card.leader.LeaderCard;
@@ -116,9 +118,27 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
         serverGameController.setPersonalBonusTile(player, personalBonusTile);
     }
 
+    /**
+     * Choose a leader card
+     *
+     * @param leaderCard
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
     @Override
     public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
         serverGameController.addLeaderCard(player, leaderCard);
+    }
+
+    @Override
+    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
+        // TODO
+    }
+
+    @Override
+    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        serverGameController.placeFamilyMember(player, familyMemberColor, actionSpace);
     }
 
     public Player getPlayer() {

@@ -40,7 +40,7 @@ public class ClientController implements GameEventsInterface,
 
     private UIInterface ui;
 
-    private GameController gameController;
+    private GameController gameController = new GameController();
 
     private ClientToServerInterface clientConnection;
 
@@ -62,7 +62,7 @@ public class ClientController implements GameEventsInterface,
      * --------------------------------------- */
 
     /**
-     * NetworkSettingsContext callback.
+     * {@link NetworkSettingsContext} callback.
      * Establishes a connection to the server
      *
      * @param connectionMethod the desired connection method
@@ -107,20 +107,53 @@ public class ClientController implements GameEventsInterface,
         ui.showWaitingMessage("Waiting for the game to start...");
     }
 
+    /**
+     * {@link ChooseBonusTileContext} callback.
+     * Chooses a bonus tile during the draft
+     *
+     * @param bonusTile the chosen bonus tile
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
     @Override
     public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException, ActionNotAllowedException {
         clientConnection.choosePersonalBonusTile(bonusTile);
     }
 
+    /**
+     * {@link ChooseLeaderCardContext} callback.
+     * Chooses a leader card during the draft
+     *
+     * @param leaderCard the chosen leader card
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
     @Override
     public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
         clientConnection.chooseLeaderCard(leaderCard);
     }
 
+    /**
+     * {@link MainTurnContext} callback.
+     * Goes to an action space
+     *
+     * @param actionSpace
+     * @param familyMember
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
     @Override
     public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
         if(!gameController.canGoThere(ourPlayer, familyMember, actionSpace)) throw new ActionNotAllowedException("You cannot go there!");
 
+        clientConnection.goToActionSpace(actionSpace, familyMember);
+    }
+
+    @Override
+    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
 
     }
 
@@ -161,11 +194,11 @@ public class ClientController implements GameEventsInterface,
 
     @Override
     public void onGameStateChange(GameState gameState) throws RemoteException {
+        gameController.setGameState(gameState);
         ui.onGameStateChange(gameState);
     }
 
     public void onSetGameConfiguration(Game game){
-        gameController = new GameController();
         gameController.setGame(game);
         ourPlayer = gameController.getGame().getPlayers().stream()
                                   .filter(p -> p.getUsername().equals(ourUsername))
@@ -200,6 +233,16 @@ public class ClientController implements GameEventsInterface,
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
         gameController.setDiceValues(blackDie, whiteDie, orangeDie);
         ui.onDiceThrown(blackDie, whiteDie, orangeDie);
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
+        try {
+            gameController.placeFamilyMember(player, familyMemberColor, actionSpace);
+        }
+        catch (ActionNotAllowedException e) {
+            abortGame("Server reports that a player occupied an action space when he shouldn't be able to");
+        }
     }
 
     /**

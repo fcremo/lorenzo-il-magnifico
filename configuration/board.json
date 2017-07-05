@@ -8,10 +8,10 @@
   "bigProductionArea":{},
   "smallHarvestArea":{},
   "bigHarvestArea":{},
-  "marketGold":{"GOLD":5},
-  "marketServants":{"SERVANTS":5},
-  "marketMilitaryAndGold":{"MILITARY_POINTS":3, "GOLD":2},
-  "marketCouncilPrivileges":{"COUNCIL_PRIVILEGES":2},
+  "market1":{"GOLD":5},
+  "market2":{"SERVANTS":5},
+  "market3":{"MILITARY_POINTS":3, "GOLD":2},
+  "market4":{"COUNCIL_PRIVILEGES":2},
 
   "faithTrackBonus":[
     {"VICTORY_POINTS":0}, {"VICTORY_POINTS":1}, {"VICTORY_POINTS":2}, {"VICTORY_POINTS":3},

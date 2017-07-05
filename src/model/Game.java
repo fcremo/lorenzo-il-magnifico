@@ -193,7 +193,7 @@ public class Game implements Serializable {
      *
      * @returns the black dice value
      */
-    public int getBlackDice() {
+    public int getBlackDie() {
         return blackDice;
     }
 
@@ -207,7 +207,7 @@ public class Game implements Serializable {
      *
      * @returns the white dice value
      */
-    public int getWhiteDice() {
+    public int getWhiteDie() {
         return whiteDice;
     }
 
@@ -221,7 +221,7 @@ public class Game implements Serializable {
      *
      * @returns the orange dice value
      */
-    public int getOrangeDice() {
+    public int getOrangeDie() {
         return orangeDice;
     }
 

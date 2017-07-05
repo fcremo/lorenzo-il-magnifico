@@ -2,10 +2,12 @@ package server.rmiserver;
 
 import client.ServerToClientInterface;
 import gamecontroller.GameState;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.player.FamilyMemberColor;
 import server.ServerGameController;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -43,10 +45,9 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
         }
     }
 
-    @Override
-    public void onGameStateChange(GameState gameState) throws RemoteException {
-        client.onGameStateChange(gameState);
-    }
+    /* ----------------------------------------------------------------------
+     * Server to client interface
+     * ---------------------------------------------------------------------- */
 
     @Override
     public void pingClient() throws RemoteException {
@@ -78,6 +79,14 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
         client.setGameConfiguration(game);
     }
 
+    /* ----------------------------------------------------------------------
+     * Game events interface
+     * ---------------------------------------------------------------------- */
+    @Override
+    public void onGameStateChange(GameState gameState) throws RemoteException {
+        client.onGameStateChange(gameState);
+    }
+
     @Override
     public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
         client.onTurnOrderChanged(playerOrder);
@@ -96,5 +105,10 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
         client.onDiceThrown(blackDie, whiteDie, orangeDie);
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
+        client.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
     }
 }

@@ -6,10 +6,12 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameState;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.player.FamilyMemberColor;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -86,6 +88,16 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         connection.chooseLeaderCard(leaderCard);
     }
 
+    @Override
+    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.spendServants(servants);
+    }
+
+    @Override
+    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.goToActionSpace(actionSpace, familyMemberColor);
+    }
+
     /* ----------------------------------------------------------
      * SERVER TO CLIENT INTERFACE
      * ---------------------------------------------------------- */
@@ -142,5 +154,10 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
         clientController.onDiceThrown(blackDie, whiteDie, orangeDie);
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
+        clientController.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
     }
 }

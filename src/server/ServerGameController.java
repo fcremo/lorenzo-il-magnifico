@@ -5,11 +5,13 @@ import gamecontroller.GameState;
 import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
+import model.board.actionspace.*;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
+import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
 import model.player.PlayerColor;
@@ -530,6 +532,7 @@ public class ServerGameController {
      * @param player
      */
     private void startPlayerTurn(Player player) {
+        setGameState(GameState.PLAYER_TURN);
         for (ClientConnection connection : connections) {
             try {
                 connection.onPlayerTurnStarted(player);
@@ -537,6 +540,49 @@ public class ServerGameController {
             catch (RemoteException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Called when a player goes to an action space
+     *
+     * @param player
+     * @param actionSpace
+     * @param familyMemberColor
+     * @throws ActionNotAllowedException
+     */
+    public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws ActionNotAllowedException {
+        ActionSpace serverSideActionSpace = getGame().getBoard().getActionSpaceById(actionSpace.getId());
+
+        // Try to place the family member
+        // The controller will throw an exception if the action is not allowed
+        gameController.placeFamilyMember(player, familyMemberColor, serverSideActionSpace);
+
+        // Inform everybody
+        connections.forEach(connection -> {
+            try {
+                connection.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Ask the player to perform the next action
+        if(serverSideActionSpace instanceof SmallHarvestArea || serverSideActionSpace instanceof BigHarvestArea) {
+            // Perform harvest
+            setGameState(GameState.HARVEST);
+        }
+        else if (serverSideActionSpace instanceof SmallProductionArea || serverSideActionSpace instanceof BigProductionArea) {
+            // Perform production
+            setGameState(GameState.PRODUCTION);
+        }
+        else if (serverSideActionSpace instanceof CouncilPalace) {
+            // Ask the player what council privileges he wants
+            setGameState(GameState.CHOOSING_COUNCIL_PRIVILEGES);
+        }
+        else if (serverSideActionSpace instanceof Floor) {
+
         }
     }
 

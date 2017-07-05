@@ -1,16 +1,19 @@
 package gamecontroller;
 
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.player.FamilyMemberColor;
 import model.player.Player;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
 /**
- * This interface specifies all the game-related events (e.g. Player X occupies a certain action space)
+ * This interface specifies all the game-related events
+ * (e.g. Player X occupies a certain action space)
  */
 public interface GameEventsInterface {
     /**
@@ -53,4 +56,13 @@ public interface GameEventsInterface {
      * @throws RemoteException
      */
     void onPlayerTurnStarted(Player player) throws RemoteException;
+
+    /**
+     * Called when a player occupies an action space
+     * @param player the player
+     * @param familyMemberColor the family member used
+     * @param actionSpace the action space occupied
+     * @throws RemoteException
+     */
+    void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException;
 }

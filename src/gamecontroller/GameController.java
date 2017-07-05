@@ -37,6 +37,11 @@ public class GameController {
      */
     private GameState gameState;
 
+    /**
+     * True if the current player has not already placed his family member
+     */
+    private boolean hasCurrentPlayerPlacedFamilyMember;
+
     public GameController() {
         this.gameState = GameState.WAITING_FOR_PLAYERS_TO_CONNECT;
     }
@@ -97,9 +102,9 @@ public class GameController {
 
         // Check if family member value is sufficient
         int effectiveFamilyMemberValue = 0;
-        if(familyMember == FamilyMemberColor.BLACK) effectiveFamilyMemberValue = game.getBlackDice();
-        if(familyMember == FamilyMemberColor.ORANGE) effectiveFamilyMemberValue = game.getOrangeDice();
-        if(familyMember == FamilyMemberColor.WHITE) effectiveFamilyMemberValue = game.getWhiteDice();
+        if(familyMember == FamilyMemberColor.BLACK) effectiveFamilyMemberValue = game.getBlackDie();
+        if(familyMember == FamilyMemberColor.ORANGE) effectiveFamilyMemberValue = game.getOrangeDie();
+        if(familyMember == FamilyMemberColor.WHITE) effectiveFamilyMemberValue = game.getWhiteDie();
 
         // First evaluate the effects that override the family member value
         for (FamilyMemberValueSetterEffectInterface e: player.getEffectsImplementing(FamilyMemberValueSetterEffectInterface.class)) {
@@ -187,7 +192,7 @@ public class GameController {
         }
 
         // Check if the player has the necessary resources to take the card (if the action space is a floor)
-        // TODO: remember to apply the double occupation cost
+        // TODO: apply the double occupation cost, discount the resources gained from the floor
         if(actionSpace instanceof Floor) {
             Floor floor = (Floor) actionSpace;
             List<RequiredResourceSet> currentCardCosts = floor.getCard().getRequiredResourceSet();
@@ -206,6 +211,8 @@ public class GameController {
 
         return true;
     }
+
+
 
     public void spendServants(Player player, int servants) {
     }
@@ -232,13 +239,21 @@ public class GameController {
     }
 
     /**
-     * Adds the player to the occupants of an action space
+     * Adds the player to the occupants of an action space and gives the player the bonus resources
      *
      * @param player
      * @param familyMemberColor
      * @param actionSpace
      */
-    public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) {
+    public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws ActionNotAllowedException {
+        assertGameState(GameState.PLAYER_TURN);
+        if(!game.getCurrentPlayer().equals(player)) throw new ActionNotAllowedException("It's not your turn!");
+        if(hasCurrentPlayerPlacedFamilyMember) throw new ActionNotAllowedException("You have already placed a family member");
+        if(!canGoThere(player, familyMemberColor, actionSpace)) throw new ActionNotAllowedException("You cannot go there!");
+
+        // TODO: Add the bonus resources to the player
+        actionSpace.getBonus();
+
     }
 
     public void chooseCouncilPrivileges(Player player, List<ObtainedResourceSet> councilPrivileges) {
@@ -288,5 +303,24 @@ public class GameController {
         game.setBlackDie(blackDie);
         game.setWhiteDie(whiteDie);
         game.setOrangeDie(orangeDie);
+    }
+
+    public boolean hasCurrentPlayerPlacedFamilyMember() {
+        return hasCurrentPlayerPlacedFamilyMember;
+    }
+
+    public void setHasCurrentPlayerPlacedFamilyMember(boolean hasCurrentPlayerPlacedFamilyMember) {
+        this.hasCurrentPlayerPlacedFamilyMember = hasCurrentPlayerPlacedFamilyMember;
+    }
+
+    /**
+     * Asserts that the game is in a certain state or throw an ActionNotAllowedException
+     * @param gameState
+     * @throws ActionNotAllowedException
+     */
+    private void assertGameState(GameState gameState) throws ActionNotAllowedException {
+        if (this.gameState != gameState) {
+            throw new ActionNotAllowedException();
+        }
     }
 }

@@ -3,6 +3,8 @@ package server;
 import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
+import model.board.actionspace.ActionSpace;
+import model.player.FamilyMemberColor;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -58,4 +60,25 @@ public interface ClientToServerInterface extends Remote {
      * @throws RemoteException
      */
     void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
+
+    /**
+     * Tell the server how many servants the player wants to spend for the next action
+     *
+     * @param servants
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
+    void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+    /**
+     * Go to an action space
+     *
+     * @param actionSpace
+     * @param familyMemberColor
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
+    void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
 }

@@ -1,10 +1,12 @@
 package server.socketserver;
 
 import gamecontroller.GameState;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.player.FamilyMemberColor;
 import server.ServerGameController;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -98,6 +100,11 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
+
+    }
+
+    @Override
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
 
     }
 }
