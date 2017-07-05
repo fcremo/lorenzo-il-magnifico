@@ -1,7 +1,6 @@
 package ui.cli.layout.table;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class represents a row which holds columns
@@ -12,6 +11,11 @@ public class ContainerRow implements RowInterface {
     private List<ColumnInterface> columns = new ArrayList<>();
 
     private int weight = 1;
+
+    /**
+     * True if the row should draw borders between its columns
+     */
+    private boolean drawBorders = true;
 
     public ContainerRow() {
         // Empty constructor
@@ -28,40 +32,72 @@ public class ContainerRow implements RowInterface {
 
     @Override
     public String render(int width, int height) {
+        // Take into account the width occupied by the borders
+        int totalAvailableWidth = width;
+        if(drawBorders) totalAvailableWidth = totalAvailableWidth - 1 - columns.size();
+
+        int remainingWidth = totalAvailableWidth;
+
+        // If height == 0 the row should be rendered to full height without constraints
+        if(height == 0) height = getHeightRequirement(width);
+
         int weightsSum = columns.stream()
                                 .mapToInt(ColumnInterface::getWeight)
                                 .sum();
 
-        // Render each column proportionally and split them by lines
-        List<List<String>> rendered;
-        rendered = columns.stream()
-               // Render columns
-               .map(col -> col.render(width * col.getWeight() / weightsSum, height))
-               // Split rendered columns by lines
-               .map(str -> Arrays.asList(str.split("\n")))
-               .collect(Collectors.toList());
+        // Render columns proportionally and split them by lines
+        List<List<String>> rendered = new ArrayList<>();
+        for(ColumnInterface column : columns.subList(0, columns.size() - 1)){
+            int columnWidth = totalAvailableWidth * column.getWeight() / weightsSum;
+            String renderedColumn = column.render(columnWidth, height);
+            rendered.add(Arrays.asList(renderedColumn.split("\n")));
+            remainingWidth -= columnWidth;
+        }
+        // Render last column to fill all remaining space
+        String renderedColumn = columns.get(columns.size() - 1).render(remainingWidth, height);
+        rendered.add(Arrays.asList(renderedColumn.split("\n")));
+
 
         // We have an array of [columns][rows] but we want [rows][columns]
-        // need to transpose rows and columns
+        // transpose rows and columns
         rendered = transpose(rendered);
 
-        StringJoiner sj = new StringJoiner("\n");
+        StringJoiner resultRender = new StringJoiner("\n");
 
-        rendered.stream()
-                .map( row -> row.stream().reduce((string, append) -> string + append).get())
-                .forEach(sj::add);
-
-
-        // Create an empty row of the right width
-        String emptyRow = new String(new char[width]).replace("\0", " ");
-
-        int numRows = sj.toString().split("\n").length;
-        // Fill the row with empty text rows
-        for(int row=numRows; row<height; row++) {
-            sj.add(emptyRow);
+        for(List<String> row : rendered) {
+            StringBuilder rowStringBuilder = new StringBuilder();
+            if(drawBorders) rowStringBuilder.append("|");
+            for(String column : row) {
+                rowStringBuilder.append(column);
+                if(drawBorders) rowStringBuilder.append("|");
+            }
+            resultRender.add(rowStringBuilder.toString());
         }
 
-        return sj.toString();
+        return resultRender.toString();
+    }
+
+    @Override
+    public int getHeightRequirement(int width) {
+        // Take into account the width occupied by the borders
+        // Need to assign remainingWidth only one time to use it in a lambda (?)
+        int remainingWidth = width;
+        if(drawBorders) remainingWidth = width - 1 - columns.size();
+
+
+        int weightsSum = columns.stream()
+                                .mapToInt(ColumnInterface::getWeight)
+                                .sum();
+
+        // The height requirement of a row is the maximum height requirement of its columns
+        int maxHeight = 0;
+        for(ColumnInterface column : columns){
+            int columnWidth = remainingWidth * column.getWeight() / weightsSum;
+            int colHeight = column.getHeightRequirement(columnWidth);
+
+            if(maxHeight < colHeight) maxHeight = colHeight;
+        }
+        return maxHeight;
     }
 
     public List<ColumnInterface> getColumns() {
@@ -88,6 +124,14 @@ public class ContainerRow implements RowInterface {
         this.weight = weight;
     }
 
+    public boolean getDrawBorders() {
+        return drawBorders;
+    }
+
+    public void setDrawBorders(boolean drawBorders) {
+        this.drawBorders = drawBorders;
+    }
+
     /**
      * Transpose a bidimensional list
      * @param l
@@ -95,7 +139,7 @@ public class ContainerRow implements RowInterface {
      */
     private static List<List<String>> transpose(List<List<String>> l){
         // Find the number of rows
-        int numRows = l.stream().mapToInt(List::size).max().getAsInt();
+        int numRows = l.stream().mapToInt(List::size).max().orElse(0);
 
         List<List<String>> tmp = new ArrayList<>();
 

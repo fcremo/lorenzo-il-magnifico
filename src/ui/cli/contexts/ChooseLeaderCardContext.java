@@ -22,7 +22,7 @@ public class ChooseLeaderCardContext extends Context {
         this.addCommand("choose", this::chooseLeaderCard, "Choose a leader card");
         printInterface.println("Choose a leader card");
         this.printLeaderCards();
-        }
+    }
 
     private void showLeaderCards(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");

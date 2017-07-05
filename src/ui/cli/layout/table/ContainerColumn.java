@@ -1,6 +1,7 @@
 package ui.cli.layout.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -13,6 +14,11 @@ public class ContainerColumn implements ColumnInterface {
     private List<RowInterface> rows = new ArrayList<>();
 
     private int weight;
+
+    /**
+     * True if the column should draw borders between its rows
+     */
+    private boolean drawBorders = true;
 
     public ContainerColumn() {
         this.weight = 1;
@@ -30,6 +36,15 @@ public class ContainerColumn implements ColumnInterface {
 
     @Override
     public String render(int width, int height) {
+        int remainingHeight = height;
+        if(height == 0) {
+            remainingHeight = getHeightRequirement(width);
+        }
+
+        if(drawBorders && height != 0) {
+            remainingHeight = remainingHeight - 1 - rows.size();
+        }
+
         // Get the sum of the weights of the rows
         int weightsSum = rows.stream()
                              .mapToInt(RowInterface::getWeight)
@@ -37,21 +52,31 @@ public class ContainerColumn implements ColumnInterface {
 
         StringJoiner sj = new StringJoiner("\n");
 
+        String horizontalBorder = String.join("", Collections.nCopies(width, "-"));
+        if(drawBorders) sj.add(horizontalBorder);
+
         // Render each row proportionally
-        rows.stream()
-            .map(row -> row.render(width, row.getWeight() * height / weightsSum))
-            .forEach(sj::add);
-
-        int numRows = sj.toString().split("\n").length;
-
-        // Create an empty row of the right width
-        String emptyRow = new String(new char[width]).replace("\0", " ");
-        // Fill the column with empty text rows
-        for(int row=numRows; row<height; row++) {
-            sj.add(emptyRow);
+        for(RowInterface row : rows) {
+            int rowHeight = row.getWeight() * remainingHeight / weightsSum;
+            String renderedRow = row.render(width, rowHeight);
+            sj.add(renderedRow);
+            if(drawBorders) sj.add(horizontalBorder);
         }
 
         return sj.toString();
+    }
+
+    @Override
+    public int getHeightRequirement(int width) {
+        // The height requirement of a column is the sum of the height requirement of its rows
+        int heightRequirement = 0;
+        for(RowInterface row : rows){
+            heightRequirement += row.getHeightRequirement(width);
+        }
+        if(drawBorders) {
+            heightRequirement += rows.size() + 1;
+        }
+        return heightRequirement;
     }
 
     public List<RowInterface> getRows() {
@@ -76,5 +101,13 @@ public class ContainerColumn implements ColumnInterface {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public boolean getDrawBorders() {
+        return drawBorders;
+    }
+
+    public void setDrawBorders(boolean drawBorders) {
+        this.drawBorders = drawBorders;
     }
 }

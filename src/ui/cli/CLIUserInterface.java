@@ -1,19 +1,23 @@
 package ui.cli;
 
 import client.ClientController;
+import client.exceptions.NetworkException;
 import gamecontroller.GameState;
 import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.CandidateListCompletionHandler;
 import jline.console.completer.Completer;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
+import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
+import server.exceptions.ActionNotAllowedException;
 import ui.UIInterface;
 import ui.cli.contexts.*;
 import ui.cli.layout.LayoutInterface;
@@ -138,8 +142,7 @@ public class CLIUserInterface implements UIInterface, PrintInterface {
     }
 
     @Override
-    public void showMainTurnContext() {
-        currentContext = new MainTurnContext(this, controller.getGame(), controller);
+    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
     }
 
     @Override
@@ -158,11 +161,6 @@ public class CLIUserInterface implements UIInterface, PrintInterface {
     }
 
     @Override
-    public void showWaitingMessage(String message) {
-        currentContext = new WaitingContext(this, message);
-    }
-
-    @Override
     public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
         currentContext = new ChooseBonusTileContext(this, personalBonusTiles, controller);
     }
@@ -170,6 +168,16 @@ public class CLIUserInterface implements UIInterface, PrintInterface {
     @Override
     public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
         currentContext = new ChooseLeaderCardContext(this, leaderCards, controller);
+    }
+
+    @Override
+    public void showMainTurnContext() {
+        currentContext = new MainTurnContext(this, controller.getGame(), controller);
+    }
+
+    @Override
+    public void showWaitingMessage(String message) {
+        currentContext = new WaitingContext(this, message);
     }
 
     @Override

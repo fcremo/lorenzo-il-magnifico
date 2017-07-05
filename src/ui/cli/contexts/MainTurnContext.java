@@ -13,6 +13,10 @@ import model.player.Player;
 import model.resource.ObtainableResource;
 import server.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
+import ui.cli.layout.table.ContainerColumn;
+import ui.cli.layout.table.ContainerRow;
+import ui.cli.layout.table.TableLayout;
+import ui.cli.layout.table.TextBox;
 
 import java.rmi.RemoteException;
 import java.util.Optional;
@@ -29,6 +33,7 @@ public class MainTurnContext extends Context {
         this.callback = callback;
         this.addCommand("show-board", this::showBoard, "Show board status");
         this.addCommand("show-player", this::showPlayer, "Show player status");
+        this.addCommand("spend-servants", this::spendServants, "Commit some servants to spend for the next action");
         this.addCommand("go-to", this::goTo, "Go to a position on the board");
         this.addCommand("discard-leader", this::discardLeaderCard, "Discard a Leader card from your hand and immediately receive a Council Privilege");
         this.addCommand("play-leader", this::playLeaderCard, "Play a Leader Card from your hand");
@@ -39,85 +44,103 @@ public class MainTurnContext extends Context {
     private void showBoard(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
-        /**
-         * Towers
-         */
+        TableLayout layout = new TableLayout();
+
+        // Add 4 rows for the floors
+        layout.addRow(new ContainerRow());
+        layout.addRow(new ContainerRow());
+        layout.addRow(new ContainerRow());
+        layout.addRow(new ContainerRow());
+
         for (int i = 0; i < 4; i++) {
             TerritoryCard territoryCard = game.getBoard().getTerritoryTower().getCard(i);
-            printer.println(String.format("T%d: ", i) + territoryCard);
+            String description = String.format("T%d: ", i) + territoryCard;
+            ((ContainerRow) layout.getRows().get(i)).addColumn(new TextBox(description));
         }
         for (int i = 0; i < 4; i++) {
             CharacterCard characterCard = game.getBoard().getCharacterTower().getCard(i);
-            printer.println(String.format("C%d: ", i) + characterCard);
+            String description = String.format("C%d: ", i) + characterCard;
+            ((ContainerRow) layout.getRows().get(i)).addColumn(new TextBox(description));
         }
         for (int i = 0; i < 4; i++) {
             BuildingCard buildingCard = game.getBoard().getBuildingTower().getCard(i);
-            printer.println(String.format("B%d: ", i) + buildingCard);
+            String description = String.format("B%d: ", i) + buildingCard;
+            ((ContainerRow) layout.getRows().get(i)).addColumn(new TextBox(description));
         }
         for (int i = 0; i < 4; i++) {
             VentureCard ventureCard = game.getBoard().getVentureTower().getCard(i);
-            printer.println(String.format("V%d: ", i) + ventureCard);
+            String description = String.format("V%d: ", i) + ventureCard;
+            ((ContainerRow) layout.getRows().get(i)).addColumn(new TextBox(description));
         }
 
-        /**
-         * Production Area
-         */
-        printer.println("Main Production Area: ");
+        ContainerRow lastRow = new ContainerRow();
+        layout.addRow(lastRow);
+
+        // Production Area
+        ContainerColumn productionAreaColumn = new ContainerColumn();
+        lastRow.addColumn(productionAreaColumn);
+
+        String mainProductionArea = "Main production area:\n";
         if (!game.getBoard().getSmallProductionArea().getOccupants().isEmpty()) {
-            printer.println(("Occupied by " + game.getBoard().getSmallProductionArea().getOccupants().toString()));
+            mainProductionArea += "Occupied by " + game.getBoard().getSmallProductionArea().getOccupants().toString();
         }
         else {
-            printer.println("Is not occupied yet");
+            mainProductionArea += "Is not occupied yet";
         }
+        productionAreaColumn.addRow(new TextBox(mainProductionArea));
 
         if (game.getPlayers().size() > 2) {
-            printer.println("Secondary Production Area: ");
+            String secondaryProductionArea = "Secondary production area:\n";
             if (!game.getBoard().getBigProductionArea().getOccupants().isEmpty()) {
-                printer.println(("Occupied by " + game.getBoard().getBigProductionArea().getOccupants().toString()));
+                secondaryProductionArea += "Occupied by " + game.getBoard().getBigProductionArea().getOccupants().toString();
             }
             else {
-                printer.println("Is not occupied yet");
+                secondaryProductionArea += "Is not occupied yet";
             }
+            productionAreaColumn.addRow(new TextBox(secondaryProductionArea));
         }
 
-        /**
-         * Harvest Area
-         */
+        // Harvest Area
+        ContainerColumn harvestAreaColumn = new ContainerColumn();
+        lastRow.addColumn(harvestAreaColumn);
 
-        printer.println("Main Harvest Area: ");
+        String mainHarvestArea = "Main harvest area:\n";
         if (!game.getBoard().getSmallHarvestArea().getOccupants().isEmpty()) {
-            printer.println(("Occupied by " + game.getBoard().getSmallHarvestArea().getOccupants().toString()));
+            mainHarvestArea += "Occupied by " + game.getBoard().getSmallHarvestArea().getOccupants().toString();
         }
         else {
-            printer.println("Is not occupied yet");
+            mainHarvestArea += "Is not occupied yet";
         }
+        harvestAreaColumn.addRow(new TextBox(mainHarvestArea));
 
         if (game.getPlayers().size() > 2) {
-            printer.println("Secondary Harvest Area: ");
+            String secondaryHarvestArea = "Secondary harvest area:\n";
             if (!game.getBoard().getBigHarvestArea().getOccupants().isEmpty()) {
-                printer.println(("Occupied by " + game.getBoard().getBigHarvestArea().getOccupants().toString()));
+                secondaryHarvestArea += "Occupied by " + game.getBoard().getBigHarvestArea().getOccupants().toString();
             }
             else {
-                printer.println("Is not occupied yet");
+                secondaryHarvestArea += "Is not occupied yet";
             }
+            productionAreaColumn.addRow(new TextBox(secondaryHarvestArea));
         }
 
-        /**
-         * Council Palace
-         */
+        // Council Palace
+        ContainerColumn councilPalaceColumn = new ContainerColumn();
+        lastRow.addColumn(councilPalaceColumn);
 
-        printer.println("Council Palace: ");
-        printer.println("Gives: " + game.getBoard().getCouncilPalace().getBonus());
+        String councilPalaceArea = "Council palace:\n";
+        councilPalaceArea += "Gives: " + game.getBoard().getCouncilPalace().getBonus() + "\n";
         if (!game.getBoard().getCouncilPalace().getOccupants().isEmpty()) {
-            printer.println(("Occupied by " + game.getBoard().getCouncilPalace().getOccupants().toString()));
+            councilPalaceArea += "Occupied by " + game.getBoard().getSmallHarvestArea().getOccupants().toString();
         }
         else {
-            printer.println("Is not occupied yet");
+            councilPalaceArea += "Is not occupied yet";
         }
+        councilPalaceColumn.addRow(new TextBox(councilPalaceArea));
 
-        /**
-         * Market
-         */
+        printer.printLayout(layout);
+
+        // Market
         printer.println("Market:");
 
         printer.println("M1 Gives: " + game.getBoard().getMarket1().getBonus());
@@ -157,15 +180,12 @@ public class MainTurnContext extends Context {
         }
 
 
-        /**
-         * Dices value
-         */
-        printer.println("Black Die: " + game.getBlackDice());
-        printer.println("White Die: " + game.getWhiteDice());
-        printer.println("Orange Die: " + game.getOrangeDice());
+        // Dice values
+        printer.println("Black Die: " + game.getBlackDie());
+        printer.println("White Die: " + game.getWhiteDie());
+        printer.println("Orange Die: " + game.getOrangeDie());
 
         printer.printPrompt();
-
     }
 
     private void showPlayer(String[] params) throws InvalidCommandException {
@@ -233,6 +253,24 @@ public class MainTurnContext extends Context {
         }
 
         printer.println(sb.toString());
+    }
+
+    private void spendServants(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
+        if (params.length != 1) {
+            throw new InvalidCommandException("This command takes one argument (the number of servants you want to use)");
+        }
+
+        try {
+            int servants = Integer.parseInt(params[0]);
+            callback.spendServants(servants);
+
+        }
+        catch (NumberFormatException e) {
+            throw new InvalidCommandException("Invalid number of servants");
+        }
+        catch (ActionNotAllowedException e) {
+            printer.println("You cannot do that", true);
+        }
     }
 
     private void goTo(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
@@ -408,6 +446,8 @@ public class MainTurnContext extends Context {
     }
 
     public interface Callback {
+        void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
+
         void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;

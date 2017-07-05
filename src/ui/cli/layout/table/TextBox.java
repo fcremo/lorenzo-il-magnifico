@@ -1,5 +1,6 @@
 package ui.cli.layout.table;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,6 +62,9 @@ public class TextBox implements ColumnInterface, RowInterface {
             tmp.append(emptyRow);
         }
 
+        // Remove last \n
+        tmp.deleteCharAt(tmp.length() - 1);
+
         return tmp.toString();
     }
 
@@ -76,20 +80,67 @@ public class TextBox implements ColumnInterface, RowInterface {
         for(String section : sections){
             int remainingWidth = maxWidth;
 
-            for(String token : section.split(" ")) {
+            List<String> tokens = Arrays.asList(section.split(" "));
+            int currentTokenIndex = 0;
+
+            while(currentTokenIndex < tokens.size()) {
+                String token = tokens.get(currentTokenIndex);
+
+                // If the token does not fit in a full row split it
+                if(token.length() > maxWidth) {
+                    tokens.remove(currentTokenIndex);
+                    tokens.addAll(currentTokenIndex, splitString(token, maxWidth));
+                    token = tokens.get(currentTokenIndex);
+                }
+
+                // At this point the token is surely shorter than a row,
+                // so if it does not fit we start a new one
                 if (token.length() > remainingWidth) {
                     sb.append("\n");
                     remainingWidth = maxWidth;
                 }
+
                 sb.append(token);
-                sb.append(" ");
-                remainingWidth = remainingWidth - token.length() - 1;
+                remainingWidth -= token.length();
+
+                // If there's still room on the row append a whitespace
+                if(remainingWidth > 0) {
+                    sb.append(" ");
+                    remainingWidth -= 1;
+                }
+
+                currentTokenIndex++;
             }
             sb.append("\n");
         }
+        // Delete last \n
+        sb.deleteCharAt(sb.length()-1);
 
 
         return sb.toString();
+    }
+
+
+    /**
+     * Split a string in substrings of the given maximum length
+     * @param s
+     * @param l
+     * @return
+     */
+    private List<String> splitString(String s, int l) {
+        List<String> strings = new ArrayList<>();
+        int currentPosition = 0;
+        while(currentPosition < s.length()) {
+            int substringEnd = Math.min(s.length(), currentPosition + l);
+            strings.add(s.substring(currentPosition, substringEnd));
+        }
+
+        return strings;
+    }
+
+    @Override
+    public int getHeightRequirement(int width) {
+        return reflowText(text, width).split("\n").length;
     }
 
     public int getWeight() {
