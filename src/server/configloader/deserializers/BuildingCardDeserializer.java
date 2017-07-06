@@ -2,7 +2,7 @@ package server.configloader.deserializers;
 
 import com.google.gson.*;
 import model.card.development.BuildingCard;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import model.util.Tuple;
 
@@ -21,16 +21,16 @@ public class BuildingCardDeserializer implements JsonDeserializer<BuildingCard> 
         JsonObject requiredResourceSetJsonObject = buildingCardJsonObject.getAsJsonObject("requiredResourceSet");
         RequiredResourceSet requiredResourceSet = new RequiredResourceSetDeserializer().deserialize(requiredResourceSetJsonObject, RequiredResourceSet.class, context);
 
-        ArrayList<Tuple<RequiredResourceSet, ObtainedResourceSet>> productions = new ArrayList<>();
+        ArrayList<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions = new ArrayList<>();
         JsonArray productionsJsonArray = buildingCardJsonObject.getAsJsonArray("productions");
         for (JsonElement o : productionsJsonArray) {
             JsonObject priceJsonObject = o.getAsJsonObject().getAsJsonObject("price");
             RequiredResourceSet price = new RequiredResourceSetDeserializer().deserialize(priceJsonObject, RequiredResourceSet.class, context);
 
             JsonObject obtainedResourceSetJsonObject = o.getAsJsonObject().getAsJsonObject("resourceSet");
-            ObtainedResourceSet obtainedResourceSet = new ObtainedResourceSetDeserializer().deserialize(obtainedResourceSetJsonObject, ObtainedResourceSet.class, context);
+            ObtainableResourceSet obtainableResourceSet = new ObtainedResourceSetDeserializer().deserialize(obtainedResourceSetJsonObject, ObtainableResourceSet.class, context);
 
-            productions.add(new Tuple<>(price, obtainedResourceSet));
+            productions.add(new Tuple<>(price, obtainableResourceSet));
         }
 
 

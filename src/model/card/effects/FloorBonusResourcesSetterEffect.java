@@ -1,29 +1,29 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 /**
  * This effect sets the resources obtained when occupying any floor
  */
 public class FloorBonusResourcesSetterEffect implements EffectInterface {
-    private ObtainedResourceSet obtainedResourceSet;
+    private ObtainableResourceSet obtainableResourceSet;
 
-    public FloorBonusResourcesSetterEffect(ObtainedResourceSet obtainedResourceSet) {
-        this.obtainedResourceSet = obtainedResourceSet;
+    public FloorBonusResourcesSetterEffect(ObtainableResourceSet obtainableResourceSet) {
+        this.obtainableResourceSet = obtainableResourceSet;
     }
 
-    public ObtainedResourceSet setObtainedResourceSet() {
-        return obtainedResourceSet;
+    public ObtainableResourceSet setObtainedResourceSet() {
+        return obtainableResourceSet;
     }
 
     @Override
     public String toString() {
-        if (obtainedResourceSet.isEmpty()) {
+        if (obtainableResourceSet.isEmpty()) {
             return "You don’t take the bonuses when you take a Development Card from the third and the fourth floor of the towers.";
         }
         else {
-            return "You take " + obtainedResourceSet + " when you take a Development Card from the third and the fourth floor of the towers.";
+            return "You take " + obtainableResourceSet + " when you take a Development Card from the third and the fourth floor of the towers.";
         }
     }
 }

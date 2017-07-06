@@ -1,6 +1,6 @@
 package model.player;
 
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.io.Serializable;
 
@@ -10,32 +10,32 @@ import java.io.Serializable;
 public class PersonalBonusTile implements Serializable {
     private String id;
 
-    private ObtainedResourceSet productionObtainedResourceSet;
-    private ObtainedResourceSet harvestObtainedResourceSet;
+    private ObtainableResourceSet productionObtainableResourceSet;
+    private ObtainableResourceSet harvestObtainableResourceSet;
 
-    public PersonalBonusTile(ObtainedResourceSet productionObtainedResourceSet, ObtainedResourceSet harvestObtainedResourceSet) {
-        this.productionObtainedResourceSet = productionObtainedResourceSet;
-        this.harvestObtainedResourceSet = harvestObtainedResourceSet;
+    public PersonalBonusTile(ObtainableResourceSet productionObtainableResourceSet, ObtainableResourceSet harvestObtainableResourceSet) {
+        this.productionObtainableResourceSet = productionObtainableResourceSet;
+        this.harvestObtainableResourceSet = harvestObtainableResourceSet;
     }
 
     // Empty private constructor to allow automatic deserialization
     private PersonalBonusTile() {
     }
 
-    public ObtainedResourceSet getProductionObtainedResourceSet() {
-        return productionObtainedResourceSet;
+    public ObtainableResourceSet getProductionObtainableResourceSet() {
+        return productionObtainableResourceSet;
     }
 
-    public void setProductionObtainedResourceSet(ObtainedResourceSet productionObtainedResourceSet) {
-        this.productionObtainedResourceSet = productionObtainedResourceSet;
+    public void setProductionObtainableResourceSet(ObtainableResourceSet productionObtainableResourceSet) {
+        this.productionObtainableResourceSet = productionObtainableResourceSet;
     }
 
-    public ObtainedResourceSet getHarvestObtainedResourceSet() {
-        return harvestObtainedResourceSet;
+    public ObtainableResourceSet getHarvestObtainableResourceSet() {
+        return harvestObtainableResourceSet;
     }
 
-    public void setHarvestObtainedResourceSet(ObtainedResourceSet harvestObtainedResourceSet) {
-        this.harvestObtainedResourceSet = harvestObtainedResourceSet;
+    public void setHarvestObtainableResourceSet(ObtainableResourceSet harvestObtainableResourceSet) {
+        this.harvestObtainableResourceSet = harvestObtainableResourceSet;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PersonalBonusTile implements Serializable {
 
     @Override
     public String toString() {
-        return "Production: " + productionObtainedResourceSet +
-                "\n\tHarvest: " + harvestObtainedResourceSet;
+        return "Production: " + productionObtainableResourceSet +
+                "\n\tHarvest: " + harvestObtainableResourceSet;
     }
 }

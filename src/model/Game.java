@@ -6,9 +6,10 @@ import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
+import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class Game implements Serializable {
     /**
      * The list of possible council privileges the player can choose from
      */
-    private ArrayList<ObtainedResourceSet> councilPrivileges;
+    private ArrayList<ObtainableResourceSet> councilPrivileges;
 
     /**
      * The Board object contains the board state
@@ -91,17 +92,17 @@ public class Game implements Serializable {
     /**
      * The value of the black dice as rolled (does not account for bonuses/maluses)
      */
-    private int blackDice;
+    private int blackDie;
 
     /**
      * The value of the white dice as rolled (does not account for bonuses/maluses)
      */
-    private int whiteDice;
+    private int whiteDie;
 
     /**
      * The value of the orange dice as rolled (does not account for bonuses/maluses)
      */
-    private int orangeDice;
+    private int orangeDie;
 
     public Game() {
         board = new Board(this);
@@ -194,11 +195,11 @@ public class Game implements Serializable {
      * @returns the black dice value
      */
     public int getBlackDie() {
-        return blackDice;
+        return blackDie;
     }
 
     public void setBlackDie(int blackDice) {
-        this.blackDice = blackDice;
+        this.blackDie = blackDice;
     }
 
     /**
@@ -208,11 +209,11 @@ public class Game implements Serializable {
      * @returns the white dice value
      */
     public int getWhiteDie() {
-        return whiteDice;
+        return whiteDie;
     }
 
     public void setWhiteDie(int whiteDice) {
-        this.whiteDice = whiteDice;
+        this.whiteDie = whiteDice;
     }
 
     /**
@@ -222,11 +223,11 @@ public class Game implements Serializable {
      * @returns the orange dice value
      */
     public int getOrangeDie() {
-        return orangeDice;
+        return orangeDie;
     }
 
     public void setOrangeDie(int orangeDice) {
-        this.orangeDice = orangeDice;
+        this.orangeDie = orangeDice;
     }
 
     public Player getCurrentPlayer() {
@@ -293,11 +294,18 @@ public class Game implements Serializable {
         this.availableLeaderCards = new ArrayList<>(availableLeaderCards);
     }
 
-    public List<ObtainedResourceSet> getCouncilPrivileges() {
+    public List<ObtainableResourceSet> getCouncilPrivileges() {
         return councilPrivileges;
     }
 
-    public void setCouncilPrivileges(List<ObtainedResourceSet> councilPrivileges) {
+    public void setCouncilPrivileges(List<ObtainableResourceSet> councilPrivileges) {
         this.councilPrivileges = new ArrayList<>(councilPrivileges);
+    }
+
+    public int getInitialValueForFamilyMember(FamilyMemberColor familyMember) {
+        if(familyMember == FamilyMemberColor.NEUTRAL) return 0;
+        else if(familyMember == FamilyMemberColor.BLACK) return blackDie;
+        else if(familyMember == FamilyMemberColor.ORANGE) return orangeDie;
+        else if(familyMember == FamilyMemberColor.WHITE) return whiteDie;
     }
 }

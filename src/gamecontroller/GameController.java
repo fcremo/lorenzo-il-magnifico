@@ -13,13 +13,17 @@ import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainableResource;
+import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
+import model.util.Tuple;
 import server.exceptions.ActionNotAllowedException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static model.action.ActionType.HARVEST;
 
 /**
  * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
@@ -126,11 +130,10 @@ public class GameController {
             if(f.getCard() instanceof BuildingCard) actionType = ActionType.TAKE_BUILDING_CARD;
             if(f.getCard() instanceof VentureCard) actionType = ActionType.TAKE_VENTURE_CARD;
         }
-        else if (actionSpace instanceof MarketActionSpace) actionType = ActionType.MARKET;
         else if(actionSpace instanceof SmallProductionArea
                 || actionSpace instanceof BigProductionArea) actionType = ActionType.PRODUCTION;
         else if(actionSpace instanceof SmallHarvestArea
-                || actionSpace instanceof BigHarvestArea) actionType = ActionType.HARVEST;
+                || actionSpace instanceof BigHarvestArea) actionType = HARVEST;
 
         for (ActionValueModifierEffect e : player.getEffectsImplementing(ActionValueModifierEffect.class)) {
             effectiveFamilyMemberValue = e.modifyValue(effectiveFamilyMemberValue, actionType);
@@ -212,30 +215,200 @@ public class GameController {
         return true;
     }
 
-
-
     public void spendServants(Player player, int servants) {
     }
 
-    public void goToFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor) {
+    /**
+     * Called when a player goes to an action space
+     * @param player
+     * @param familyMemberColor
+     * @param floor
+     * @param paymentForCard
+     * @throws ActionNotAllowedException
+     */
+    public void goToFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard)  throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertActionValueIsAtLeast(player, floor.getCard().getCardTakingActionType(), familyMemberColor, floor.getRequiredFamilyMemberValue());
+        assertFloorOccupiableBy(floor, player, familyMemberColor, paymentForCard);
+
+        // if(!canGoThere(player, familyMemberColor, floor)) throw new ActionNotAllowedException("You cannot go there!");
+
+        // Spend servants and reset spent servants count
+        player.getResources().subtractResource(ObtainableResource.SERVANTS, player.getSpentServants());
+        player.setSpentServants(0);
+
+        // Pay resources needed to occupy the floor
+        if(player.getEffectsImplementing(DoubleOccupationCostIgnoreEffect.class).isEmpty()){
+            RequiredResourceSet cost = floor.getRequiredResourceSet();
+            player.getResources().subtractResources(cost);
+        }
+
+        // Add bonus resources to the player
+        ObtainableResourceSet bonus = floor.getBonus();
+        for(FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)) {
+            // If there's more than one such effect the rules don't specify what to do.
+            // Not an issue since in the original game there's only one card with this effect (the Preacher).
+            bonus = e.setObtainedResourceSet();
+        }
+        
+        for(ObtainedResourceSetModifierEffect e : player.getEffectsImplementing(ObtainedResourceSetModifierEffect.class)) {
+            // TODO: theoretically the effect could return more than one choice
+            List<ObtainableResourceSet> tmpList = new ArrayList<>();
+            tmpList.add(bonus);
+            tmpList = e.modifyResources(tmpList);
+            bonus = tmpList.get(0);
+        }
+        player.addResources(bonus);
+
+        // Set the floor as occupied
+        floor.addOccupant(player, familyMemberColor);
+
+        hasCurrentPlayerPlacedFamilyMember = true;
     }
 
-    public void goToSmallHarvest(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor,
+                                  List<ObtainableResourceSet> bonusChoices,
+                                  List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertFamilyMemberValueIsAtLeast(player, familyMemberColor, 1);
+        assertBigActionSpaceOccupiableBy(game.getBoard().getCouncilPalace(), player, familyMemberColor);
+
+        ObtainableResourceSet bonus = game.getBoard().getCouncilPalace().getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        game.getBoard().getCouncilPalace().addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
     }
 
-    public void goToBigHarvest(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToMarket(Player player, FamilyMemberColor familyMemberColor,
+                           MarketActionSpace marketActionSpace,
+                           List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertFamilyMemberValueIsAtLeast(player, familyMemberColor, 1);
+        assertSmallActionSpaceOccupiableBy(marketActionSpace, player, familyMemberColor);
+
+        ObtainableResourceSet bonus = marketActionSpace.getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        marketActionSpace.addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
     }
 
-    public void goToSmallProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToSmallHarvest(Player player,
+                                 FamilyMemberColor familyMemberColor,
+                                 List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+
+        ActionSpace harvestArea = game.getBoard().getSmallHarvestArea();
+        assertSmallActionSpaceOccupiableBy(harvestArea, player, familyMemberColor);
+
+        ObtainableResourceSet bonus = harvestArea.getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        harvestArea.addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
+
+        setGameState(GameState.HARVEST);
     }
 
-    public void goToBigProducion(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToBigHarvest(Player player,
+                               FamilyMemberColor familyMemberColor,
+                               List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+
+        ActionSpace productionArea = game.getBoard().getBigHarvestArea();
+        assertBigActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
+
+        ObtainableResourceSet bonus = productionArea.getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        productionArea.addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
+
+        setGameState(GameState.HARVEST);
     }
 
-    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor) {
+    public void goToSmallProducion(Player player,
+                                   FamilyMemberColor familyMemberColor,
+                                   List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+
+        ActionSpace productionArea = game.getBoard().getSmallProductionArea();
+        assertSmallActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
+
+        ObtainableResourceSet bonus = productionArea.getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        productionArea.addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
+
+        setGameState(GameState.PRODUCTION);
     }
 
-    public void goToMarket(Player player, FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) {
+    public void goToBigProducion(Player player,
+                                 FamilyMemberColor familyMemberColor,
+                                 List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+        assertPlayerTurn(player);
+        assertGameState(GameState.PLAYER_TURN);
+        assertPlayerHasNotPlacedFamilyMember();
+        assertFamilyMemberAvailable(player, familyMemberColor);
+        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+
+        ActionSpace productionArea = game.getBoard().getBigProductionArea();
+        assertBigActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
+
+        ObtainableResourceSet bonus = productionArea.getBonus();
+        int allowedCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        assertValidCouncilPrivilegesChoice(chosenCouncilPrivileges, allowedCouncilPrivileges);
+
+        player.addResources(bonus);
+        player.addResources(chosenCouncilPrivileges);
+
+        productionArea.addOccupant(player, familyMemberColor);
+        hasCurrentPlayerPlacedFamilyMember = true;
+
+        setGameState(GameState.PRODUCTION);
     }
 
     /**
@@ -247,7 +420,8 @@ public class GameController {
      */
     public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws ActionNotAllowedException {
         assertGameState(GameState.PLAYER_TURN);
-        if(!game.getCurrentPlayer().equals(player)) throw new ActionNotAllowedException("It's not your turn!");
+        assertPlayerTurn(player);
+        assertFamilyMemberAvailable(player, familyMemberColor);
         if(hasCurrentPlayerPlacedFamilyMember) throw new ActionNotAllowedException("You have already placed a family member");
         if(!canGoThere(player, familyMemberColor, actionSpace)) throw new ActionNotAllowedException("You cannot go there!");
 
@@ -256,7 +430,7 @@ public class GameController {
 
     }
 
-    public void chooseCouncilPrivileges(Player player, List<ObtainedResourceSet> councilPrivileges) {
+    public void chooseCouncilPrivileges(Player player, List<ObtainableResourceSet> councilPrivileges) {
     }
 
     public void playLeaderCard(Player player, LeaderCard leaderCard) {
@@ -275,7 +449,7 @@ public class GameController {
      * @param familyMemberValue the family member value used for performing the action
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
-    ArrayList<ObtainedResourceSet> performAction(Player player, int familyMemberValue, Action action) throws ActionNotAllowedException {
+    ArrayList<ObtainableResourceSet> performAction(Player player, int familyMemberValue, Action action) throws ActionNotAllowedException {
         throw new NotImplementedException();
     }
 
@@ -313,8 +487,12 @@ public class GameController {
         this.hasCurrentPlayerPlacedFamilyMember = hasCurrentPlayerPlacedFamilyMember;
     }
 
+    /* --------------------------------------------------------------------------------------
+     * Validations and assertions
+     * -------------------------------------------------------------------------------------- */
+
     /**
-     * Asserts that the game is in a certain state or throw an ActionNotAllowedException
+     * Asserts that the game is in a given state or throw an ActionNotAllowedException
      * @param gameState
      * @throws ActionNotAllowedException
      */
@@ -322,5 +500,284 @@ public class GameController {
         if (this.gameState != gameState) {
             throw new ActionNotAllowedException();
         }
+    }
+
+    /**
+     * Asserts that the current player is the provided one or throws an ActionNotAllowedException
+     * @param player
+     * @throws ActionNotAllowedException
+     */
+    private void assertPlayerTurn(Player player) throws ActionNotAllowedException {
+        if(!game.getCurrentPlayer().equals(player)) throw new ActionNotAllowedException("It's not your turn!");
+    }
+
+    /**
+     * Asserts that the player can use the provided family member
+     * @param player
+     * @param familyMemberColor
+     * @throws ActionNotAllowedException
+     */
+    private void assertFamilyMemberAvailable(Player player, FamilyMemberColor familyMemberColor) throws ActionNotAllowedException {
+        if(!player.getAvailableFamilyMembers().contains(familyMemberColor)) throw new ActionNotAllowedException("You have already used that family member");
+    }
+
+    /**
+     * Asserts that the player has not yet placed his family member in his turn
+     * @param player
+     * @throws ActionNotAllowedException
+     */
+    private void assertPlayerHasNotPlacedFamilyMember() throws ActionNotAllowedException {
+        if(hasCurrentPlayerPlacedFamilyMember) {
+            throw new ActionNotAllowedException("You have already placed a family member");
+        }
+    }
+
+    private void assertActionSpaceIsEnabled(ActionSpace actionSpace) throws ActionNotAllowedException {
+        if (!actionSpace.isEnabled()) {
+            throw new ActionNotAllowedException("That action space is disabled in this game");
+        }
+    }
+
+    private void assertPlayerIsNotInhibitedFromGoingTo(Player player, ActionSpace actionSpace) throws ActionNotAllowedException {
+        if (player.getEffectsImplementing(InhibitActionSpaceEffect.class).stream()
+                  .anyMatch(e -> e.isInhibited(actionSpace))) {
+            throw new ActionNotAllowedException("You are prohibited from going to that action space");
+        }
+    }
+
+    /**
+     * Asserts that a small action space is occupiable by a given player with a given family member
+     * @param player
+     * @param familyMemberColor
+     */
+    private void assertSmallActionSpaceOccupiableBy(ActionSpace actionSpace, Player player, FamilyMemberColor familyMemberColor) throws ActionNotAllowedException {
+        // Check if action space is enabled in current game
+        assertActionSpaceIsEnabled(actionSpace);
+
+        // Check if player has an excommunication that prohibits going to action space
+        assertPlayerIsNotInhibitedFromGoingTo(player, actionSpace);
+
+        // If the player cannot double occupy the action space we just check if it is occupied
+        if(player.getEffectsImplementing(SkipOccupationCheckEffect.class).isEmpty()
+                && !actionSpace.getOccupants().isEmpty()) {
+
+            throw new ActionNotAllowedException("That action space is already occupied");
+        }
+
+        // Otherwise he can occupy it twice, but one of the family members must be neutral
+        for(Tuple<Player, FamilyMemberColor> occupation : actionSpace.getOccupants()) {
+            Player occupant = occupation.first;
+            FamilyMemberColor occupantFamilyMemberColor = occupation.second;
+
+            // If the player already occupies the market with a colored family member
+            // he can occupy it again but only with his neutral family member
+            if(occupant.equals(player)){
+                // So if we find a colored family member AND the player is trying to use another colored one
+                // we deny the action
+                if(occupantFamilyMemberColor != FamilyMemberColor.NEUTRAL
+                        && familyMemberColor != FamilyMemberColor.NEUTRAL) {
+                    throw new ActionNotAllowedException("You cannot place two colored family members in that action space");
+                }
+            }
+        }
+    }
+
+    /**
+     * Asserts that a big action space is occupiable by a given player with a given family member
+     * @param player
+     * @param familyMemberColor
+     */
+    private void assertBigActionSpaceOccupiableBy(ActionSpace actionSpace, Player player, FamilyMemberColor familyMemberColor) throws ActionNotAllowedException {
+        assertActionSpaceIsEnabled(actionSpace);
+
+        assertPlayerIsNotInhibitedFromGoingTo(player, actionSpace);
+
+        // A player can occupy the action space twice, but one of the family members must be neutral
+        for(Tuple<Player, FamilyMemberColor> occupation : actionSpace.getOccupants()) {
+            Player occupant = occupation.first;
+            FamilyMemberColor occupantFamilyMemberColor = occupation.second;
+
+            // If the player already occupies the market with a colored family member
+            // he can occupy it again but only with his neutral family member
+            if(occupant.equals(player)){
+                // So if we find a colored family member AND the player is trying to use another colored one
+                // we deny the action
+                if(occupantFamilyMemberColor != FamilyMemberColor.NEUTRAL
+                        && familyMemberColor != FamilyMemberColor.NEUTRAL) {
+                    throw new ActionNotAllowedException("You cannot place two colored family members in that action space");
+                }
+            }
+        }
+    }
+
+    private void assertFloorHasCard(Floor floor) throws ActionNotAllowedException {
+        if(floor.getCard() == null) throw new ActionNotAllowedException("The card of that floor has already been taken");
+    }
+
+    /**
+     * Asserts that a floor is occupiable by a given player with a given family member
+     * @param floor
+     * @param player
+     * @param familyMemberColor
+     */
+    private void assertFloorOccupiableBy(Floor floor,
+                                         Player player,
+                                         FamilyMemberColor familyMemberColor,
+                                         RequiredResourceSet paymentForCard) throws ActionNotAllowedException {
+        assertFloorHasCard(floor);
+        assertActionSpaceIsEnabled(floor);
+        assertPlayerIsNotInhibitedFromGoingTo(player, floor);
+
+        // STEP 1: check that the player can place that family member (color) on this floor
+        List<Tuple<Player, FamilyMemberColor>> occupations = new ArrayList<>();
+        List<Floor> floors = floor.getTower().getFloors();
+        for(Floor f : floors) {
+            occupations.addAll(f.getOccupants());
+        }
+
+        // A player can occupy a tower twice, but one of the family members must be neutral
+        for(Tuple<Player, FamilyMemberColor> occupation : occupations) {
+            Player occupant = occupation.first;
+            FamilyMemberColor occupantFamilyMemberColor = occupation.second;
+
+            // If the player already occupies the market with a colored family member
+            // he can occupy it again but only with his neutral family member
+            if(occupant.equals(player)){
+                // So if we find a colored family member AND the player is trying to use another colored one
+                // we deny the action
+                if(occupantFamilyMemberColor != FamilyMemberColor.NEUTRAL
+                        && familyMemberColor != FamilyMemberColor.NEUTRAL) {
+                    throw new ActionNotAllowedException("You cannot place two colored family members in the same tower");
+                }
+            }
+        }
+
+        // STEP 2: check that the player can cover the cost of occupying the floor
+        RequiredResourceSet doubleOccupationCost = new RequiredResourceSet();
+        doubleOccupationCost.setRequiredAmount(ObtainableResource.GOLD, 3);
+
+        if(!player.getEffectsImplementing(DoubleOccupationCostIgnoreEffect.class).isEmpty()){
+            doubleOccupationCost.setRequiredAmount(ObtainableResource.GOLD, 0);
+        }
+
+        if(!player.getResources().has(doubleOccupationCost)) {
+            throw new ActionNotAllowedException("You don't have the resources to occupy an already occupied tower");
+        }
+
+        ObtainedResourceSet playerClonedResourceSet = new ObtainedResourceSet(player.getResources());
+        playerClonedResourceSet.subtractResources(doubleOccupationCost);
+
+        // STEP 3: check the requirements chosen to pay for the card
+        if(!floor.getCard().getRequiredResourceSet().contains(paymentForCard)) {
+            throw new ActionNotAllowedException("You cannot pay that resources to take that card");
+        }
+
+        if(!playerClonedResourceSet.has(paymentForCard)) {
+            throw new ActionNotAllowedException("You don't have the resources necessary to take that card");
+        }
+
+        // TODO: check military requirements
+        // TODO: ensure that the player does not have too many cards
+    }
+
+    /**
+     * Asserts that the effective family member value is sufficient.
+     * Warning: does not account for action-specific effects!
+     *
+     * @param player
+     * @param familyMember
+     * @param minimumValue
+     * @throws ActionNotAllowedException
+     */
+    private void assertFamilyMemberValueIsAtLeast(Player player, FamilyMemberColor familyMember, int minimumValue) throws ActionNotAllowedException {
+        int value = game.getInitialValueForFamilyMember(familyMember);
+
+        for(FamilyMemberValueSetterEffectInterface e : player.getEffectsImplementing(FamilyMemberValueSetterEffectInterface.class)){
+            value = e.setValue(value, familyMember);
+        }
+
+        for(FamilyMemberValueModifierEffect e : player.getEffectsImplementing(FamilyMemberValueModifierEffect.class)) {
+            value = e.modifyFamilyMemberValue(familyMember, value);
+        }
+
+        int spentServantsValue = player.getSpentServants();
+        for(ServantsValueMultiplierEffect e : player.getEffectsImplementing(ServantsValueMultiplierEffect.class)) {
+            spentServantsValue = e.multiplyServantValue(spentServantsValue);
+        }
+
+        if(value + spentServantsValue < minimumValue) throw new ActionNotAllowedException("Family member value is too low");
+    }
+
+    /**
+     * Asserts that the effective value of the action is sufficient
+     *
+     * @param player
+     * @param actionType
+     * @param familyMember
+     * @param minimumValue
+     */
+    private void assertActionValueIsAtLeast(Player player, ActionType actionType, FamilyMemberColor familyMember, int minimumValue) throws ActionNotAllowedException {
+        int value = game.getInitialValueForFamilyMember(familyMember);
+
+        for(FamilyMemberValueSetterEffectInterface e : player.getEffectsImplementing(FamilyMemberValueSetterEffectInterface.class)){
+            value = e.setValue(value, familyMember);
+        }
+
+        for(FamilyMemberValueModifierEffect e : player.getEffectsImplementing(FamilyMemberValueModifierEffect.class)) {
+            value = e.modifyFamilyMemberValue(familyMember, value);
+        }
+
+        for(ActionValueModifierEffect e : player.getEffectsImplementing(ActionValueModifierEffect.class)) {
+            value = e.modifyValue(value, actionType);
+        }
+
+        int spentServantsValue = player.getSpentServants();
+        for(ServantsValueMultiplierEffect e : player.getEffectsImplementing(ServantsValueMultiplierEffect.class)) {
+            spentServantsValue = e.multiplyServantValue(spentServantsValue);
+        }
+
+        if(value + spentServantsValue < minimumValue) throw new ActionNotAllowedException("Family member value is too low");
+    }
+
+    /**
+     * Asserts that the chosen council privileges are valid
+     * @param chosenCouncilPrivileges
+     * @param allowedCouncilPrivileges
+     * @throws ActionNotAllowedException
+     */
+    private void assertValidCouncilPrivilegesChoice(List<ObtainableResourceSet> chosenCouncilPrivileges, int allowedCouncilPrivileges) throws ActionNotAllowedException {
+        if(!validateCouncilPrivileges(chosenCouncilPrivileges, allowedCouncilPrivileges)) {
+            throw new ActionNotAllowedException("Invalid privileges choice");
+        }
+    }
+
+    /**
+     * Returns true if the player can choose these council privileges
+     *
+     * @param chosenCouncilPrivileges
+     * @return
+     */
+    public boolean validateCouncilPrivileges(List<ObtainableResourceSet> chosenCouncilPrivileges) {
+        // Copy the council privileges
+        List<ObtainableResourceSet> allowedCouncilPrivileges = new ArrayList<>(game.getCouncilPrivileges());
+
+        for(ObtainableResourceSet chosenPrivilege : chosenCouncilPrivileges) {
+            if(!allowedCouncilPrivileges.contains(chosenPrivilege)) return false;
+            allowedCouncilPrivileges.remove(chosenPrivilege);
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if the player can choose these council privileges
+     *
+     * @param chosenCouncilPrivileges
+     * @param maxAllowedChoices
+     * @return
+     */
+    public boolean validateCouncilPrivileges(List<ObtainableResourceSet> chosenCouncilPrivileges, int maxAllowedChoices) {
+        if(chosenCouncilPrivileges.size() > maxAllowedChoices) return false;
+        return validateCouncilPrivileges(chosenCouncilPrivileges);
     }
 }

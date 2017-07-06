@@ -1,9 +1,9 @@
 package model.board.actionspace;
 
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 public class CouncilPalace extends ActionSpace {
-    public CouncilPalace(ObtainedResourceSet bonus, int requiredFamilyMemberValue, String id) {
+    public CouncilPalace(ObtainableResourceSet bonus, int requiredFamilyMemberValue, String id) {
         super(bonus, requiredFamilyMemberValue, id);
     }
 }

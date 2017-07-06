@@ -3,11 +3,14 @@ package server.rmiserver;
 import client.ServerToClientInterface;
 import gamecontroller.GameState;
 import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.ServerGameController;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -108,7 +111,12 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
-        client.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
+    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        client.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+    }
+
+    @Override
+    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+        client.onPlayerOccupiesFloor(player, familyMemberColor, floor, paymentForCard);
     }
 }

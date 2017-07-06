@@ -3,7 +3,7 @@ package server.configloader.deserializers;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import model.resource.ObtainableResource;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 
 import java.lang.reflect.Type;
@@ -21,9 +21,9 @@ import java.util.HashMap;
  * A resource set that has (also) multipliers is represented like this:
  * {"GOLD": 1, "multipliers": {"requirement": {"buildings": 1}, "resources": {"GOLD": 1}}}
  */
-public class ObtainedResourceSetDeserializer implements JsonDeserializer<ObtainedResourceSet> {
+public class ObtainedResourceSetDeserializer implements JsonDeserializer<ObtainableResourceSet> {
     @Override
-    public ObtainedResourceSet deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public ObtainableResourceSet deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         // The json we're deserializing
         JsonObject jsonObtainedResourceSet = json.getAsJsonObject();
 
@@ -57,11 +57,11 @@ public class ObtainedResourceSetDeserializer implements JsonDeserializer<Obtaine
 
         /* ----------------------------------------------------------------------------
          * Step 2: deserialize resources with multipliers
-         * They are represented as a HashMap<RequiredResourceSet, Tuple<ObtainedResourceSet, Integer>>,
+         * They are represented as a HashMap<RequiredResourceSet, Tuple<ObtainableResourceSet, Integer>>,
          * meaning the player gets Integer ObtainedResourceSets for each RequiredResourceSet he/she has
          * ----------------------------------------------------------------------------
          */
-        HashMap<RequiredResourceSet, ObtainedResourceSet> multiplierResources = new HashMap<>();
+        HashMap<RequiredResourceSet, ObtainableResourceSet> multiplierResources = new HashMap<>();
         JsonArray jsonMultiplierResourcesArray = jsonObtainedResourceSet.getAsJsonArray("multipliers");
         if (jsonMultiplierResourcesArray != null) {
             for (JsonElement jsonMultiplier : jsonMultiplierResourcesArray) {
@@ -69,12 +69,12 @@ public class ObtainedResourceSetDeserializer implements JsonDeserializer<Obtaine
                 JsonObject jsonResources = jsonMultiplier.getAsJsonObject().getAsJsonObject("resources");
 
                 RequiredResourceSet requirements = context.deserialize(jsonRequirements, RequiredResourceSet.class);
-                ObtainedResourceSet resources = context.deserialize(jsonResources, ObtainedResourceSet.class);
+                ObtainableResourceSet resources = context.deserialize(jsonResources, ObtainableResourceSet.class);
 
                 multiplierResources.put(requirements, resources);
             }
         }
 
-        return new ObtainedResourceSet(staticResources, multiplierResources);
+        return new ObtainableResourceSet(staticResources, multiplierResources);
     }
 }

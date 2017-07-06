@@ -6,7 +6,6 @@ public enum ActionType {
     TAKE_TERRITORY_CARD,
     TAKE_CHARACTER_CARD,
     TAKE_VENTURE_CARD,
-    MARKET,
     PRODUCTION,
     HARVEST;
 

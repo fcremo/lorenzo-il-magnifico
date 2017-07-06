@@ -2,7 +2,7 @@ package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
 import model.resource.ObtainableResource;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,15 @@ public class ObtainedResourceSetModifierEffect implements EffectInterface {
      * @param currentResources the current list of resource sets that the player can receive
      * @return the modified list of resource sets the player can choose from
      */
-    public List<ObtainedResourceSet> modifyResources(List<ObtainedResourceSet> currentResources) {
-        ArrayList<ObtainedResourceSet> newResourceSets = new ArrayList<>();
-        for (ObtainedResourceSet set : currentResources) {
-            newResourceSets.add(set.addResource(resourceToModify, modifier));
+    public List<ObtainableResourceSet> modifyResources(List<ObtainableResourceSet> currentResources) {
+        ArrayList<ObtainableResourceSet> newResourceSets = new ArrayList<>();
+
+        for (ObtainableResourceSet originalSet : currentResources) {
+            ObtainableResourceSet clonedResourceSet = new ObtainableResourceSet(originalSet);
+            clonedResourceSet.addResource(resourceToModify, modifier);
+            newResourceSets.add(clonedResourceSet);
         }
+
         return newResourceSets;
     }
 

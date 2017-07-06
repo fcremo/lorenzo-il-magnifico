@@ -1,7 +1,7 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.OncePerRoundEffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 /**
  * This effect gives the player some bonus resources once per round
@@ -9,16 +9,16 @@ import model.resource.ObtainedResourceSet;
 public class OncePerRoundBonusResourcesEffect implements OncePerRoundEffectInterface {
     private int lastActivatedAt = 0;
 
-    private ObtainedResourceSet resources;
+    private ObtainableResourceSet resources;
 
-    public OncePerRoundBonusResourcesEffect(ObtainedResourceSet resources) {
+    public OncePerRoundBonusResourcesEffect(ObtainableResourceSet resources) {
         this.resources = resources;
     }
 
     /**
      * @return the set of resources obtained
      */
-    public ObtainedResourceSet getResources() {
+    public ObtainableResourceSet getResources() {
         return resources;
     }
 

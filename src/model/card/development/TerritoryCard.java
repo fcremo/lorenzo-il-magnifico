@@ -1,6 +1,7 @@
 package model.card.development;
 
-import model.resource.ObtainedResourceSet;
+import model.action.ActionType;
+import model.resource.ObtainableResourceSet;
 
 import java.util.ArrayList;
 
@@ -8,20 +9,20 @@ import java.util.ArrayList;
  * This class represents a territory card
  */
 public class TerritoryCard extends DevelopmentCard {
-    private ObtainedResourceSet harvestResourceSet;
+    private ObtainableResourceSet harvestResourceSet;
     private int requiredValueForHarvest;
 
-    public TerritoryCard(String id, String name, int period, ObtainedResourceSet harvestResourceSet, int requiredValueForHarvest) {
+    public TerritoryCard(String id, String name, int period, ObtainableResourceSet harvestResourceSet, int requiredValueForHarvest) {
         super(id, name, new ArrayList<>(), period);
         this.harvestResourceSet = harvestResourceSet;
         this.requiredValueForHarvest = requiredValueForHarvest;
     }
 
-    public ObtainedResourceSet getHarvestResourceSet() {
+    public ObtainableResourceSet getHarvestResourceSet() {
         return harvestResourceSet;
     }
 
-    public void setHarvestResourceSet(ObtainedResourceSet harvestResourceSet) {
+    public void setHarvestResourceSet(ObtainableResourceSet harvestResourceSet) {
         this.harvestResourceSet = harvestResourceSet;
     }
 
@@ -31,5 +32,10 @@ public class TerritoryCard extends DevelopmentCard {
 
     public void setRequiredValueForHarvest(int requiredValueForHarvest) {
         this.requiredValueForHarvest = requiredValueForHarvest;
+    }
+
+    @Override
+    public ActionType getCardTakingActionType() {
+        return ActionType.TAKE_TERRITORY_CARD;
     }
 }

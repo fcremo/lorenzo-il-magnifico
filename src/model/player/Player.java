@@ -7,11 +7,10 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.card.effects.ObtainedResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
-import model.resource.ObtainableResource;
-import model.resource.RequiredResourceSet;
-import model.resource.ResourceType;
+import model.resource.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
@@ -25,17 +24,23 @@ public class Player implements Serializable {
      * The servants spent to increase the value of the next action
      */
     int spentServants;
+
     private String username;
+
     private PlayerColor color;
-    private HashMap<ObtainableResource, Integer> resources = new HashMap<>();
+
+    private ObtainedResourceSet resources = new ObtainedResourceSet(this);
+
     /**
      * The available (not already played) leader cards
      */
     private List<LeaderCard> availableLeaderCards = new ArrayList<>();
+
     /**
      * The played leader cards
      */
     private List<LeaderCard> playedLeaderCards = new ArrayList<>();
+
     private List<TerritoryCard> territories = new ArrayList<>();
     private List<VentureCard> ventures = new ArrayList<>();
     private List<BuildingCard> buildings = new ArrayList<>();
@@ -164,7 +169,7 @@ public class Player implements Serializable {
         this.spentServants = spentServants;
     }
 
-    public HashMap<ObtainableResource, Integer> getResources() {
+    public ObtainedResourceSet getResources() {
         return resources;
     }
 
@@ -210,11 +215,45 @@ public class Player implements Serializable {
         return effects;
     }
 
+    /**
+     * Utility method that checks if the player has enough resources to cover the given requirements
+     * @param requirements
+     * @return
+     */
     public boolean hasEnoughResources(RequiredResourceSet requirements) {
-        for(Map.Entry<ResourceType, Integer> requirement : requirements.getRequiredResources().entrySet()) {
-            if(resources.getOrDefault(requirement.getKey(), 0) < requirement.getValue()) return false;
-        }
+        return resources.has(requirements);
+    }
 
-        return true;
+    /**
+     * Utility method that adds a resource set to the player
+     * @param obtainableResourceSet
+     */
+    public void addResources(ObtainableResourceSet obtainableResourceSet) {
+        resources.addResources(obtainableResourceSet);
+    }
+
+    /**
+     * Utility method that adds resources to the player
+     * @param obtainableResourceSets
+     */
+    public void addResources(List<ObtainableResourceSet> obtainableResourceSets) {
+        obtainableResourceSets.forEach(this::addResources);
+    }
+
+    public Set<FamilyMemberColor> getAvailableFamilyMembers() {
+        return availableFamilyMembers;
+    }
+
+    public void useFamilyMember(FamilyMemberColor familyMemberColor) {
+        availableFamilyMembers.remove(familyMemberColor);
+    }
+
+
+    public void resetAvailableFamilyMembers() {
+        availableFamilyMembers.clear();
+        availableFamilyMembers.add(FamilyMemberColor.BLACK);
+        availableFamilyMembers.add(FamilyMemberColor.WHITE);
+        availableFamilyMembers.add(FamilyMemberColor.ORANGE);
+        availableFamilyMembers.add(FamilyMemberColor.NEUTRAL);
     }
 }

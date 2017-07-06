@@ -1,5 +1,6 @@
 package model.card.development;
 
+import model.action.ActionType;
 import model.card.Card;
 import model.resource.RequiredResourceSet;
 
@@ -23,4 +24,6 @@ public abstract class DevelopmentCard extends Card {
     public void setPeriod(int period) {
         this.period = period;
     }
+
+    public abstract ActionType getCardTakingActionType();
 }

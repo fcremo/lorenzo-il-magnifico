@@ -8,7 +8,7 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class Board implements Serializable {
     private Tower<BuildingCard> buildingTower = new Tower<>();
     private Tower<VentureCard> ventureTower = new Tower<>();
     private Excommunication[] excommunications = new Excommunication[3];
-    private ObtainedResourceSet[] faithTrackBonus = new ObtainedResourceSet[16];
+    private ObtainableResourceSet[] faithTrackBonus = new ObtainableResourceSet[16];
 
     public Board(Game game) {
         this.game = game;
@@ -152,11 +152,11 @@ public class Board implements Serializable {
         this.excommunications = excommunications;
     }
 
-    public ObtainedResourceSet[] getFaithTrackBonus() {
+    public ObtainableResourceSet[] getFaithTrackBonus() {
         return faithTrackBonus;
     }
 
-    public void setFaithTrackBonus(ObtainedResourceSet[] faithTrackBonus) {
+    public void setFaithTrackBonus(ObtainableResourceSet[] faithTrackBonus) {
         this.faithTrackBonus = faithTrackBonus;
     }
 
@@ -170,21 +170,22 @@ public class Board implements Serializable {
         else if(market2.getId().equals(id)) return market2;
         else if(market3.getId().equals(id)) return market3;
         else if(market4.getId().equals(id)) return market4;
-        else {
-            List<Floor> floors = new ArrayList<>();
-            floors.addAll(territoryTower.getFloors());
-            floors.addAll(characterTower.getFloors());
-            floors.addAll(buildingTower.getFloors());
-            floors.addAll(ventureTower.getFloors());
-
-            Optional<Floor> desiredFloor = floors.stream().filter(floor -> floor.getId().equals(id)).findAny();
-            if(desiredFloor.isPresent()){
-                return desiredFloor.get();
-            }
-        }
+        else return getFloorById(id);
 
         // TODO: throw an exception if the player gives an invalid id
-        return null;
 
+    }
+
+    public Floor getFloorById(String id) {
+        List<Floor> floors = new ArrayList<>();
+        floors.addAll(territoryTower.getFloors());
+        floors.addAll(characterTower.getFloors());
+        floors.addAll(buildingTower.getFloors());
+        floors.addAll(ventureTower.getFloors());
+
+        Optional<Floor> desiredFloor = floors.stream().filter(floor -> floor.getId().equals(id)).findAny();
+
+        // TODO: throw an exception if the player gives an invalid id
+        return desiredFloor.orElse(null);
     }
 }

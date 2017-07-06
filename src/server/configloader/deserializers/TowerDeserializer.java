@@ -8,7 +8,7 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.DevelopmentCard;
 import model.card.development.TerritoryCard;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class TowerDeserializer implements JsonDeserializer<Tower> {
         JsonArray jsonTowerArray = json.getAsJsonArray();
 
         // Get a list of objects from a list of elements
-        ArrayList<ObtainedResourceSet> obtainedResourceSets = new ArrayList<>();
+        ArrayList<ObtainableResourceSet> obtainableResourceSets = new ArrayList<>();
         for (JsonElement e : jsonTowerArray) {
-            obtainedResourceSets.add(new ObtainedResourceSetDeserializer().deserialize(e, ObtainedResourceSet.class, context));
+            obtainableResourceSets.add(new ObtainedResourceSetDeserializer().deserialize(e, ObtainableResourceSet.class, context));
         }
 
         // Get the prefix for the id
@@ -36,8 +36,8 @@ public class TowerDeserializer implements JsonDeserializer<Tower> {
         else prefix = "tower-venture-";
 
         ArrayList<Floor> floors = new ArrayList<>();
-        for (int i = 0; i < obtainedResourceSets.size(); i++) {
-            Floor floor = new Floor(obtainedResourceSets.get(i), i * 2 + 1, tower, null, prefix + Integer.toString(i));
+        for (int i = 0; i < obtainableResourceSets.size(); i++) {
+            Floor floor = new Floor(obtainableResourceSets.get(i), i * 2 + 1, tower, null, prefix + Integer.toString(i));
             floors.add(floor);
         }
         tower.setFloors(floors);

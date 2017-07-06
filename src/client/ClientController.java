@@ -10,14 +10,19 @@ import gamecontroller.GameEventsInterface;
 import gamecontroller.GameState;
 import model.Game;
 import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
+import model.board.actionspace.MarketActionSpace;
+import model.card.Card;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
+import model.resource.ObtainableResourceSet;
 import server.ClientToServerInterface;
 import server.exceptions.ActionNotAllowedException;
 import ui.UIInterface;
@@ -135,41 +140,62 @@ public class ClientController implements GameEventsInterface,
         clientConnection.chooseLeaderCard(leaderCard);
     }
 
-    /**
-     * {@link MainTurnContext} callback.
-     * Goes to an action space
-     *
-     * @param actionSpace
-     * @param familyMember
-     * @throws NetworkException
-     * @throws RemoteException
-     * @throws ActionNotAllowedException
-     */
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
-        if(!gameController.canGoThere(ourPlayer, familyMember, actionSpace)) throw new ActionNotAllowedException("You cannot go there!");
+    public void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+        // TODO: locally check if the action is allowed
+        clientConnection.goToCouncilPalace(familyMemberColor, chosenPrivileges);
+    }
 
-        clientConnection.goToActionSpace(actionSpace, familyMember);
+    @Override
+    public void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
+        if(!gameController.canGoThere(ourPlayer, familyMember, floor)) throw new ActionNotAllowedException("You cannot go there!");
+
+        clientConnection.goToFloor(floor, familyMember);
+    }
+
+    @Override
+    public void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToSmallHarvest(familyMemberColor);
+    }
+
+    @Override
+    public void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToBigHarvest(familyMemberColor);
+    }
+
+    @Override
+    public void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToSmallProduction(familyMemberColor);
+    }
+
+    @Override
+    public void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToBigProduction(familyMemberColor);
+    }
+
+    @Override
+    public void goToMarket(FamilyMemberColor familyMemberColor, MarketActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToMarket(familyMemberColor, marketActionSpace);
     }
 
     @Override
     public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+        clientConnection.spendServants(servants);
     }
 
     @Override
     public void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+        clientConnection.discardLeaderCard(leaderCard);
     }
 
     @Override
     public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+        clientConnection.playLeaderCard(leaderCard);
     }
 
     @Override
-    public void activateLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+    public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.activateOncePerRoundEffect(card, effect);
     }
 
     /* ---------------------------------------

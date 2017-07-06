@@ -9,7 +9,7 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 import java.lang.reflect.Type;
 
@@ -36,32 +36,32 @@ public class BoardDeserializer implements JsonDeserializer<Board> {
         /* ---------------------------------------------------------
          * Step 2: Deserialize the other action spaces
          * --------------------------------------------------------- */
-        ObtainedResourceSet councilPalaceBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("councilPalace"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet councilPalaceBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("councilPalace"), ObtainableResourceSet.class, context);
         ActionSpace councilPalace = new CouncilPalace(councilPalaceBonus, 1, "palace");
 
-        ObtainedResourceSet smallProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallProductionArea"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet smallProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallProductionArea"), ObtainableResourceSet.class, context);
         ActionSpace smallProductionArea = new SmallProductionArea(smallProductionAreaBonus, 1, "small-production");
-        ObtainedResourceSet smallHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallHarvestArea"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet smallHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("smallHarvestArea"), ObtainableResourceSet.class, context);
         ActionSpace smallHarvestArea = new SmallHarvestArea(smallHarvestAreaBonus, 1, "small-harvest");
 
-        ObtainedResourceSet bigProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigProductionArea"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet bigProductionAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigProductionArea"), ObtainableResourceSet.class, context);
         ActionSpace bigProductionArea = new BigProductionArea(bigProductionAreaBonus, 1, "big-production");
-        ObtainedResourceSet bigHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigHarvestArea"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet bigHarvestAreaBonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("bigHarvestArea"), ObtainableResourceSet.class, context);
         ActionSpace bigHarvestArea = new BigHarvestArea(bigHarvestAreaBonus, 1, "big-harvest");
 
-        ObtainedResourceSet market1Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market1"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet market1Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market1"), ObtainableResourceSet.class, context);
         ActionSpace market1 = new MarketActionSpace(market1Bonus, 1, "market1");
-        ObtainedResourceSet market2Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market2"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet market2Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market2"), ObtainableResourceSet.class, context);
         ActionSpace market2 = new MarketActionSpace(market2Bonus, 1, "market2");
-        ObtainedResourceSet market3Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market3"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet market3Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market3"), ObtainableResourceSet.class, context);
         ActionSpace market3 = new MarketActionSpace(market3Bonus, 1, "market3");
-        ObtainedResourceSet market4Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market4"), ObtainedResourceSet.class, context);
+        ObtainableResourceSet market4Bonus = new ObtainedResourceSetDeserializer().deserialize(jsonBoardObject.getAsJsonObject("market4"), ObtainableResourceSet.class, context);
         ActionSpace market4 = new MarketActionSpace(market4Bonus, 1, "market4");
 
         /* ---------------------------------------------------------
          * Step 3: Deserialize the faith track bonuses
          * --------------------------------------------------------- */
-        ObtainedResourceSet[] faithTrackBonuses = context.deserialize(jsonBoardObject.getAsJsonArray("faithTrackBonus"), ObtainedResourceSet[].class);
+        ObtainableResourceSet[] faithTrackBonuses = context.deserialize(jsonBoardObject.getAsJsonArray("faithTrackBonus"), ObtainableResourceSet[].class);
 
         /* ---------------------------------------------------------
          * Step 4: Set the attributes of the board

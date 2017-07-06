@@ -12,7 +12,7 @@ import java.util.List;
  * This class represents the state of one tower
  */
 public class Tower<T extends DevelopmentCard> implements Serializable {
-    private ArrayList<Floor<T>> floors = new ArrayList<>();
+    private List<Floor<T>> floors = new ArrayList<>();
 
     /**
      * Returns the card on the specified floor
@@ -49,11 +49,11 @@ public class Tower<T extends DevelopmentCard> implements Serializable {
         );
     }
 
-    public void setFloors(ArrayList<Floor<T>> floors) {
-        this.floors = floors;
+    public void setFloors(List<Floor<T>> floors) {
+        this.floors = new ArrayList<>(floors);
     }
 
-    public ArrayList<Floor<T>> getFloors() {
+    public List<Floor<T>> getFloors() {
         return floors;
     }
 }

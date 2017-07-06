@@ -1,9 +1,9 @@
 package model.board.actionspace;
 
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 public class SmallProductionArea extends ActionSpace {
-    public SmallProductionArea(ObtainedResourceSet bonus, int requiredFamilyMemberValue, String id) {
+    public SmallProductionArea(ObtainableResourceSet bonus, int requiredFamilyMemberValue, String id) {
         super(bonus, requiredFamilyMemberValue, id);
     }
 }

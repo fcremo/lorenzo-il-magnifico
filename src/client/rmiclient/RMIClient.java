@@ -12,6 +12,7 @@ import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
+import model.resource.ObtainableResourceSet;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -94,13 +95,13 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        connection.goToActionSpace(actionSpace, familyMemberColor);
+    public void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.goToCouncilPalace(familyMemberColor, chosenPrivileges);
     }
 
     /* ----------------------------------------------------------
-     * SERVER TO CLIENT INTERFACE
-     * ---------------------------------------------------------- */
+         * SERVER TO CLIENT INTERFACE
+         * ---------------------------------------------------------- */
     @Override
     public void pingClient() throws RemoteException {
         System.out.println("Client pinged by the server");
@@ -157,7 +158,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
-        clientController.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
+    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        clientController.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
     }
 }

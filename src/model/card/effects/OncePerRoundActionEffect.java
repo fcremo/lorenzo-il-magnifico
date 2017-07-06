@@ -4,11 +4,11 @@ import model.action.ActionType;
 import model.card.effects.interfaces.OncePerRoundEffectInterface;
 
 /**
- * This effect allows the player to perform one extra action per turn
+ * This effect allows the player to perform one extra action per round
  */
 public class OncePerRoundActionEffect implements OncePerRoundEffectInterface {
     /**
-     * The turn when the effect was last activated
+     * The round when the effect was last activated
      */
     private int lastActivatedAt = 0;
 

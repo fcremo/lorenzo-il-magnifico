@@ -1,11 +1,13 @@
 package server;
 
+import client.exceptions.NetworkException;
 import gamecontroller.GameController;
 import gamecontroller.GameState;
 import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
 import model.board.actionspace.*;
+import model.card.Card;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -16,6 +18,8 @@ import model.player.PersonalBonusTile;
 import model.player.Player;
 import model.player.PlayerColor;
 import model.resource.ObtainableResource;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.configloader.ConfigLoader;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
@@ -65,6 +69,9 @@ public class ServerGameController {
      */
     private List<Player> playersThatHaveToDraft;
 
+    /* ----------------------------------------------------------------
+     * PRIVATE METHODS THAT CONTROL THE FLOW OF THE GAME
+     * ---------------------------------------------------------------- */
     /**
      * Callback called when the room timeout expires
      */
@@ -113,7 +120,7 @@ public class ServerGameController {
         gameController.setGame(configLoader.getGame());
 
         // Disable some action spaces if players are less than four
-        if(connections.size() < 4) {
+        if (connections.size() < 4) {
             getGame().getBoard().getMarket4().setEnabled(false);
         }
         if (connections.size() < 3) {
@@ -189,16 +196,17 @@ public class ServerGameController {
 
     /**
      * Change the state of the game and inform all players
+     *
      * @param gameState
      */
-    public void setGameState(GameState gameState) {
+    private void setGameState(GameState gameState) {
         gameController.setGameState(gameState);
         for (ClientConnection connection : connections) {
             try {
                 connection.onGameStateChange(gameState);
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                handleRemoteException();
             }
         }
     }
@@ -213,7 +221,7 @@ public class ServerGameController {
             connection.askToChoosePersonalBonusTile(getGame().getAvailablePersonalBonusTiles());
         }
         catch (RemoteException e) {
-            e.printStackTrace();
+            handleRemoteException();
         }
 
         // Put the others to wait
@@ -224,45 +232,9 @@ public class ServerGameController {
                          getConnectionForPlayer(player).showWaitingMessage("Wait for other players to choose a bonus tile");
                      }
                      catch (RemoteException e) {
-                         e.printStackTrace();
+                         handleRemoteException();
                      }
                  });
-    }
-
-    /**
-     * Called when a player chooses his personal bonus tile
-     *
-     * @param player
-     * @param personalBonusTile
-     */
-    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws ActionNotAllowedException {
-        assertGameState(GameState.DRAFTING_BONUS_TILES);
-
-        // Check that the choice is legitimate
-        Optional<PersonalBonusTile> optChosenPersonalBonusTile = getGame().getAvailablePersonalBonusTiles().stream()
-                                                                          .filter(tile -> tile.equals(personalBonusTile))
-                                                                          .findFirst();
-        if (!optChosenPersonalBonusTile.isPresent()) {
-            throw new PersonalBonusTileNotAvailableException();
-        }
-
-        PersonalBonusTile chosenPersonalBonusTile = optChosenPersonalBonusTile.get();
-
-        player.setBonusTile(chosenPersonalBonusTile);
-
-        // Remove the chosen bonus tile from the available ones
-        getGame().getAvailablePersonalBonusTiles().remove(chosenPersonalBonusTile);
-
-        // Draft next bonus tile
-        int currentPlayerIndex = getGame().getPlayers().indexOf(player);
-        if (currentPlayerIndex > 0) {
-            Player nextPlayer = getGame().getPlayers().get(currentPlayerIndex - 1);
-            getGame().setCurrentPlayer(nextPlayer);
-            draftNextBonusTile();
-        }
-        else {
-            startLeaderCardsDraft();
-        }
     }
 
     /**
@@ -322,8 +294,201 @@ public class ServerGameController {
                 playerConnection.askToChooseLeaderCard(playerLeaderCards);
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                handleRemoteException();
             }
+        }
+    }
+
+    /**
+     * Assign initial resources
+     */
+    private void assignInitialResourcesToPlayers() {
+        for (int i = 0; i < getGame().getPlayers().size(); i++) {
+            Player player = getGame().getPlayers().get(i);
+            player.getResources().put(ObtainableResource.WOOD, 2);
+            player.getResources().put(ObtainableResource.STONE, 2);
+            player.getResources().put(ObtainableResource.SERVANTS, 3);
+            player.getResources().put(ObtainableResource.GOLD, 5 + i);
+        }
+    }
+
+    /**
+     * Send game configuration to the players
+     */
+    private void sendGameConfigurationToPlayers() {
+        getGame().getPlayers().forEach(player -> {
+            try {
+                getConnectionForPlayer(player).setGameConfiguration(getGame());
+            }
+            catch (RemoteException e) {
+                handleRemoteException();
+            }
+        });
+    }
+
+    /**
+     * Start new round
+     */
+    private void startNewRound() {
+        updateTurnOrder();
+        drawDevelopmentCards();
+        throwDice();
+        getGame().setCurrentPlayer(getGame().getPlayers().get(0));
+        startPlayerTurn(getGame().getPlayers().get(0));
+    }
+
+    /**
+     * Update the turn order and inform the players
+     * <p>
+     * Algorithm: scans the players in the council palace *from right to left* and sets them as first,
+     * so that the leftmost (the first that has occupied the council palace) will be first in the new turn order.
+     */
+    private void updateTurnOrder() {
+        List<Player> councilPalaceOccupants = getGame().getBoard()
+                                                       .getCouncilPalace()
+                                                       .getOccupants()
+                                                       .stream()
+                                                       .map(tuple -> tuple.first)
+                                                       .collect(Collectors.toList());
+
+        for (int i = councilPalaceOccupants.size() - 1; i >= 0; i--) {
+            getGame().setFirstPlayer(councilPalaceOccupants.get(i));
+        }
+
+        try {
+            for (ClientConnection connection : connections) {
+                connection.onTurnOrderChanged(getGame().getPlayers());
+            }
+        }
+        catch (RemoteException e) {
+            handleRemoteException();
+        }
+    }
+
+    /**
+     * Draw development cards and inform the players
+     * <p>
+     * Place 4 random cards of the appropriate era in each tower
+     */
+    private void drawDevelopmentCards() {
+        Stream<TerritoryCard> currentPeriodTerritoryCards = getGame().getAvailableTerritoryCards()
+                                                                     .stream()
+                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<TerritoryCard> territoryCards = StreamUtils.takeRandomElements(currentPeriodTerritoryCards, 4)
+                                                        .collect(Collectors.toList());
+
+
+        Stream<CharacterCard> currentPeriodCharacterCards = getGame().getAvailableCharacterCards()
+                                                                     .stream()
+                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<CharacterCard> characterCards = StreamUtils.takeRandomElements(currentPeriodCharacterCards, 4)
+                                                        .collect(Collectors.toList());
+
+
+        Stream<BuildingCard> currentPeriodBuildingCards = getGame().getAvailableBuildingCards()
+                                                                   .stream()
+                                                                   .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<BuildingCard> buildingCards = StreamUtils.takeRandomElements(currentPeriodBuildingCards, 4)
+                                                      .collect(Collectors.toList());
+
+
+        Stream<VentureCard> currentPeriodVentureCards = getGame().getAvailableVentureCards()
+                                                                 .stream()
+                                                                 .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
+
+        List<VentureCard> ventureCards = StreamUtils.takeRandomElements(currentPeriodVentureCards, 4)
+                                                    .collect(Collectors.toList());
+
+        gameController.setDevelopmentCards(territoryCards, characterCards, buildingCards, ventureCards);
+
+        for (ClientConnection c : connections) {
+            try {
+                c.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+            }
+            catch (RemoteException e) {
+                handleRemoteException();
+            }
+        }
+    }
+
+    /**
+     * Throws the dice and informs the players
+     */
+    private void throwDice() {
+        Random r = new Random();
+        int blackDie = r.nextInt(6) + 1;
+        int whiteDie = r.nextInt(6) + 1;
+        int orangeDie = r.nextInt(6) + 1;
+
+        gameController.setDiceValues(blackDie, whiteDie, orangeDie);
+
+        for (ClientConnection c : connections) {
+            try {
+                c.onDiceThrown(blackDie, whiteDie, orangeDie);
+            }
+            catch (RemoteException e) {
+                handleRemoteException();
+            }
+        }
+    }
+
+    /**
+     * Signals to all players that the turn is changed
+     *
+     * @param player
+     */
+    private void startPlayerTurn(Player player) {
+        setGameState(GameState.PLAYER_TURN);
+        for (ClientConnection connection : connections) {
+            try {
+                connection.onPlayerTurnStarted(player);
+            }
+            catch (RemoteException e) {
+                handleRemoteException();
+            }
+        }
+    }
+
+    /* ----------------------------------------------------------------
+     * PUBLIC METHODS THAT ARE CALLED WHEN THE PLAYERS DO SOMETHING
+     * ---------------------------------------------------------------- */
+
+    /**
+     * Called when a player chooses his personal bonus tile
+     *
+     * @param player
+     * @param personalBonusTile
+     */
+    public void setPersonalBonusTile(Player player, PersonalBonusTile personalBonusTile) throws ActionNotAllowedException {
+        assertGameState(GameState.DRAFTING_BONUS_TILES);
+
+        // Check that the choice is legitimate
+        Optional<PersonalBonusTile> optChosenPersonalBonusTile = getGame().getAvailablePersonalBonusTiles().stream()
+                                                                          .filter(tile -> tile.equals(personalBonusTile))
+                                                                          .findFirst();
+        if (!optChosenPersonalBonusTile.isPresent()) {
+            throw new PersonalBonusTileNotAvailableException();
+        }
+
+        PersonalBonusTile chosenPersonalBonusTile = optChosenPersonalBonusTile.get();
+
+        player.setBonusTile(chosenPersonalBonusTile);
+
+        // Remove the chosen bonus tile from the available ones
+        getGame().getAvailablePersonalBonusTiles().remove(chosenPersonalBonusTile);
+
+        // Draft next bonus tile
+        int currentPlayerIndex = getGame().getPlayers().indexOf(player);
+        if (currentPlayerIndex > 0) {
+            Player nextPlayer = getGame().getPlayers().get(currentPlayerIndex - 1);
+            getGame().setCurrentPlayer(nextPlayer);
+            draftNextBonusTile();
+        }
+        else {
+            startLeaderCardsDraft();
         }
     }
 
@@ -386,162 +551,69 @@ public class ServerGameController {
                 getConnectionForPlayer(player).showWaitingMessage("Waiting for other players to choose...");
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                handleRemoteException();
             }
         }
     }
 
     /**
-     * Assign initial resources
+     * Called when a player goes to a floor
+     *
+     * @param player
+     * @param floor
+     * @param familyMember
+     * @param paymentForCard
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
      */
-    private void assignInitialResourcesToPlayers() {
-        for (int i=0; i<getGame().getPlayers().size(); i++) {
-            Player player = getGame().getPlayers().get(i);
-            player.getResources().put(ObtainableResource.WOOD, 2);
-            player.getResources().put(ObtainableResource.STONE, 2);
-            player.getResources().put(ObtainableResource.SERVANTS, 3);
-            player.getResources().put(ObtainableResource.GOLD, 5 + i);
-        }
-    }
+    public void goToFloor(Player player, Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws ActionNotAllowedException {
+        Floor serverSideFloor = getGame().getBoard().getFloorById(floor.getId());
 
-    /**
-     * Send game configuration to the players
-     */
-    private void sendGameConfigurationToPlayers() {
-        getGame().getPlayers().forEach(player -> {
+        // Try to place the family member
+        // The controller will throw an exception if the action is not allowed
+        gameController.goToFloor(player, familyMember, serverSideFloor, paymentForCard);
+
+        // Inform all players
+        connections.forEach(connection -> {
             try {
-                getConnectionForPlayer(player).setGameConfiguration(getGame());
+                connection.onPlayerOccupiesFloor(player, familyMember, serverSideFloor, paymentForCard);
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                handleRemoteException();
+            }
+        });
+
+        setGameState(GameState.TAKING_CARD);
+        try {
+            getConnectionForPlayer(player).askToChooseRequiredResourceSet(serverSideFloor.getCard().getRequiredResourceSet());
+        }
+        catch (RemoteException e) {
+            handleRemoteException();
+        }
+    }
+
+    /**
+     * Called when a player wants to occupy the council palace
+     * @param player the player
+     * @param familyMemberColor the family member he wants to use
+     * @param councilPrivileges the council privileges the player has chosen
+     */
+    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
+        // If the action is not allowed the game controller will throw an exception
+        gameController.goToCouncilPalace(player, familyMemberColor, councilPrivileges, councilPrivileges);
+
+        // Inform all players
+        connections.forEach(connection -> {
+            try {
+                connection.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+            }
+            catch (RemoteException e) {
+                handleRemoteException();
             }
         });
     }
 
-    /**
-     * Start new round
-     */
-    private void startNewRound() {
-        updateTurnOrder();
-        drawDevelopmentCards();
-        throwDice();
-        getGame().setCurrentPlayer(getGame().getPlayers().get(0));
-        startPlayerTurn(getGame().getPlayers().get(0));
-    }
-
-    /**
-     * Update the turn order and inform the players
-     *
-     * Algorithm: scans the players in the council palace *from right to left* and sets them as first,
-     * so that the leftmost (the first that has occupied the council palace) will be first in the new turn order.
-     */
-    private void updateTurnOrder() {
-        List<Player> councilPalaceOccupants = getGame().getBoard()
-                                                       .getCouncilPalace()
-                                                       .getOccupants()
-                                                       .stream()
-                                                       .map(tuple -> tuple.first)
-                                                       .collect(Collectors.toList());
-
-        for(int i = councilPalaceOccupants.size() - 1; i >= 0; i--){
-            getGame().setFirstPlayer(councilPalaceOccupants.get(i));
-        }
-
-        try {
-            for (ClientConnection connection : connections) {
-                connection.onTurnOrderChanged(getGame().getPlayers());
-            }
-        }
-        catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Draw development cards and inform the players
-     *
-     * Place 4 random cards of the appropriate era in each tower
-     */
-    private void drawDevelopmentCards() {
-        Stream<TerritoryCard> currentPeriodTerritoryCards = getGame().getAvailableTerritoryCards()
-                                                                     .stream()
-                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
-
-        List<TerritoryCard> territoryCards = StreamUtils.takeRandomElements(currentPeriodTerritoryCards,4)
-                                                        .collect(Collectors.toList());
-
-
-        Stream<CharacterCard> currentPeriodCharacterCards = getGame().getAvailableCharacterCards()
-                                                                     .stream()
-                                                                     .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
-
-        List<CharacterCard> characterCards = StreamUtils.takeRandomElements(currentPeriodCharacterCards,4)
-                                                        .collect(Collectors.toList());
-
-
-        Stream<BuildingCard> currentPeriodBuildingCards = getGame().getAvailableBuildingCards()
-                                                                   .stream()
-                                                                   .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
-
-        List<BuildingCard> buildingCards = StreamUtils.takeRandomElements(currentPeriodBuildingCards,4)
-                                                        .collect(Collectors.toList());
-
-
-        Stream<VentureCard> currentPeriodVentureCards = getGame().getAvailableVentureCards()
-                                                                   .stream()
-                                                                   .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
-
-        List<VentureCard> ventureCards = StreamUtils.takeRandomElements(currentPeriodVentureCards,4)
-                                                        .collect(Collectors.toList());
-
-        gameController.setDevelopmentCards(territoryCards, characterCards, buildingCards, ventureCards);
-
-        for(ClientConnection c : connections) {
-            try {
-                c.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
-            }
-            catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Throws the dice and informs the players
-     */
-    private void throwDice() {
-        Random r = new Random();
-        int blackDie = r.nextInt(6) + 1;
-        int whiteDie = r.nextInt(6) + 1;
-        int orangeDie = r.nextInt(6) + 1;
-
-        gameController.setDiceValues(blackDie, whiteDie, orangeDie);
-
-        for(ClientConnection c : connections) {
-            try {
-                c.onDiceThrown(blackDie, whiteDie, orangeDie);
-            }
-            catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Signals to all players that the turn is changed
-     * @param player
-     */
-    private void startPlayerTurn(Player player) {
-        setGameState(GameState.PLAYER_TURN);
-        for (ClientConnection connection : connections) {
-            try {
-                connection.onPlayerTurnStarted(player);
-            }
-            catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /**
      * Called when a player goes to an action space
@@ -564,12 +636,12 @@ public class ServerGameController {
                 connection.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                handleRemoteException();
             }
         });
 
         // Ask the player to perform the next action
-        if(serverSideActionSpace instanceof SmallHarvestArea || serverSideActionSpace instanceof BigHarvestArea) {
+        if (serverSideActionSpace instanceof SmallHarvestArea || serverSideActionSpace instanceof BigHarvestArea) {
             // Perform harvest
             setGameState(GameState.HARVEST);
         }
@@ -600,7 +672,7 @@ public class ServerGameController {
      * @param clientConnection
      */
     public void addPlayer(ClientConnection clientConnection) throws RoomNotJoinableException {
-        if(!isJoinable()){
+        if (!isJoinable()) {
             throw new RoomNotJoinableException();
         }
 
@@ -613,6 +685,7 @@ public class ServerGameController {
 
     /**
      * Asserts that the game is in a certain state or throw an ActionNotAllowedException
+     *
      * @param gameState
      * @throws ActionNotAllowedException
      */
@@ -624,6 +697,7 @@ public class ServerGameController {
 
     /**
      * Get the connection to the specified player
+     *
      * @param player
      * @return
      */
@@ -640,7 +714,22 @@ public class ServerGameController {
     }
 
     /**
+     * Handle a remote exception from a player connection
+     */
+    private void handleRemoteException() {
+        connections.forEach(connection -> {
+            try {
+                connection.abortGame("One of the clients crashed. Cannot go on.");
+            }
+            catch (RemoteException e) {
+                // We're aborting the game, nothing to do anyway
+            }
+        });
+    }
+
+    /**
      * Utility method to get the game from the game controller
+     *
      * @return
      */
     private Game getGame() {

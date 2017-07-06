@@ -1,144 +1,203 @@
 package model.resource;
 
-import java.io.Serializable;
-import java.util.*;
+import model.player.Player;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class represents an obtained/obtainable set of obtainedResources
+ * This class represents a set of resources obtained by a player
  */
-public class ObtainedResourceSet implements Serializable {
+public class ObtainedResourceSet {
     /**
-     * The set of static obtainedResources
+     * The player owning this resource set.
+     * Needed when working with multipliers and requirements
      */
-    private HashMap<ObtainableResource, Integer> obtainedResources = new HashMap<>();
+    private Player player;
 
-    /**
-     * The set of multiplied obtainedResources.
-     * The player gets an ObtainedResourceSet for each RequiredResourceSet he/she has
-     */
-    private HashMap<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers = new HashMap<>();
+    private Map<ObtainableResource, Integer> resources = new HashMap<>();
 
-    public ObtainedResourceSet(Map<ObtainableResource, Integer> obtainedResources) {
-        this.obtainedResources = new HashMap<>(obtainedResources);
+    public ObtainedResourceSet(Player player) {
+        this.player = player;
     }
 
-    public ObtainedResourceSet(Map<ObtainableResource, Integer> obtainedResources, Map<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers) {
-        this.obtainedResources = new HashMap<>(obtainedResources);
-        this.resourceMultipliers = new HashMap<>(resourceMultipliers);
+    public ObtainedResourceSet(Player player, Map<ObtainableResource, Integer> resources) {
+        this.player = player;
+        this.resources = new HashMap<>(resources);
     }
 
     /**
-     * Empty constructor
+     * Adds some quantity of a resource to the set
+     * @param resource
+     * @param qty
      */
-    public ObtainedResourceSet() {}
-
-    /**
-     * Copy constructor
-     * @param obtainedResourceSet
-     */
-    public ObtainedResourceSet(ObtainedResourceSet obtainedResourceSet) {
-        this.obtainedResources = new HashMap<>(obtainedResourceSet.obtainedResources);
-        // TODO: 5/25/17 this works until nothing modifies multipliers. Implement proper deep cloning.
-        this.resourceMultipliers = new HashMap<>(obtainedResourceSet.resourceMultipliers);
-    }
-
-    public ObtainedResourceSet(int gold, int wood, int stone, int servants, int councilPrivileges, int militaryPoints,
-                               int faithPoints, int victoryPoints) {
-        obtainedResources.put(ObtainableResource.GOLD, gold);
-        obtainedResources.put(ObtainableResource.WOOD, wood);
-        obtainedResources.put(ObtainableResource.STONE, stone);
-        obtainedResources.put(ObtainableResource.SERVANTS, servants);
-        obtainedResources.put(ObtainableResource.COUNCIL_PRIVILEGES, councilPrivileges);
-        obtainedResources.put(ObtainableResource.MILITARY_POINTS, militaryPoints);
-        obtainedResources.put(ObtainableResource.FAITH_POINTS, faithPoints);
-        obtainedResources.put(ObtainableResource.VICTORY_POINTS, victoryPoints);
+    public void addResource(ObtainableResource resource, int qty) {
+        int newQty = resources.getOrDefault(resource, 0) + qty;
+        resources.put(resource, newQty);
     }
 
     /**
-     * Add qty obtainedResources of type resource to the current set and returns a new one.
-     * N.B: qty can be negative, but the stored quantity will never go negative.
-     * N.B: this method returns a deep copy of the current object, it does not modify it
-     *
-     * @param resource the type of resource you want to modify
-     * @param qty      the quantity of the resource
+     * Subtracts some quantity of a resource from the set
+     * @param resource
+     * @param qty
      */
-    public ObtainedResourceSet addResource(ObtainableResource resource, int qty) {
-        ObtainedResourceSet newResourceSet = new ObtainedResourceSet(this);
-        int currentQty = obtainedResources.getOrDefault(resource, 0);
-        if (currentQty + qty >= 0) {
-            newResourceSet.obtainedResources.put(resource, currentQty + qty);
+    public void subtractResource(ObtainableResource resource, int qty) {
+        int newQty = resources.getOrDefault(resource, 0) - qty;
+        resources.put(resource, newQty);
+    }
+
+    /**
+     * Returns true if the set has at least the required quantity of the specified resource
+     * @param qty
+     * @param resource
+     * @return true if the set has at least the required quantity of the specified resource
+     */
+    public boolean hasAtLeast(int qty, ObtainableResource resource) {
+        return resources.getOrDefault(resource, 0) >= qty;
+    }
+
+    /**
+     * Returns true if the set can be used to pay for the required resource set
+     * @param requirement
+     * @return
+     */
+    public boolean has(RequiredResourceSet requirement) {
+        return divideBy(requirement) > 0;
+    }
+
+    /**
+     * Adds an obtainable resource set to the current set
+     * @param resources
+     */
+    public void addResources(ObtainableResourceSet resources) {
+        // Copy of the original resources needed to perform calculations on the multipliers
+        Map<ObtainableResource, Integer> originalResources = new HashMap<>(this.resources);
+
+        // Add static resources
+        addStaticResources(resources, 1);
+
+        // For each RequiredResourceSet in the current ObtainedResourceSet we add the corresponding ObtainableResourceSet
+        for(Map.Entry<RequiredResourceSet, ObtainableResourceSet> multiplier : resources.getResourceMultipliers().entrySet()) {
+            int qtyToAdd = new ObtainedResourceSet(player, originalResources).divideBy(multiplier.getKey());
+            ObtainableResourceSet obtainableResourceSet = multiplier.getValue();
+
+            /*
+             * Adding only static resources as multipliers covers any sane game configuration,
+             * as nesting multipliers probably does not make much sense.
+             * TODO: modify game configuration loader so that it is semantically impossible to nest multipliers
+             */
+            addStaticResources(obtainableResourceSet, qtyToAdd);
         }
-        return newResourceSet;
     }
 
-    public boolean isEmpty() {
-        return (obtainedResources.isEmpty() && resourceMultipliers.isEmpty());
+    /**
+     * Add only the static resources in an obtainable resource set to this resource set
+     * @param obtainableResourceSet
+     */
+    private void addStaticResources(ObtainableResourceSet obtainableResourceSet, int qtyToAdd) {
+        for(ObtainableResource obtainableResource : obtainableResourceSet.getObtainedResources().keySet()) {
+            addResource(obtainableResource, obtainableResourceSet.getObtainedAmount(obtainableResource) * qtyToAdd);
+        }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder printable = new StringBuilder();
-        for (Map.Entry<ObtainableResource, Integer> resource : obtainedResources.entrySet()) {
-            printable.append(resource.getValue())
-                     .append(" ")
-                     .append(resource.getKey())
-                     .append(", ");
-        }
-        for (Map.Entry<RequiredResourceSet, ObtainedResourceSet> required : resourceMultipliers.entrySet()) {
-            printable.append(required.getKey())
-                     .append(" --> ")
-                     .append(required.getValue())
-                     .append(", ");
-        }
-        if (printable.lastIndexOf(", ") != -1) {
-            printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
-        }
-        return printable.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ObtainedResourceSet)) return false;
-
-        ObtainedResourceSet otherResourceSet = (ObtainedResourceSet) o;
-
-        // Ensure static obtainedResources are equal
-        Set<ObtainableResource> allResources = new HashSet<>(obtainedResources.keySet());
-        allResources.addAll(otherResourceSet.obtainedResources.keySet());
-        for (ObtainableResource r : allResources) {
-            Integer qty1 = obtainedResources.getOrDefault(r, 0);
-            Integer qty2 = otherResourceSet.obtainedResources.getOrDefault(r, 0);
-            if (!qty1.equals(qty2)) {
-                return false;
+    /**
+     * Subtracts some resources from this resource set
+     * @param resources
+     */
+    public void subtractResources(RequiredResourceSet resources) {
+        for(ResourceType resourceType : resources.getRequiredResources().keySet()){
+            // We don't subtract requirements, only costs
+            if(resourceType instanceof ObtainableResource) {
+                ObtainableResource resource = (ObtainableResource) resourceType;
+                int newQty = this.resources.getOrDefault(resource, 0) - resources.getRequiredAmount(resource);
+                this.resources.put(resource, newQty);
             }
         }
-
-        // Check multipliers
-        return this.resourceMultipliers.equals(otherResourceSet.resourceMultipliers);
     }
 
-    public HashMap<ObtainableResource, Integer> getObtainedResources() {
-        return obtainedResources;
+    /**
+     * Computes how many times the requirement can be fulfilled by this set
+     * @param requirement
+     * @return
+     */
+    private int divideBy(RequiredResourceSet requirement) {
+        int quotient = Integer.MAX_VALUE;
+
+        for(ResourceType requiredResource : requirement.getRequiredResources().keySet()){
+            int tmpQuotient = divideBy(requiredResource, requirement.getRequiredAmount(requiredResource));
+            if (tmpQuotient < quotient) {
+                quotient = tmpQuotient;
+            }
+        }
+        return quotient;
     }
 
-    public void setObtainedResources(HashMap<ObtainableResource, Integer> obtainedResources) {
-        this.obtainedResources = obtainedResources;
+    /**
+     * Computes how many times the requirement can be fulfilled by this set
+     * @param requirement
+     * @param qty
+     * @return
+     */
+    private int divideBy(ResourceType requirement, int qty) {
+        int resourceQty;
+
+        // If the resource is just requirement we need to translate to the corresponding resource
+        if(requirement instanceof RequiredResource) {
+            RequiredResource requiredResourceType = (RequiredResource) requirement;
+            if (requiredResourceType == RequiredResource.REQUIRED_MILITARY_POINTS) {
+                resourceQty = resources.getOrDefault(ObtainableResource.MILITARY_POINTS, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_FAITH_POINTS) {
+                resourceQty = resources.getOrDefault(ObtainableResource.FAITH_POINTS, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_VICTORY_POINTS) {
+                resourceQty = resources.getOrDefault(ObtainableResource.VICTORY_POINTS, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_GOLD) {
+                resourceQty = resources.getOrDefault(ObtainableResource.GOLD, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_WOOD) {
+                resourceQty = resources.getOrDefault(ObtainableResource.WOOD, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_STONE) {
+                resourceQty = resources.getOrDefault(ObtainableResource.STONE, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_SERVANTS) {
+                resourceQty = resources.getOrDefault(ObtainableResource.SERVANTS, 0);
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_BUILDING_CARDS) {
+                resourceQty = player.getBuildings().size();
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_CHARACTER_CARDS) {
+                resourceQty = player.getCharacters().size();
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_TERRITORY_CARDS) {
+                resourceQty = player.getTerritories().size();
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_VENTURE_CARDS) {
+                resourceQty = player.getVentures().size();
+            }
+            else if (requiredResourceType == RequiredResource.REQUIRED_SAME_TYPE_CARDS) {
+                resourceQty = Arrays.asList(player.getBuildings().size(),
+                        player.getCharacters().size(),
+                        player.getTerritories().size(),
+                        player.getVentures().size())
+                                    .stream()
+                                    .max(Comparator.naturalOrder())
+                                    .orElse(0);
+            }
+            else {
+                resourceQty = 0;
+            }
+        }
+        else {
+            resourceQty = resources.getOrDefault(requirement, 0);
+        }
+
+        return resourceQty / qty;
     }
 
-    public HashMap<RequiredResourceSet, ObtainedResourceSet> getResourceMultipliers() {
-        return resourceMultipliers;
-    }
-
-    public void setResourceMultipliers(HashMap<RequiredResourceSet, ObtainedResourceSet> resourceMultipliers) {
-        this.resourceMultipliers = resourceMultipliers;
-    }
-
-    public int getObtainedAmount(ResourceType resourceType) {
-        return obtainedResources.getOrDefault(resourceType, 0);
-    }
-
-    public void setObtainedAmount(ObtainableResource resourceType, int requirement) {
-        obtainedResources.put(resourceType, requirement);
-    }
 
 }

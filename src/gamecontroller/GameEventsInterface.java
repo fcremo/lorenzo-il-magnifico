@@ -1,12 +1,15 @@
 package gamecontroller;
 
 import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -65,4 +68,23 @@ public interface GameEventsInterface {
      * @throws RemoteException
      */
     void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException;
+
+    /**
+     * Called when a player occupies the council palace
+     * @param player the player
+     * @param familyMemberColor the family member used
+     * @param councilPrivileges the chosen council privileges
+     */
+    void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
+
+    /**
+     * Called when a player occupies a floor
+     * @param player
+     * @param familyMemberColor
+     * @param floor
+     * @throws RemoteException
+     */
+    void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException;
+
+
 }

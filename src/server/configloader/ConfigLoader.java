@@ -15,7 +15,7 @@ import model.card.effects.EffectsContainer;
 import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import server.configloader.deserializers.*;
 
@@ -45,7 +45,7 @@ public class ConfigLoader {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .registerTypeAdapter(Board.class, new BoardDeserializer())
-                .registerTypeAdapter(ObtainedResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
                 .registerTypeAdapter(EffectsContainer.class, new EffectsContainerDeserializer())
@@ -110,7 +110,7 @@ public class ConfigLoader {
          * Step 5: Deserialize council privileges
          * ----------------------------------------------------------- */
         InputStreamReader councilPrivilegesFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/councilPrivileges.json"));
-        ArrayList<ObtainedResourceSet> councilPrivileges = gson.fromJson(councilPrivilegesFileReader, new TypeToken<ArrayList<ObtainedResourceSet>>() {
+        ArrayList<ObtainableResourceSet> councilPrivileges = gson.fromJson(councilPrivilegesFileReader, new TypeToken<ArrayList<ObtainableResourceSet>>() {
         }.getType());
         game.setCouncilPrivileges(councilPrivileges);
 

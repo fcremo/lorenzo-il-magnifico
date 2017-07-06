@@ -1,27 +1,27 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 /**
  * This effect gives the player some resources when taking a card
  */
 public class ImmediateResourcesEffect implements EffectInterface {
-    private ObtainedResourceSet obtainedResourceSet;
+    private ObtainableResourceSet obtainableResourceSet;
 
-    public ImmediateResourcesEffect(ObtainedResourceSet obtainedResourceSet) {
-        this.obtainedResourceSet = obtainedResourceSet;
+    public ImmediateResourcesEffect(ObtainableResourceSet obtainableResourceSet) {
+        this.obtainableResourceSet = obtainableResourceSet;
     }
 
     /**
      * @return the set of resources obtained
      */
-    public ObtainedResourceSet getObtainedResourceSet() {
-        return obtainedResourceSet;
+    public ObtainableResourceSet getObtainableResourceSet() {
+        return obtainableResourceSet;
     }
 
     @Override
     public String toString() {
-        return "Receive " + obtainedResourceSet + ".";
+        return "Receive " + obtainableResourceSet + ".";
     }
 }

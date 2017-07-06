@@ -10,7 +10,7 @@ import model.card.effects.*;
 import model.card.effects.interfaces.EffectInterface;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResource;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 
 import java.lang.reflect.Type;
@@ -28,8 +28,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
         // Curly braces are used to create a new scope for variables declared in each case
         switch (effectType) {
             case "ImmediateResources": {
-                ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.getAsJsonObject("resources"), ObtainedResourceSet.class);
-                effect = new ImmediateResourcesEffect(obtainedResourceSet);
+                ObtainableResourceSet obtainableResourceSet = context.deserialize(jsonEffect.getAsJsonObject("resources"), ObtainableResourceSet.class);
+                effect = new ImmediateResourcesEffect(obtainableResourceSet);
                 break;
             }
             case "ActionValueModifier": {
@@ -39,8 +39,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 break;
             }
             case "FloorBonusResourcesSetter": {
-                ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.getAsJsonObject("resources"), ObtainedResourceSet.class);
-                effect = new FloorBonusResourcesSetterEffect(obtainedResourceSet);
+                ObtainableResourceSet obtainableResourceSet = context.deserialize(jsonEffect.getAsJsonObject("resources"), ObtainableResourceSet.class);
+                effect = new FloorBonusResourcesSetterEffect(obtainableResourceSet);
                 break;
             }
             case "ImmediateAction": {
@@ -77,8 +77,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 break;
             }
             case "EndOfGameResources": {
-                ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainedResourceSet.class);
-                effect = new EndOfGameResourcesEffect(obtainedResourceSet);
+                ObtainableResourceSet obtainableResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainableResourceSet.class);
+                effect = new EndOfGameResourcesEffect(obtainableResourceSet);
                 break;
             }
             case "DoubleOccupationCostIgnore": {
@@ -86,8 +86,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 break;
             }
             case "ChurchSupportBonusResources": {
-                ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainedResourceSet.class);
-                effect = new ChurchSupportBonusResourcesEffect(obtainedResourceSet);
+                ObtainableResourceSet obtainableResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainableResourceSet.class);
+                effect = new ChurchSupportBonusResourcesEffect(obtainableResourceSet);
                 break;
             }
             case "CopyOtherLeaderAbility": {
@@ -142,8 +142,8 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
                 break;
             }
             case "OncePerRoundBonusResources": {
-                ObtainedResourceSet obtainedResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainedResourceSet.class);
-                effect = new OncePerRoundBonusResourcesEffect(obtainedResourceSet);
+                ObtainableResourceSet obtainableResourceSet = context.deserialize(jsonEffect.get("resources"), ObtainableResourceSet.class);
+                effect = new OncePerRoundBonusResourcesEffect(obtainableResourceSet);
                 break;
             }
             case "OncePerRoundFamilyMemberValueSetter": {

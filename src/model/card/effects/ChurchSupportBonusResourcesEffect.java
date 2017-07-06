@@ -1,19 +1,19 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 /**
  * This effect gives the player a bonus resource set when he shows support for the Church
  */
 public class ChurchSupportBonusResourcesEffect implements EffectInterface {
-    private ObtainedResourceSet bonusResources;
+    private ObtainableResourceSet bonusResources;
 
-    public ChurchSupportBonusResourcesEffect(ObtainedResourceSet bonusResources) {
+    public ChurchSupportBonusResourcesEffect(ObtainableResourceSet bonusResources) {
         this.bonusResources = bonusResources;
     }
 
-    public ObtainedResourceSet getBonusResources() {
+    public ObtainableResourceSet getBonusResources() {
         return bonusResources;
     }
 

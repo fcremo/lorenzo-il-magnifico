@@ -1,7 +1,7 @@
 package model.card.effects;
 
 import model.card.effects.interfaces.EffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 
 /**
  * This class implements the effect that gives the player
@@ -9,13 +9,13 @@ import model.resource.ObtainedResourceSet;
  * N.B.: The resources can be negative
  */
 public class EndOfGameResourcesEffect implements EffectInterface {
-    private ObtainedResourceSet resourceSet;
+    private ObtainableResourceSet resourceSet;
 
-    public EndOfGameResourcesEffect(ObtainedResourceSet resourceSet) {
+    public EndOfGameResourcesEffect(ObtainableResourceSet resourceSet) {
         this.resourceSet = resourceSet;
     }
 
-    public ObtainedResourceSet getResourceSet() {
+    public ObtainableResourceSet getResourceSet() {
         return resourceSet;
     }
 

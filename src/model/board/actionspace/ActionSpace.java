@@ -2,7 +2,7 @@ package model.board.actionspace;
 
 import model.player.FamilyMemberColor;
 import model.player.Player;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.util.Tuple;
 
 import java.io.Serializable;
@@ -32,14 +32,14 @@ public abstract class ActionSpace implements Serializable {
     /**
      * The bonus resources obtained when occupying the action space (e.g. top floors and market bonuses)
      */
-    private ObtainedResourceSet bonus;
+    private ObtainableResourceSet bonus;
 
     /**
      * The minimum family member value required to occupy the action space
      */
     private int requiredFamilyMemberValue;
 
-    public ActionSpace(ObtainedResourceSet bonus, int requiredFamilyMemberValue, String id) {
+    public ActionSpace(ObtainableResourceSet bonus, int requiredFamilyMemberValue, String id) {
         this.bonus = bonus;
         this.requiredFamilyMemberValue = requiredFamilyMemberValue;
         this.id = id;
@@ -76,11 +76,11 @@ public abstract class ActionSpace implements Serializable {
         this.occupants.clear();
     }
 
-    public ObtainedResourceSet getBonus() {
+    public ObtainableResourceSet getBonus() {
         return bonus;
     }
 
-    public void setBonus(ObtainedResourceSet bonus) {
+    public void setBonus(ObtainableResourceSet bonus) {
         this.bonus = bonus;
     }
 

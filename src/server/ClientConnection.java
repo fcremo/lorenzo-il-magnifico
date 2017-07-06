@@ -5,7 +5,11 @@ import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
+import model.card.Card;
+import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.player.FamilyMemberColor;
+import model.resource.ObtainableResourceSet;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.RoomNotJoinableException;
 import model.card.leader.LeaderCard;
@@ -136,9 +140,61 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
         // TODO
     }
 
+    /**
+     * Called when the player wants to go to the council palace
+     * @param familyMemberColor
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        serverGameController.placeFamilyMember(player, familyMemberColor, actionSpace);
+    public void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+        serverGameController.goToCouncilPalace(player, familyMemberColor, chosenPrivileges);
+    }
+
+    @Override
+    public void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
+        serverGameController.goToFloor(player, floor, familyMember);
+    }
+
+    @Override
+    public void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
+
     }
 
     public Player getPlayer() {

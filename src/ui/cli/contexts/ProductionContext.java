@@ -14,7 +14,6 @@ import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainableResource;
-import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import server.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
@@ -24,27 +23,24 @@ import ui.cli.layout.table.TableLayout;
 import ui.cli.layout.table.TextBox;
 
 import java.rmi.RemoteException;
-import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-public class MainTurnContext extends Context {
+public class ProductionContext extends Context {
     private Game game;
+    private int productionValue;
 
     private Callback callback;
 
-    public MainTurnContext(PrintInterface printInterface, Game game, Callback callback) {
+    public ProductionContext(PrintInterface printInterface, int productionValue, Game game, Callback callback) {
         super(printInterface);
         this.game = game;
         this.callback = callback;
         this.addCommand("show-board", this::showBoard, "Show board status");
         this.addCommand("show-player", this::showPlayer, "Show player status");
+        this.addCommand("show-productions", this::showPlayer, "Show productions");
         this.addCommand("spend-servants", this::spendServants, "Commit some servants to spend for the next action");
-        this.addCommand("go-to", this::goTo, "Go to a position on the board");
-        this.addCommand("discard-leader", this::discardLeaderCard, "Discard a Leader card from your hand and immediately receive a Council Privilege");
-        this.addCommand("play-leader", this::playLeaderCard, "Play a Leader Card from your hand");
-        this.addCommand("activate-leader", this::activateLeaderCard, "Activate a Leader’s Once Per Round Ability");
-        printInterface.println("It's your turn!");
+        printInterface.println("You can perform a production of value " + productionValue);
     }
 
     private void showBoard(String[] params) throws InvalidCommandException {
@@ -257,7 +253,6 @@ public class MainTurnContext extends Context {
             sb.append("\n");
             i++;
         }
-        // TODO print whether once per round effect has been activated
 
         printer.println(sb.toString());
     }
@@ -426,8 +421,6 @@ public class MainTurnContext extends Context {
     public interface Callback {
         void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-        void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
-
         void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
@@ -437,6 +430,8 @@ public class MainTurnContext extends Context {
         void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+        void goToCouncilPalace(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException;
 
