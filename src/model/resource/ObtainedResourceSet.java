@@ -77,23 +77,23 @@ public class ObtainedResourceSet implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder printable = new StringBuilder();
+        StringBuilder string = new StringBuilder();
         for (Map.Entry<ObtainableResource, Integer> resource : obtainedResources.entrySet()) {
-            printable.append(resource.getValue())
+            string.append(resource.getValue())
                      .append(" ")
                      .append(resource.getKey())
                      .append(", ");
         }
         for (Map.Entry<RequiredResourceSet, ObtainedResourceSet> required : resourceMultipliers.entrySet()) {
-            printable.append(required.getKey())
-                     .append(" --> ")
-                     .append(required.getValue())
+            string.append(required.getValue())
+                     .append(" for each ")
+                     .append(required.getKey())
                      .append(", ");
         }
-        if (printable.lastIndexOf(", ") != -1) {
-            printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
+        if (string.lastIndexOf(", ") != -1) {
+            string.delete(string.lastIndexOf(", "), string.lastIndexOf(", ") + 2);
         }
-        return printable.toString();
+        return string.toString();
     }
 
     @Override

@@ -39,6 +39,13 @@ public abstract class ActionSpace implements Serializable {
      */
     private int requiredFamilyMemberValue;
 
+    /**
+     * Is true if one or more players are currently occupying the action space
+     * Need especially for small action spaces (e.g. market and floor)
+     */
+    private boolean isOccupied;
+
+
     public ActionSpace(ObtainedResourceSet bonus, int requiredFamilyMemberValue, String id) {
         this.bonus = bonus;
         this.requiredFamilyMemberValue = requiredFamilyMemberValue;
@@ -68,6 +75,26 @@ public abstract class ActionSpace implements Serializable {
         return occupants;
     }
 
+    public String getOccupantsString() {
+        StringBuilder occupants = new StringBuilder();
+
+        if (!isOccupied()) {
+            occupants.append("Not occupied yet");
+        }
+        else {
+            occupants.append("Occupied by ");
+            for (int i = 0; i < getOccupants().size(); i++) {
+                occupants.append(getOccupants().get(i).first.getUsername())
+                         .append(", ");
+            }
+            if (occupants.lastIndexOf(", ") != -1) {
+                occupants.delete(occupants.lastIndexOf(", "), occupants.lastIndexOf(", ") + 2);
+            }
+        }
+
+        return occupants.toString();
+    }
+
     public void addOccupant(Player player, FamilyMemberColor color) {
         this.occupants.add(new Tuple<>(player, color));
     }
@@ -90,6 +117,14 @@ public abstract class ActionSpace implements Serializable {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
     }
 
     public String getId() {

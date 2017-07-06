@@ -14,8 +14,6 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
 
     private T card;
 
-    private boolean isOccupied;
-
     public Floor(ObtainedResourceSet bonus, int requiredFamilyMemberValue, Tower<T> tower, T card, String id) {
         super(bonus, requiredFamilyMemberValue, id);
         this.tower = tower;
@@ -40,19 +38,25 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
         this.card = card;
     }
 
-    public boolean isOccupied() {
-        return isOccupied;
-    }
-
-    public void setOccupied(boolean occupied) {
-        isOccupied = occupied;
-    }
-
     public Tower<T> getTower() {
         return tower;
     }
 
     public void setTower(Tower<T> tower) {
         this.tower = tower;
+    }
+
+    @Override
+    public String toString() {
+        String string;
+
+        if (isOccupied()) {
+            string = "Occupied by " + getOccupantsString();
+        }
+        else {
+            string = getCard().toString();
+        }
+
+        return string;
     }
 }

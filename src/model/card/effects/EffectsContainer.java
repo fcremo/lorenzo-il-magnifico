@@ -78,11 +78,18 @@ public class EffectsContainer implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder printable = new StringBuilder();
+        StringBuilder string = new StringBuilder();
+
         for (EffectInterface effect : effects) {
-            printable.append(effect);
-            printable.append("\n");
+            string.append(effect);
+            string.append("\n");
+            string.append("and ");
         }
-        return printable.toString();
+
+        if (string.lastIndexOf("and ") != -1) {
+            string.delete(string.lastIndexOf("and "), string.lastIndexOf("and ") + 4);
+        }
+
+        return string.toString();
     }
 }

@@ -24,7 +24,7 @@ public class IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect implements E
 
     @Override
     public String toString() {
-        return "At the end of the game, you don’t score points for any of your " + developmentCardType + ".";
+        return "At the end of the game, you don’t score points for any of your " + developmentCardType;
     }
 }
 

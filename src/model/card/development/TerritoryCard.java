@@ -1,6 +1,7 @@
 package model.card.development;
 
 import model.resource.ObtainedResourceSet;
+import model.resource.RequiredResourceSet;
 
 import java.util.ArrayList;
 
@@ -31,5 +32,37 @@ public class TerritoryCard extends DevelopmentCard {
 
     public void setRequiredValueForHarvest(int requiredValueForHarvest) {
         this.requiredValueForHarvest = requiredValueForHarvest;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder(getName());
+        string.append("\n");
+
+        if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
+            string.append("price: ");
+            for (RequiredResourceSet requirement : getRequiredResourceSet()) {
+                string.append(requirement);
+                string.append("\n");
+                string.append("or ");
+            }
+        }
+
+        if (string.lastIndexOf("or ") != -1) {
+            string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
+        }
+
+        if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
+            string.append("effects: ");
+            string.append(getEffectsContainer().toString());
+        }
+
+        if (!getHarvestResourceSet().isEmpty()) {
+            string.append(String.format("Harvest (at %d): ", getRequiredValueForHarvest()));
+            string.append(getHarvestResourceSet().toString());
+            string.append("\n");
+        }
+
+        return string.toString();
     }
 }

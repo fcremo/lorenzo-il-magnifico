@@ -9,6 +9,6 @@ import model.card.effects.interfaces.EffectInterface;
 public class DoubleOccupationCostIgnoreEffect implements EffectInterface {
     @Override
     public String toString() {
-        return "You don’t have to spend 3 coins when you place your Family Members in a Tower that is already occupied.";
+        return "You don’t have to spend 3 coins when you place your Family Members in a Tower that is already occupied";
     }
 }

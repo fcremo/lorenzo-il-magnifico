@@ -46,7 +46,7 @@ public class ImmediateActionEffect implements EffectInterface {
         effects.delete(effects.lastIndexOf(" or "), effects.lastIndexOf(" or ") + 4);
         effects.append(" with value ")
                .append(actionValue)
-               .append(" without placing a Family Member.");
+               .append(" without placing a Family Member");
         return effects.toString();
     }
 }

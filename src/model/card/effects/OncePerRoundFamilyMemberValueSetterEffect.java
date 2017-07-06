@@ -60,6 +60,6 @@ public class OncePerRoundFamilyMemberValueSetterEffect implements OncePerRoundEf
 
     @Override
     public String toString() {
-        return "Once per round one of the " + allowedFamilyMemberColor.toString() + " Family Members has a value of " + value + ", regardless of its related die.";
+        return "Once per round one of the " + allowedFamilyMemberColor.toString() + " Family Members has a value of " + value + ", regardless of its related die";
     }
 }

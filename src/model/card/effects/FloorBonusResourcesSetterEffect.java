@@ -20,10 +20,10 @@ public class FloorBonusResourcesSetterEffect implements EffectInterface {
     @Override
     public String toString() {
         if (obtainedResourceSet.isEmpty()) {
-            return "You don’t take the bonuses when you take a Development Card from the third and the fourth floor of the towers.";
+            return "You don’t take the bonuses when you take a Development Card from the third and the fourth floor of the towers";
         }
         else {
-            return "You take " + obtainedResourceSet + " when you take a Development Card from the third and the fourth floor of the towers.";
+            return "You take " + obtainedResourceSet + " when you take a Development Card from the third and the fourth floor of the towers";
         }
     }
 }
