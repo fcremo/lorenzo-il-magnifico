@@ -57,8 +57,7 @@ public class ImmediateActionWithDiscountsEffect extends ImmediateActionEffect im
         effects.append(" with value ")
                .append(actionValue)
                .append(" without placing a Family Member. In addition, the cost of the card you take is reduced by ")
-               .append(discounts)
-               .append(".");
+               .append(discounts);
         return effects.toString();
     }
 }

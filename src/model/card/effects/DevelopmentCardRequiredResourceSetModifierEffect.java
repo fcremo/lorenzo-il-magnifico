@@ -48,6 +48,6 @@ public class DevelopmentCardRequiredResourceSetModifierEffect implements EffectI
 
     @Override
     public String toString() {
-        return "You get a discount of " + discount + " when you take a " + cardType + ".";
+        return "You get a discount of " + discount + " when you take a " + cardType.getSimpleName();
     }
 }

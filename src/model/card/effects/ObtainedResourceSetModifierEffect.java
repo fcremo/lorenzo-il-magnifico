@@ -40,10 +40,10 @@ public class ObtainedResourceSetModifierEffect implements EffectInterface {
     @Override
     public String toString() {
         if (modifier > 0) {
-            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " more.";
+            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " more";
         }
         else {
-            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " less.";
+            return "Each time you receive " + resourceToModify + ", you receive " + modifier + " less";
         }
     }
 }

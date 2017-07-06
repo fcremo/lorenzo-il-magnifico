@@ -8,7 +8,7 @@ import model.card.effects.EffectsContainer;
 import model.card.effects.ImmediateResourcesEffect;
 import model.card.effects.ObtainedResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
-import model.resource.ObtainedResourceSet;
+import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class EffectDeserializerTest {
     public static void setupObjects() {
         deserializer = new GsonBuilder()
                 .registerTypeAdapter(EffectInterface.class, new EffectDeserializer())
-                .registerTypeAdapter(ObtainedResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .create();
     }
@@ -36,7 +36,7 @@ public class EffectDeserializerTest {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .registerTypeAdapter(Board.class, new BoardDeserializer())
-                .registerTypeAdapter(ObtainedResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
                 .registerTypeAdapter(EffectsContainer.class, new EffectsContainerDeserializer())
@@ -44,7 +44,7 @@ public class EffectDeserializerTest {
                 .create();
 
         ImmediateResourcesEffect effect = deserializeEffect(testCase);
-        assertTrue(effect.getObtainedResourceSet().equals(new ObtainedResourceSet(0, 0, 0, 0, 0, 0, 0, 5)));
+        assertTrue(effect.getObtainableResourceSet().equals(new ObtainableResourceSet(0, 0, 0, 0, 0, 0, 0, 5)));
     }
 
 

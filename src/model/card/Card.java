@@ -1,5 +1,6 @@
 package model.card;
 
+import com.google.gson.annotations.SerializedName;
 import model.card.effects.EffectsContainer;
 import model.resource.RequiredResourceSet;
 
@@ -29,6 +30,7 @@ public class Card implements Serializable {
     /**
      * The effects of the card
      */
+    @SerializedName("effects")
     private EffectsContainer effectsContainer;
 
     public Card(String id, String name, List<RequiredResourceSet> requiredResourceSet) {
@@ -92,8 +94,27 @@ public class Card implements Serializable {
 
     @Override
     public String toString() {
-        return name +
-                "\n requirements: " + requiredResourceSet +
-                "\n effects: " + effectsContainer;
+        StringBuilder string = new StringBuilder(getName());
+        string.append("\n");
+
+        if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
+            string.append("price: ");
+            for (RequiredResourceSet requirement : getRequiredResourceSet()) {
+                string.append(requirement)
+                      .append("\n")
+                      .append("or ");
+            }
+            if (string.lastIndexOf("or ") != -1) {
+                string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
+            }
+        }
+
+        if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
+            string.append("effects: ")
+                  .append(getEffectsContainer().toString())
+                  .append("\n");
+        }
+
+        return string.toString();
     }
 }

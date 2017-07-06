@@ -7,7 +7,6 @@ import model.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class BuildingCard extends DevelopmentCard {
     private ArrayList<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions;
@@ -45,40 +44,49 @@ public class BuildingCard extends DevelopmentCard {
 
     @Override
     public String toString() {
-        StringBuilder returnString = new StringBuilder();
-        returnString.append(getName() + "\n");
+        StringBuilder string = new StringBuilder(getName());
+        string.append("\n");
 
-        if(!getRequiredResourceSet().isEmpty()) {
-            returnString.append("Requires: ");
-            StringJoiner sj = new StringJoiner(" or ");
-            for(RequiredResourceSet requiredResourceSet : getRequiredResourceSet()) {
-                sj.add(requiredResourceSet.toString());
+        if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
+            string.append("price: ");
+            for (RequiredResourceSet requirement : getRequiredResourceSet()) {
+                string.append(requirement)
+                      .append("\n")
+                      .append("or ");
             }
-            returnString.append(sj)
-                        .append("\n");
         }
 
-        returnString.append("Effects: ")
-                    .append(getEffectsContainer())
-                    .append("\n");
+        if (string.lastIndexOf("or ") != -1) {
+            string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
+        }
 
-        if(!getProductions().isEmpty()) {
-            returnString.append(String.format("Production (at %d):", getRequiredValueForProduction()));
-            StringJoiner sj = new StringJoiner(" or ");
+        if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
+            string.append("effects: ")
+                  .append(getEffectsContainer().toString());
+        }
+
+        if (!getProductions().isEmpty()) {
+            string.append(String.format("Production (at %d): ", getRequiredValueForProduction()));
 
             for(Tuple<RequiredResourceSet, ObtainableResourceSet> production : getProductions()) {
-                RequiredResourceSet requirement = production.first;
+                RequiredResourceSet required = production.first;
                 ObtainableResourceSet obtained = production.second;
 
-                sj.add(requirement + " => " + obtained);
+                string.append(obtained);
+                if (required != null && !required.isEmpty()) {
+                    string.append(" for ")
+                          .append(required);
+                }
+                string.append("\n")
+                      .append("or ");
             }
 
-            returnString.append(sj)
-                        .append("\n");
+            if (string.lastIndexOf("or ") != -1) {
+                string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
+            }
         }
 
-
-        return returnString.toString();
+        return string.toString();
     }
 
     @Override

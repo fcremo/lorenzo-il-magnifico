@@ -97,9 +97,25 @@ public class ObtainedResourceSet {
      * @param obtainableResourceSet
      */
     private void addStaticResources(ObtainableResourceSet obtainableResourceSet, int qtyToAdd) {
-        for(ObtainableResource obtainableResource : obtainableResourceSet.getObtainedResources().keySet()) {
+        for (ObtainableResource obtainableResource : obtainableResourceSet.getObtainedResources().keySet()) {
             addResource(obtainableResource, obtainableResourceSet.getObtainedAmount(obtainableResource) * qtyToAdd);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        for (Map.Entry<ObtainableResource, Integer> resource : resources.entrySet()) {
+            string.append(resource.getValue())
+                     .append(" ")
+                     .append(resource.getKey())
+                     .append(", ");
+        }
+
+        if (string.lastIndexOf(", ") != -1) {
+            string.delete(string.lastIndexOf(", "), string.lastIndexOf(", ") + 2);
+        }
+        return string.toString();
     }
 
     /**

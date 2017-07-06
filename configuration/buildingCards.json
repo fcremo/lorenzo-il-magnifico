@@ -7,7 +7,7 @@
       {
         "price": {},
         "resourceSet": {
-          "multipliers": [{"requirements": {"REQUIRED_BUILDINGS": 1}, "resourceSet": {"GOLD": 1}}]
+          "multipliers": [{"requirements": {"REQUIRED_BUILDING_CARDS": 1}, "resources": {"GOLD": 1}}]
         }
       }
     ],
@@ -21,7 +21,7 @@
       {
         "price": {},
         "resourceSet": {
-          "multipliers": [{"requirements": {"REQUIRED_TERRITORIES": 1}, "resourceSet": {"GOLD": 1}}]
+          "multipliers": [{"requirements": {"REQUIRED_TERRITORY_CARDS": 1}, "resources": {"GOLD": 1}}]
         }
       }
     ],
@@ -35,7 +35,7 @@
       {
         "price": {},
         "resourceSet": {
-          "multipliers": [{"requirements": {"REQUIRED_VENTURES": 1}, "resourceSet": {"VICTORY_POINTS": 1}}]
+          "multipliers": [{"requirements": {"REQUIRED_VENTURE_CARDS": 1}, "resources": {"VICTORY_POINTS": 1}}]
         }
       }
     ],
@@ -49,7 +49,7 @@
       {
         "price": {},
         "resourceSet": {
-          "multipliers": [{"requirements": {"REQUIRED_CHARACTERS": 1}, "resourceSet": {"VICTORY_POINTS": 1}}]
+          "multipliers": [{"requirements": {"REQUIRED_CHARACTER_CARDS": 1}, "resources": {"VICTORY_POINTS": 1}}]
         }
       }
     ],

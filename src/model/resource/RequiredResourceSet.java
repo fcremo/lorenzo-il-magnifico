@@ -36,17 +36,17 @@ public class RequiredResourceSet implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder printable = new StringBuilder();
+        StringBuilder string = new StringBuilder();
         for (ResourceType resource : requiredResources.keySet()) {
-            printable.append(requiredResources.get(resource).toString())
+            string.append(requiredResources.get(resource).toString())
                      .append(" ")
                      .append(resource.toString())
                      .append(", ");
         }
-        if (printable.lastIndexOf(", ") != -1) {
-            printable.delete(printable.lastIndexOf(", "), printable.lastIndexOf(", ") + 2);
+        if (string.lastIndexOf(", ") != -1) {
+            string.delete(string.lastIndexOf(", "), string.lastIndexOf(", ") + 2);
         }
-        return printable.toString();
+        return string.toString();
     }
 
     @Override

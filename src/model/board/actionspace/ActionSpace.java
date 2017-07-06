@@ -68,6 +68,26 @@ public abstract class ActionSpace implements Serializable {
         return occupants;
     }
 
+    public String getOccupantsString() {
+        StringBuilder occupants = new StringBuilder();
+
+        if (!isOccupied()) {
+            occupants.append("Not occupied yet");
+        }
+        else {
+            occupants.append("Occupied by ");
+            for (int i = 0; i < getOccupants().size(); i++) {
+                occupants.append(getOccupants().get(i).first.getUsername())
+                         .append(", ");
+            }
+            if (occupants.lastIndexOf(", ") != -1) {
+                occupants.delete(occupants.lastIndexOf(", "), occupants.lastIndexOf(", ") + 2);
+            }
+        }
+
+        return occupants.toString();
+    }
+
     public void addOccupant(Player player, FamilyMemberColor color) {
         this.occupants.add(new Tuple<>(player, color));
     }
@@ -90,6 +110,10 @@ public abstract class ActionSpace implements Serializable {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public boolean isOccupied() {
+        return !occupants.isEmpty();
     }
 
     public String getId() {

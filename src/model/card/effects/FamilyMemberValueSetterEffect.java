@@ -27,6 +27,6 @@ public class FamilyMemberValueSetterEffect implements FamilyMemberValueSetterEff
 
     @Override
     public String toString() {
-        return "Your " + familyMemberColor + " Family Member has a value of " + value + ", regardless of its related die.";
+        return "Your " + familyMemberColor + " Family Member has a value of " + value + ", regardless of its related die";
     }
 }

@@ -34,10 +34,10 @@ public class ActionValueModifierEffect implements EffectInterface {
     @Override
     public String toString() {
         if (value > 0) {
-            return "Increase your action value by " + value + " when you perform " + actionType + ".";
+            return "Increase your action value by " + value + " when you perform " + actionType;
         }
         else {
-            return "Decrease your action value by " + Math.abs(value) + " when you perform " + actionType + ".";
+            return "Decrease your action value by " + Math.abs(value) + " when you perform " + actionType;
         }
     }
 }

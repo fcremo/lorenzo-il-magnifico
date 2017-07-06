@@ -43,15 +43,30 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
         this.card = card;
     }
 
-    public boolean isOccupied() {
-        return !getOccupants().isEmpty();
-    }
-
     public Tower<T> getTower() {
         return tower;
     }
 
     public void setTower(Tower<T> tower) {
         this.tower = tower;
+    }
+
+    @Override
+    public String toString() {
+        String string;
+
+        if (isOccupied()) {
+            string = "Occupied by " + getOccupantsString();
+        }
+        else {
+            if (card == null) {
+                string = "No card available";
+            }
+            else  {
+                string = getCard().toString();
+            }
+        }
+
+        return string;
     }
 }
