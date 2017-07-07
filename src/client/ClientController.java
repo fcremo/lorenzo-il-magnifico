@@ -11,7 +11,6 @@ import gamecontroller.GameState;
 import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
-import model.board.actionspace.MarketActionSpace;
 import model.card.Card;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
@@ -23,6 +22,7 @@ import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
 import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.ClientToServerInterface;
 import server.exceptions.ActionNotAllowedException;
 import ui.UIInterface;
@@ -147,11 +147,21 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
+    public void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    /*@Override
     public void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
         if(!gameController.canGoThere(ourPlayer, familyMember, floor)) throw new ActionNotAllowedException("You cannot go there!");
 
         clientConnection.goToFloor(floor, familyMember);
-    }
+    }*/
 
     @Override
     public void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
@@ -174,11 +184,6 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void goToMarket(FamilyMemberColor familyMemberColor, MarketActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.goToMarket(familyMemberColor, marketActionSpace);
-    }
-
-    @Override
     public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
         clientConnection.spendServants(servants);
     }
@@ -195,7 +200,7 @@ public class ClientController implements GameEventsInterface,
 
     @Override
     public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.activateOncePerRoundEffect(card, effect);
+        //clientConnection.activateOncePerRoundEffect(card, effect);
     }
 
     /* ---------------------------------------
@@ -262,13 +267,19 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
+    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
         try {
-            gameController.placeFamilyMember(player, familyMemberColor, actionSpace);
+            gameController.goToCouncilPalace(player, familyMemberColor, councilPrivileges);
         }
         catch (ActionNotAllowedException e) {
-            abortGame("Server reports that a player occupied an action space when he shouldn't be able to");
+            e.printStackTrace();
         }
+        ui.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+    }
+
+    @Override
+    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+
     }
 
     /**

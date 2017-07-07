@@ -5,12 +5,11 @@ import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
-import model.card.Card;
-import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -89,7 +88,7 @@ public interface ClientToServerInterface extends Remote {
 
     void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
 
@@ -103,5 +102,5 @@ public interface ClientToServerInterface extends Remote {
 
     void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException;
+    // void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException;
 }

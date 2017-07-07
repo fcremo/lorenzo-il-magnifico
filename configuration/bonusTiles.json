@@ -1,27 +1,27 @@
 [
   {
     "id": "BonusTile1",
-    "productionObtainedResourceSet": {"MILITARY_POINTS": 1, "GOLD": 2},
-    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
+    "productionObtainableResourceSet": {"MILITARY_POINTS": 1, "GOLD": 2},
+    "harvestObtainableResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
   },
   {
     "id": "BonusTile2",
-    "productionObtainedResourceSet": {"SERVANTS": 1, "GOLD": 2},
-    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
+    "productionObtainableResourceSet": {"SERVANTS": 1, "GOLD": 2},
+    "harvestObtainableResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
   },
   {
     "id": "BonusTile3",
-    "productionObtainedResourceSet": {"SERVANTS": 1, "MILITARY_POINTS": 2},
-    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "GOLD": 1}
+    "productionObtainableResourceSet": {"SERVANTS": 1, "MILITARY_POINTS": 2},
+    "harvestObtainableResourceSet": {"WOOD": 1, "STONE": 1, "GOLD": 1}
   },
   {
     "id": "BonusTile4",
-    "productionObtainedResourceSet": {"SERVANTS": 2, "GOLD": 1},
-    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
+    "productionObtainableResourceSet": {"SERVANTS": 2, "GOLD": 1},
+    "harvestObtainableResourceSet": {"WOOD": 1, "STONE": 1, "MILITARY_POINTS": 1}
   },
   {
     "id": "BonusTile5",
-    "productionObtainedResourceSet": {"GOLD": 1, "MILITARY_POINTS": 2},
-    "harvestObtainedResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
+    "productionObtainableResourceSet": {"GOLD": 1, "MILITARY_POINTS": 2},
+    "harvestObtainableResourceSet": {"WOOD": 1, "STONE": 1, "SERVANTS": 1}
   }
 ]

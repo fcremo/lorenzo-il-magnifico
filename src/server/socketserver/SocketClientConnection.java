@@ -1,18 +1,20 @@
 package server.socketserver;
 
 import gamecontroller.GameState;
-import model.board.actionspace.ActionSpace;
+import model.Game;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
-import model.player.FamilyMemberColor;
-import server.ServerGameController;
-import model.Game;
 import model.card.leader.LeaderCard;
+import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.ClientConnection;
+import server.ServerGameController;
 
 import java.io.*;
 import java.net.Socket;
@@ -74,6 +76,16 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     }
 
     @Override
+    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+
+    }
+
+    @Override
+    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+
+    }
+
+    @Override
     public void showWaitingMessage(String message) throws RemoteException {
 
     }
@@ -100,11 +112,6 @@ public class SocketClientConnection extends ClientConnection implements Runnable
 
     @Override
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
-
-    }
-
-    @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
 
     }
 }

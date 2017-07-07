@@ -9,6 +9,7 @@ import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
+import model.resource.ObtainableResource;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import server.exceptions.ActionNotAllowedException;
@@ -24,8 +25,10 @@ public class MainTurnContext extends Context {
 
     private Callback callback;
 
-    public MainTurnContext(PrintInterface printInterface, Game game, Callback callback) {
-        super(printInterface);
+    private FamilyMemberColor familyMemberColor;
+
+    public MainTurnContext(UIContextInterface uiContextInterface, Game game, Callback callback) {
+        super(uiContextInterface);
         this.game = game;
         this.callback = callback;
         this.addCommand("show-board", this::showBoard,
@@ -35,14 +38,14 @@ public class MainTurnContext extends Context {
         this.addCommand("spend-servants", this::spendServants,
                 "Commit some servants to spend for the next action");
         this.addCommand("go-to", this::goTo,
-                "Go to a position on the board");
-        this.addCommand("discard-leader", this::discardLeaderCard,
-                "Discard a Leader card from your hand and immediately receive a Council Privilege");
+                "{floor, market, council, harvest, production} Go to a position on the board");
         this.addCommand("play-leader", this::playLeaderCard,
                 "Play a Leader Card from your hand");
         this.addCommand("activate-leader", this::activateLeaderCard,
                 "Activate a Leader’s Once Per Round Ability");
-        printInterface.println("It's your turn!");
+        this.addCommand("discard-leader", this::discardLeaderCard,
+                "Discard a Leader card from your hand and immediately receive a Council Privilege");
+        uiContextInterface.println("It's your turn!");
     }
 
     private void showBoard(String[] params) throws InvalidCommandException {
@@ -196,7 +199,7 @@ public class MainTurnContext extends Context {
             .append("Orange Die: ").append(game.getOrangeDie());
         councilPalaceColumn.addRow(new TextBox(dice.toString()));
 
-        printer.printLayout(layout);
+        uiContextInterface.printLayout(layout);
     }
 
     private void showPlayer(String[] params) throws InvalidCommandException {
@@ -281,16 +284,16 @@ public class MainTurnContext extends Context {
         ContainerColumn tileColumn = new ContainerColumn();
         lastRow.addColumn(tileColumn);
 
-        String production = "PRODUCTION: " + player.getBonusTile().getProductionObtainableResourceSet().toString();
+        String production = "PRODUCTION GIVES YOU: " + player.getBonusTile().getProductionObtainableResourceSet().toString();
         tileColumn.addRow(new TextBox(production));
-        String harvest = "HARVEST: " + player.getBonusTile().getHarvestObtainableResourceSet().toString();
+        String harvest = "HARVEST GIVES YOU: " + player.getBonusTile().getHarvestObtainableResourceSet().toString();
         tileColumn.addRow(new TextBox(harvest));
 
         // Resources
-        String description = player.getResources().toString();
-        lastRow.addColumn(new TextBox(description));
+        String description = "YOUR RESOURCES: " + player.getResources().toString();
+        tileColumn.addRow(new TextBox(description));
 
-        printer.printLayout(layout);
+        uiContextInterface.printLayout(layout);
 
     }
 
@@ -308,97 +311,17 @@ public class MainTurnContext extends Context {
             throw new InvalidCommandException("Invalid number of servants");
         }
         catch (ActionNotAllowedException e) {
-            printer.println("You cannot do that", true);
+            uiContextInterface.println("You cannot do that", true);
         }
     }
 
     private void goTo(String[] params) throws InvalidCommandException, NetworkException, RemoteException, ActionNotAllowedException {
-        if (params.length != 2) {
-            throw new InvalidCommandException("This command takes two arguments " +
-                    "(the action space you want to go to and the color of the family member you want to use)");
+        if (params.length != 1) {
+            throw new InvalidCommandException("You must specify where you want to go!");
         }
 
-        FamilyMemberColor familyMember = null;
-        switch (params[1].toLowerCase()) {
-            case "black":
-                familyMember = FamilyMemberColor.BLACK;
-                break;
-            case "white":
-                familyMember = FamilyMemberColor.WHITE;
-                break;
-            case "orange":
-                familyMember = FamilyMemberColor.ORANGE;
-                break;
-            case "neutral":
-                familyMember = FamilyMemberColor.NEUTRAL;
-                break;
-            default:
-                throw new InvalidCommandException("Invalid family member color");
-        }
-
-        String place = params[0].toLowerCase();
-
-        if(place.equals("council")) {
-            callback.goToCouncilPalace(familyMember);
-        }
-        else if (place.equals("harvest")) {
-            if (game.getBoard().getSmallHarvestArea().getOccupants().isEmpty()) {
-                callback.goToSmallHarvest(familyMember);
-            }
-            else {
-                callback.goToBigHarvest(familyMember);
-            }
-        }
-        else if (place.equals("production")) {
-            if (game.getBoard().getSmallProductionArea().getOccupants().isEmpty()) {
-                callback.goToSmallProduction(familyMember);
-            }
-            else {
-                callback.goToBigProduction(familyMember);
-            }
-        }
-        else if (place.matches("[tcbv][1234]")) {
-            int index = Integer.parseInt(place.substring(1,2));
-            if(index < 1 || index > 4) throw new InvalidCommandException("Invalid floor index");
-
-            Floor floor;
-
-            switch(place.substring(0, 1)){
-                case "t":
-                    game.getBoard().getTerritoryTower().getFloors().get(index);
-                    break;
-                case "c":
-                    game.getBoard().getCharacterTower().getFloors().get(index);
-                    break;
-                case "b":
-                    game.getBoard().getBuildingTower().getFloors().get(index);
-                    break;
-                case "v":
-                    game.getBoard().getVentureTower().getFloors().get(index);
-                    break;
-            }
-
-            callback.goToFloor(floor, familyMember);
-        }
-        else if (place.matches("m[1234]")) {
-            int index = Integer.parseInt(place.substring(1,2));
-            if(index == 1) {
-                callback.goToMarket(familyMember, game.getBoard().getMarket1());
-            }
-            else if (index == 2) {
-                callback.goToMarket(familyMember, game.getBoard().getMarket2());
-            }
-            else if (index == 3) {
-                callback.goToMarket(familyMember, game.getBoard().getMarket3());
-            }
-            else if (index == 4) {
-                callback.goToMarket(familyMember, game.getBoard().getMarket4());
-            }
-            else throw new InvalidCommandException("Invalid market index");
-        }
-        else {
-            throw new InvalidCommandException("Invalid action space");
-        }
+        GoToContext goToContext = new GoToContext(uiContextInterface, game, callback, this, params[0]);
+        uiContextInterface.changeContext(goToContext);
     }
 
     private void discardLeaderCard(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
@@ -412,10 +335,10 @@ public class MainTurnContext extends Context {
             callback.discardLeaderCard(leaderCard);
         }
         catch (NumberFormatException | IndexOutOfBoundsException e) {
-            printer.println("Invalid Leader Card");
+            uiContextInterface.println("Invalid Leader Card");
         }
         catch (ActionNotAllowedException e) {
-            printer.println("You cannot discard this Leader Card");
+            uiContextInterface.println("You cannot discard this Leader Card");
         }
     }
 
@@ -430,29 +353,14 @@ public class MainTurnContext extends Context {
             callback.playLeaderCard(leaderCard);
         }
         catch (NumberFormatException | IndexOutOfBoundsException e) {
-            printer.println("Invalid Leader Card");
+            uiContextInterface.println("Invalid Leader Card");
         }
         catch (ActionNotAllowedException e) {
-            printer.println("You cannot play this Leader Card");
+            uiContextInterface.println("You cannot play this Leader Card");
         }
     }
 
     private void activateLeaderCard(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
-        if (params.length != 1) {
-            throw new InvalidCommandException("This command takes one argument (the Leader Card you want to activate)");
-        }
-
-        try {
-            int i = Integer.parseInt(params[0]);
-            LeaderCard leaderCard = game.getCurrentPlayer().getAvailableLeaderCards().get(i - 1);
-            callback.activateLeaderCard(leaderCard);
-        }
-        catch (NumberFormatException | IndexOutOfBoundsException e) {
-            printer.println("Invalid Leader Card");
-        }
-        catch (ActionNotAllowedException e) {
-            printer.println("You cannot activate this Leader Card");
-        }
     }
 
     public interface Callback {

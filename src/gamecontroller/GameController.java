@@ -23,8 +23,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.action.ActionType.HARVEST;
-
 /**
  * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
  * updating the game state and making callbacks to report the changes.
@@ -59,162 +57,6 @@ public class GameController {
         board.getVentureTower().setCards(ventureCards);
     }
 
-    public boolean canGoThere(Player player, FamilyMemberColor familyMember, ActionSpace actionSpace) {
-        // Check if it is this player's turn
-        if (!game.getCurrentPlayer().equals(player)) return false;
-
-        // Check that the turn phase is right
-        if (gameState != GameState.PLAYER_TURN) return false;
-
-        // Check if action space is enabled in current game
-        if (!actionSpace.isEnabled()) return false;
-
-        // Check if player has an excommunication that prohibits going to action space
-        if (player.getEffectsImplementing(InhibitActionSpaceEffect.class).stream()
-                  .anyMatch(e -> e.isInhibited(actionSpace))) {
-            return false;
-        }
-
-        // Check if the action space is not already occupied,
-        // or if player has an ability that allows to occupy an already occupied action space
-        if (actionSpace instanceof Floor && !actionSpace.getOccupants().isEmpty()) return false;
-        if (actionSpace instanceof MarketActionSpace
-                || actionSpace instanceof SmallProductionArea
-                || actionSpace instanceof SmallHarvestArea) {
-            if (!player.getEffectsImplementing(SkipOccupationCheckEffect.class).stream()
-                       .findAny().isPresent()) {
-                if (!actionSpace.getOccupants().isEmpty()) {
-                    return false;
-                }
-            }
-        }
-
-        // Check if player is trying to occupy the same tower or large action space with two colored family members
-        if (familyMember != FamilyMemberColor.NEUTRAL) {
-            if (actionSpace instanceof Floor) {
-                Floor floor = ((Floor) actionSpace);
-                if (floor.getTower().isOccupiedBy(player)) return false;
-            }
-            if (actionSpace instanceof BigProductionArea
-                    || actionSpace instanceof BigHarvestArea
-                    || actionSpace instanceof CouncilPalace) {
-                if (actionSpace.getOccupants().stream()
-                               .anyMatch(o -> o.first.equals(player) && !o.second.equals(FamilyMemberColor.NEUTRAL)))
-                    return false;
-            }
-        }
-
-        // Check if family member value is sufficient
-        int effectiveFamilyMemberValue = 0;
-        if(familyMember == FamilyMemberColor.BLACK) effectiveFamilyMemberValue = game.getBlackDie();
-        if(familyMember == FamilyMemberColor.ORANGE) effectiveFamilyMemberValue = game.getOrangeDie();
-        if(familyMember == FamilyMemberColor.WHITE) effectiveFamilyMemberValue = game.getWhiteDie();
-
-        // First evaluate the effects that override the family member value
-        for (FamilyMemberValueSetterEffectInterface e: player.getEffectsImplementing(FamilyMemberValueSetterEffectInterface.class)) {
-            // If there's more than one setter effect the rules don't specify what should happen.
-            // Not really an issue since it is almost impossible that the player has two such effects
-            effectiveFamilyMemberValue = e.setValue(effectiveFamilyMemberValue, familyMember);
-        }
-
-        // Then evaluate effects that modify the initial value
-        for (FamilyMemberValueModifierEffect e: player.getEffectsImplementing(FamilyMemberValueModifierEffect.class)){
-            effectiveFamilyMemberValue = e.modifyFamilyMemberValue(familyMember, effectiveFamilyMemberValue);
-        }
-
-        ActionType actionType = null;
-        if (actionSpace instanceof Floor){
-            Floor f = ((Floor) actionSpace);
-            if(f.getCard() instanceof TerritoryCard) actionType = ActionType.TAKE_TERRITORY_CARD;
-            if(f.getCard() instanceof CharacterCard) actionType = ActionType.TAKE_CHARACTER_CARD;
-            if(f.getCard() instanceof BuildingCard) actionType = ActionType.TAKE_BUILDING_CARD;
-            if(f.getCard() instanceof VentureCard) actionType = ActionType.TAKE_VENTURE_CARD;
-        }
-        else if(actionSpace instanceof SmallProductionArea
-                || actionSpace instanceof BigProductionArea) actionType = ActionType.PRODUCTION;
-        else if(actionSpace instanceof SmallHarvestArea
-                || actionSpace instanceof BigHarvestArea) actionType = HARVEST;
-
-        for (ActionValueModifierEffect e : player.getEffectsImplementing(ActionValueModifierEffect.class)) {
-            effectiveFamilyMemberValue = e.modifyValue(effectiveFamilyMemberValue, actionType);
-        }
-
-        int servantsValue = player.getSpentServants();
-        for(ServantsValueMultiplierEffect e : player.getEffectsImplementing(ServantsValueMultiplierEffect.class)) {
-            servantsValue = e.multiplyServantValue(servantsValue);
-        }
-
-        if(effectiveFamilyMemberValue + servantsValue < actionSpace.getRequiredFamilyMemberValue()) {
-            return false;
-        }
-
-        // Check that the player does not have 6 cards already
-        if (!player.getEffectsImplementing(SkipMilitaryPointsRequirementEffect.class).isEmpty()
-                && actionSpace instanceof Floor) {
-
-            DevelopmentCard card = ((Floor) actionSpace).getCard();
-            int currentCards;
-
-            if (card instanceof TerritoryCard) currentCards = player.getTerritories().size();
-            else if (card instanceof CharacterCard) currentCards = player.getCharacters().size();
-            else if (card instanceof BuildingCard) currentCards = player.getBuildings().size();
-            else currentCards = player.getVentures().size();
-
-            if (currentCards > 5) {
-                return false;
-            }
-        }
-
-        // If the action space has a territory card inside check military points requirement
-        if (!player.getEffectsImplementing(SkipMilitaryPointsRequirementEffect.class).isEmpty()
-                && actionSpace instanceof Floor){
-
-            DevelopmentCard card = ((Floor)actionSpace).getCard();
-            if(card instanceof TerritoryCard) {
-                int militaryPoints = player.getResources().get(ObtainableResource.MILITARY_POINTS);
-                int currentTerritories = player.getTerritories().size();
-
-                if(currentTerritories == 5 && militaryPoints < 18
-                    || currentTerritories == 4 && militaryPoints < 12
-                    || currentTerritories == 3 && militaryPoints < 7
-                    || currentTerritories == 2 && militaryPoints < 3){
-                    return false;
-                }
-            }
-        }
-
-        // Check that the player has the money to pay the double occupation cost, if the action space is a floor
-        if(!player.getEffectsImplementing(DoubleOccupationCostIgnoreEffect.class).isEmpty()
-                && actionSpace instanceof Floor){
-            Floor floor = (Floor) actionSpace;
-            if(floor.getTower().isOccupied()) {
-                if(player.getResources().get(ObtainableResource.GOLD) < 3) {
-                    return false;
-                }
-            }
-        }
-
-        // Check if the player has the necessary resources to take the card (if the action space is a floor)
-        // TODO: apply the double occupation cost, discount the resources gained from the floor
-        if(actionSpace instanceof Floor) {
-            Floor floor = (Floor) actionSpace;
-            List<RequiredResourceSet> currentCardCosts = floor.getCard().getRequiredResourceSet();
-
-            // Apply discounts/maluses
-            for(DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)){
-                e.modifyResources(currentCardCosts, floor.getCard());
-            }
-
-            // If in no way the player can pay for the card then he can't go there
-            if(currentCardCosts.stream().noneMatch(player::hasEnoughResources)){
-                return false;
-            }
-
-        }
-
-        return true;
-    }
-
     public void spendServants(Player player, int servants) {
     }
 
@@ -234,15 +76,13 @@ public class GameController {
         assertActionValueIsAtLeast(player, floor.getCard().getCardTakingActionType(), familyMemberColor, floor.getRequiredFamilyMemberValue());
         assertFloorOccupiableBy(floor, player, familyMemberColor, paymentForCard);
 
-        // if(!canGoThere(player, familyMemberColor, floor)) throw new ActionNotAllowedException("You cannot go there!");
-
         // Spend servants and reset spent servants count
         player.getResources().subtractResource(ObtainableResource.SERVANTS, player.getSpentServants());
         player.setSpentServants(0);
 
         // Pay resources needed to occupy the floor
         if(player.getEffectsImplementing(DoubleOccupationCostIgnoreEffect.class).isEmpty()){
-            RequiredResourceSet cost = floor.getRequiredResourceSet();
+            RequiredResourceSet cost = floor.getDoubleOccupationCost();
             player.getResources().subtractResources(cost);
         }
 
@@ -253,7 +93,7 @@ public class GameController {
             // Not an issue since in the original game there's only one card with this effect (the Preacher).
             bonus = e.setObtainedResourceSet();
         }
-        
+
         for(ObtainedResourceSetModifierEffect e : player.getEffectsImplementing(ObtainedResourceSetModifierEffect.class)) {
             // TODO: theoretically the effect could return more than one choice
             List<ObtainableResourceSet> tmpList = new ArrayList<>();
@@ -270,7 +110,6 @@ public class GameController {
     }
 
     public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor,
-                                  List<ObtainableResourceSet> bonusChoices,
                                   List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
         assertPlayerTurn(player);
         assertGameState(GameState.PLAYER_TURN);
@@ -411,25 +250,6 @@ public class GameController {
         setGameState(GameState.PRODUCTION);
     }
 
-    /**
-     * Adds the player to the occupants of an action space and gives the player the bonus resources
-     *
-     * @param player
-     * @param familyMemberColor
-     * @param actionSpace
-     */
-    public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws ActionNotAllowedException {
-        assertGameState(GameState.PLAYER_TURN);
-        assertPlayerTurn(player);
-        assertFamilyMemberAvailable(player, familyMemberColor);
-        if(hasCurrentPlayerPlacedFamilyMember) throw new ActionNotAllowedException("You have already placed a family member");
-        if(!canGoThere(player, familyMemberColor, actionSpace)) throw new ActionNotAllowedException("You cannot go there!");
-
-        // TODO: Add the bonus resources to the player
-        actionSpace.getBonus();
-
-    }
-
     public void chooseCouncilPrivileges(Player player, List<ObtainableResourceSet> councilPrivileges) {
     }
 
@@ -489,6 +309,7 @@ public class GameController {
 
     /* --------------------------------------------------------------------------------------
      * Validations and assertions
+     * These methods are used to verify preconditions when players want to do something
      * -------------------------------------------------------------------------------------- */
 
     /**
@@ -523,7 +344,6 @@ public class GameController {
 
     /**
      * Asserts that the player has not yet placed his family member in his turn
-     * @param player
      * @throws ActionNotAllowedException
      */
     private void assertPlayerHasNotPlacedFamilyMember() throws ActionNotAllowedException {
@@ -547,6 +367,7 @@ public class GameController {
 
     /**
      * Asserts that a small action space is occupiable by a given player with a given family member
+     * @param actionSpace
      * @param player
      * @param familyMemberColor
      */
@@ -584,6 +405,7 @@ public class GameController {
 
     /**
      * Asserts that a big action space is occupiable by a given player with a given family member
+     * @param actionSpace
      * @param player
      * @param familyMemberColor
      */
@@ -619,6 +441,7 @@ public class GameController {
      * @param floor
      * @param player
      * @param familyMemberColor
+     * @param paymentForCard
      */
     private void assertFloorOccupiableBy(Floor floor,
                                          Player player,
@@ -653,19 +476,15 @@ public class GameController {
         }
 
         // STEP 2: check that the player can cover the cost of occupying the floor
-        RequiredResourceSet doubleOccupationCost = new RequiredResourceSet();
-        doubleOccupationCost.setRequiredAmount(ObtainableResource.GOLD, 3);
-
-        if(!player.getEffectsImplementing(DoubleOccupationCostIgnoreEffect.class).isEmpty()){
-            doubleOccupationCost.setRequiredAmount(ObtainableResource.GOLD, 0);
-        }
-
-        if(!player.getResources().has(doubleOccupationCost)) {
-            throw new ActionNotAllowedException("You don't have the resources to occupy an already occupied tower");
-        }
-
         ObtainedResourceSet playerClonedResourceSet = new ObtainedResourceSet(player.getResources());
-        playerClonedResourceSet.subtractResources(doubleOccupationCost);
+
+        RequiredResourceSet doubleOccupationCost = floor.getDoubleOccupationCost();
+        if(!player.hasEffectsImplementing(DoubleOccupationCostIgnoreEffect.class)){
+            if(!player.getResources().has(doubleOccupationCost)) {
+                throw new ActionNotAllowedException("You don't have the resources to occupy an already occupied tower");
+            }
+            playerClonedResourceSet.subtractResources(doubleOccupationCost);
+        }
 
         // STEP 3: check the requirements chosen to pay for the card
         if(!floor.getCard().getRequiredResourceSet().contains(paymentForCard)) {
@@ -677,7 +496,45 @@ public class GameController {
         }
 
         // TODO: check military requirements
-        // TODO: ensure that the player does not have too many cards
+
+        assertPlayerCanTakeAnotherCard(player, floor.getCard().getClass());
+    }
+
+    /**
+     * Asserts that the player can take another card (he can't have more than 6 of the same kind)
+     *
+     * @param player
+     * @param cardType
+     * @throws ActionNotAllowedException
+     */
+    private void assertPlayerCanTakeAnotherCard(Player player, Class<? extends DevelopmentCard> cardType) throws ActionNotAllowedException {
+        int currentCards;
+
+        if (cardType == TerritoryCard.class) currentCards = player.getTerritories().size();
+        else if (cardType == CharacterCard.class) currentCards = player.getCharacters().size();
+        else if (cardType == BuildingCard.class) currentCards = player.getBuildings().size();
+        else currentCards = player.getVentures().size();
+
+        if (currentCards > 5) {
+            throw new ActionNotAllowedException("You cannot take another development card of that kind");
+        }
+
+        // If the card is a territory check military points requirement
+        if (!player.hasEffectsImplementing(SkipMilitaryPointsRequirementEffect.class)
+                && cardType == TerritoryCard.class){
+
+            int currentTerritories = player.getTerritories().size();
+            int requiredMilitaryPoints = 0;
+
+            if (currentTerritories == 5) requiredMilitaryPoints = 18;
+            else if (currentTerritories == 4) requiredMilitaryPoints = 12;
+            else if (currentTerritories == 3) requiredMilitaryPoints = 7;
+            else if (currentTerritories == 2) requiredMilitaryPoints = 3;
+
+            if(!player.getResources().hasAtLeast(requiredMilitaryPoints, ObtainableResource.MILITARY_POINTS)){
+                throw new ActionNotAllowedException("You don't have the military points to take another territory");
+            }
+        }
     }
 
     /**

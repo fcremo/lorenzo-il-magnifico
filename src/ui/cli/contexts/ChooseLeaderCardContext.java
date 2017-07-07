@@ -14,13 +14,13 @@ public class ChooseLeaderCardContext extends Context {
 
     private Callback callback;
 
-    public ChooseLeaderCardContext(PrintInterface printInterface, List<LeaderCard> leaderCards, Callback callback) {
-        super(printInterface);
+    public ChooseLeaderCardContext(UIContextInterface uiContextInterface, List<LeaderCard> leaderCards, Callback callback) {
+        super(uiContextInterface);
         this.leaderCards = leaderCards;
         this.callback = callback;
         this.addCommand("show", this::showLeaderCards, "Show available leader cards");
         this.addCommand("choose", this::chooseLeaderCard, "Choose a leader card");
-        printInterface.println("Choose a leader card");
+        uiContextInterface.println("Choose a leader card");
         this.printLeaderCards();
     }
 
@@ -31,9 +31,9 @@ public class ChooseLeaderCardContext extends Context {
 
     private void printLeaderCards() {
         for (int i = 1; i <= leaderCards.size(); i++) {
-            printer.println(i + ") " + leaderCards.get(i - 1).toString());
+            uiContextInterface.println(i + ") " + leaderCards.get(i - 1).toString());
         }
-        printer.printPrompt();
+        uiContextInterface.printPrompt();
     }
 
     private void chooseLeaderCard(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {

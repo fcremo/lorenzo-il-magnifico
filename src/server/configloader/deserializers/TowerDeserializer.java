@@ -25,7 +25,7 @@ public class TowerDeserializer implements JsonDeserializer<Tower> {
         // Get a list of objects from a list of elements
         ArrayList<ObtainableResourceSet> obtainableResourceSets = new ArrayList<>();
         for (JsonElement e : jsonTowerArray) {
-            obtainableResourceSets.add(new ObtainedResourceSetDeserializer().deserialize(e, ObtainableResourceSet.class, context));
+            obtainableResourceSets.add(new ObtainableResourceSetDeserializer().deserialize(e, ObtainableResourceSet.class, context));
         }
 
         // Get the prefix for the id

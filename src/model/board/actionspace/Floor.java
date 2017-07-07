@@ -21,12 +21,12 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
     }
 
     /**
-     * Returns the resources needed to occupy the floor.
-     * The player has to pay 3 gold if the tower is occupied.
+     * Returns the resources needed to occupy the floor if the tower is already occupied.
+     * Does not include the resources needed to take the card.
      *
      * @return the resources needed to occupy the action space
      */
-    public RequiredResourceSet getRequiredResourceSet() {
+    public RequiredResourceSet getDoubleOccupationCost() {
         RequiredResourceSet requiredResourceSet = new RequiredResourceSet();
         if(tower.isOccupied()) requiredResourceSet.setRequiredAmount(ObtainableResource.GOLD, 3);
         return requiredResourceSet;

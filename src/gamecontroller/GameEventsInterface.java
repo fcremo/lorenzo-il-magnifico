@@ -1,6 +1,5 @@
 package gamecontroller;
 
-import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
@@ -59,15 +58,6 @@ public interface GameEventsInterface {
      * @throws RemoteException
      */
     void onPlayerTurnStarted(Player player) throws RemoteException;
-
-    /**
-     * Called when a player occupies an action space
-     * @param player the player
-     * @param familyMemberColor the family member used
-     * @param actionSpace the action space occupied
-     * @throws RemoteException
-     */
-    void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException;
 
     /**
      * Called when a player occupies the council palace

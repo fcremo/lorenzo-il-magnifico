@@ -9,11 +9,11 @@ import java.rmi.RemoteException;
 public class LoginContext extends Context {
     private Callback callback;
 
-    public LoginContext(PrintInterface printInterface, Callback callback) {
-        super(printInterface);
+    public LoginContext(UIContextInterface uiContextInterface, Callback callback) {
+        super(uiContextInterface);
         this.callback = callback;
         this.addCommand("login", this::login, "Login with [username]");
-        printer.println("Please login");
+        this.uiContextInterface.println("Please login");
         this.printHelp(false);
     }
 
@@ -25,7 +25,7 @@ public class LoginContext extends Context {
             callback.login(username);
         }
         catch (LoginException e) {
-            printer.println("Login failed! Try with a different username.");
+            uiContextInterface.println("Login failed! Try with a different username.");
         }
     }
 

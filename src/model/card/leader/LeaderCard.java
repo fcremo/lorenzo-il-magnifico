@@ -30,8 +30,7 @@ public class LeaderCard extends Card implements Serializable {
 
         if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
             string.append("effects: ")
-                  .append(getEffectsContainer().toString())
-                  .append("\n");
+                  .append(getEffectsContainer().toString());
         }
 
         return string.toString();

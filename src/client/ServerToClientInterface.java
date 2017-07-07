@@ -4,7 +4,6 @@ import gamecontroller.GameEventsInterface;
 import model.Game;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
-import model.resource.RequiredResourceSet;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -44,14 +43,6 @@ public interface ServerToClientInterface extends GameEventsInterface, Remote {
      * @throws RemoteException
      */
     void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException;
-
-    /**
-     * Called when the player has to choose a resource set to pay
-     *
-     * @param requiredResourceSets
-     * @throws RemoteException
-     */
-    void askToChooseRequiredResourceSet(List<RequiredResourceSet> requiredResourceSets) throws RemoteException;
 
     /**
      * Called when the player has to wait

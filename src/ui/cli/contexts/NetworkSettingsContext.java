@@ -13,15 +13,15 @@ public class NetworkSettingsContext extends Context {
 
     private Callback callback;
 
-    public NetworkSettingsContext(PrintInterface printInterface, Callback callback) {
-        super(printInterface);
+    public NetworkSettingsContext(UIContextInterface uiContextInterface, Callback callback) {
+        super(uiContextInterface);
         this.callback = callback;
         this.addCommand("set-hostname", this::setHostname, "Set hostname");
         this.addCommand("set-port", this::setPort, "Set port");
         this.addCommand("set-method", this::setMethod, "Set connection method");
         this.addCommand("show-settings", this::showSettings, "Show current settings");
         this.addCommand("connect", this::connect, "Connect to the server");
-        printer.println("Network settings");
+        this.uiContextInterface.println("Network settings");
         printHelp(false);
         this.handleInput("show-settings", true);
     }
@@ -69,7 +69,7 @@ public class NetworkSettingsContext extends Context {
     private void showSettings(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
-        printer.println(String.format("Current settings: %s:%d (%s)", hostname, port, connectionMethod.name()));
+        uiContextInterface.println(String.format("Current settings: %s:%d (%s)", hostname, port, connectionMethod.name()));
     }
 
     @SuppressWarnings("squid:S1166") // Silence "Exception handlers should preserve the original exceptions" warning
@@ -80,7 +80,7 @@ public class NetworkSettingsContext extends Context {
             callback.connect(connectionMethod, hostname, port);
         }
         catch (NetworkException | RemoteException e) {
-            printer.println("Connection error! Please double check the settings.");
+            uiContextInterface.println("Connection error! Please double check the settings.");
         }
     }
 

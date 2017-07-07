@@ -1,14 +1,13 @@
 package ui.cli;
 
 import client.ClientController;
-import client.exceptions.NetworkException;
 import gamecontroller.GameState;
 import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.CandidateListCompletionHandler;
 import jline.console.completer.Completer;
-import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -17,7 +16,8 @@ import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
-import server.exceptions.ActionNotAllowedException;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import ui.UIInterface;
 import ui.cli.contexts.*;
 import ui.cli.layout.LayoutInterface;
@@ -30,7 +30,7 @@ import java.util.Scanner;
 /**
  * This is the command line implementation of the user interface.
  */
-public class CLIUserInterface implements UIInterface, PrintInterface {
+public class CLIUserInterface implements UIInterface, UIContextInterface {
     private ClientController controller;
 
     private Context currentContext;
@@ -118,6 +118,11 @@ public class CLIUserInterface implements UIInterface, PrintInterface {
     }
 
     @Override
+    public void changeContext(Context context) {
+        this.currentContext = context;
+    }
+
+    @Override
     public void onNetworkError() {
         println("Network error!");
         System.exit(1);
@@ -142,7 +147,13 @@ public class CLIUserInterface implements UIInterface, PrintInterface {
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws RemoteException {
+    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+
+    }
+
+    @Override
+    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+
     }
 
     @Override

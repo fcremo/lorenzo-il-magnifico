@@ -6,15 +6,14 @@ import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
-import model.card.Card;
-import model.card.effects.interfaces.OncePerRoundEffectInterface;
-import model.player.FamilyMemberColor;
-import model.resource.ObtainableResourceSet;
-import server.exceptions.ActionNotAllowedException;
-import server.exceptions.RoomNotJoinableException;
 import model.card.leader.LeaderCard;
+import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
 import model.player.Player;
+import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
+import server.exceptions.ActionNotAllowedException;
+import server.exceptions.RoomNotJoinableException;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -158,8 +157,8 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     }
 
     @Override
-    public void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
-        serverGameController.goToFloor(player, floor, familyMember);
+    public void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+        serverGameController.goToFloor(player, floor, familyMember, paymentForCard);
     }
 
     @Override
@@ -189,11 +188,6 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
 
     @Override
     public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
-    }
-
-    @Override
-    public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
 
     }
 

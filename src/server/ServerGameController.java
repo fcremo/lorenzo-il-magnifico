@@ -6,8 +6,7 @@ import gamecontroller.GameState;
 import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
-import model.board.actionspace.*;
-import model.card.Card;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -206,7 +205,7 @@ public class ServerGameController {
                 connection.onGameStateChange(gameState);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -221,7 +220,7 @@ public class ServerGameController {
             connection.askToChoosePersonalBonusTile(getGame().getAvailablePersonalBonusTiles());
         }
         catch (RemoteException e) {
-            handleRemoteException();
+            handleRemoteException(e);
         }
 
         // Put the others to wait
@@ -232,7 +231,7 @@ public class ServerGameController {
                          getConnectionForPlayer(player).showWaitingMessage("Wait for other players to choose a bonus tile");
                      }
                      catch (RemoteException e) {
-                         handleRemoteException();
+                         handleRemoteException(e);
                      }
                  });
     }
@@ -294,7 +293,7 @@ public class ServerGameController {
                 playerConnection.askToChooseLeaderCard(playerLeaderCards);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -305,10 +304,10 @@ public class ServerGameController {
     private void assignInitialResourcesToPlayers() {
         for (int i = 0; i < getGame().getPlayers().size(); i++) {
             Player player = getGame().getPlayers().get(i);
-            player.getResources().put(ObtainableResource.WOOD, 2);
-            player.getResources().put(ObtainableResource.STONE, 2);
-            player.getResources().put(ObtainableResource.SERVANTS, 3);
-            player.getResources().put(ObtainableResource.GOLD, 5 + i);
+            player.getResources().addResource(ObtainableResource.WOOD, 2);
+            player.getResources().addResource(ObtainableResource.STONE, 2);
+            player.getResources().addResource(ObtainableResource.SERVANTS, 3);
+            player.getResources().addResource(ObtainableResource.GOLD, 5 + i);
         }
     }
 
@@ -316,12 +315,12 @@ public class ServerGameController {
      * Send game configuration to the players
      */
     private void sendGameConfigurationToPlayers() {
-        getGame().getPlayers().forEach(player -> {
+        getGame().getPlayers().stream().forEach(player -> {
             try {
                 getConnectionForPlayer(player).setGameConfiguration(getGame());
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         });
     }
@@ -361,7 +360,7 @@ public class ServerGameController {
             }
         }
         catch (RemoteException e) {
-            handleRemoteException();
+            handleRemoteException(e);
         }
     }
 
@@ -409,7 +408,7 @@ public class ServerGameController {
                 c.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -430,7 +429,7 @@ public class ServerGameController {
                 c.onDiceThrown(blackDie, whiteDie, orangeDie);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -447,7 +446,7 @@ public class ServerGameController {
                 connection.onPlayerTurnStarted(player);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -551,7 +550,7 @@ public class ServerGameController {
                 getConnectionForPlayer(player).showWaitingMessage("Waiting for other players to choose...");
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         }
     }
@@ -580,82 +579,31 @@ public class ServerGameController {
                 connection.onPlayerOccupiesFloor(player, familyMember, serverSideFloor, paymentForCard);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         });
-
         setGameState(GameState.TAKING_CARD);
-        try {
-            getConnectionForPlayer(player).askToChooseRequiredResourceSet(serverSideFloor.getCard().getRequiredResourceSet());
-        }
-        catch (RemoteException e) {
-            handleRemoteException();
-        }
     }
 
     /**
      * Called when a player wants to occupy the council palace
      * @param player the player
      * @param familyMemberColor the family member he wants to use
-     * @param councilPrivileges the council privileges the player has chosen
+     * @param chosenPrivileges the council privileges the player has chosen
      */
-    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
+    public void goToCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
         // If the action is not allowed the game controller will throw an exception
-        gameController.goToCouncilPalace(player, familyMemberColor, councilPrivileges, councilPrivileges);
+        gameController.goToCouncilPalace(player, familyMemberColor, chosenPrivileges);
 
         // Inform all players
         connections.forEach(connection -> {
             try {
-                connection.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+                connection.onPlayerOccupiesCouncilPalace(player, familyMemberColor, chosenPrivileges);
             }
             catch (RemoteException e) {
-                handleRemoteException();
+                handleRemoteException(e);
             }
         });
-    }
-
-
-    /**
-     * Called when a player goes to an action space
-     *
-     * @param player
-     * @param actionSpace
-     * @param familyMemberColor
-     * @throws ActionNotAllowedException
-     */
-    public void placeFamilyMember(Player player, FamilyMemberColor familyMemberColor, ActionSpace actionSpace) throws ActionNotAllowedException {
-        ActionSpace serverSideActionSpace = getGame().getBoard().getActionSpaceById(actionSpace.getId());
-
-        // Try to place the family member
-        // The controller will throw an exception if the action is not allowed
-        gameController.placeFamilyMember(player, familyMemberColor, serverSideActionSpace);
-
-        // Inform everybody
-        connections.forEach(connection -> {
-            try {
-                connection.onPlayerOccupiesActionSpace(player, familyMemberColor, actionSpace);
-            }
-            catch (RemoteException e) {
-                handleRemoteException();
-            }
-        });
-
-        // Ask the player to perform the next action
-        if (serverSideActionSpace instanceof SmallHarvestArea || serverSideActionSpace instanceof BigHarvestArea) {
-            // Perform harvest
-            setGameState(GameState.HARVEST);
-        }
-        else if (serverSideActionSpace instanceof SmallProductionArea || serverSideActionSpace instanceof BigProductionArea) {
-            // Perform production
-            setGameState(GameState.PRODUCTION);
-        }
-        else if (serverSideActionSpace instanceof CouncilPalace) {
-            // Ask the player what council privileges he wants
-            setGameState(GameState.CHOOSING_COUNCIL_PRIVILEGES);
-        }
-        else if (serverSideActionSpace instanceof Floor) {
-
-        }
     }
 
     /**
@@ -716,12 +664,13 @@ public class ServerGameController {
     /**
      * Handle a remote exception from a player connection
      */
-    private void handleRemoteException() {
+    @SuppressWarnings("squid:S1166") // Suppress "Log or rethrow this exception"
+    private void handleRemoteException(RemoteException e) {
         connections.forEach(connection -> {
             try {
                 connection.abortGame("One of the clients crashed. Cannot go on.");
             }
-            catch (RemoteException e) {
+            catch (RemoteException e1) {
                 // We're aborting the game, nothing to do anyway
             }
         });

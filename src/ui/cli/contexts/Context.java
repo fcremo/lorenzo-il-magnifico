@@ -12,14 +12,22 @@ import java.util.HashMap;
  * Base class for a UI context
  */
 public abstract class Context {
-    protected PrintInterface printer;
+    protected UIContextInterface uiContextInterface;
 
-    HashMap<String, Command> commands = new HashMap<>();
-    HashMap<String, String> helps = new HashMap<>();
+    private HashMap<String, Command> commands = new HashMap<>();
+    private HashMap<String, String> helps = new HashMap<>();
 
-    public Context(PrintInterface printInterface) {
-        this.printer = printInterface;
-        commands.put("help", new HelpCommand());
+    private Context previousContext;
+
+    public Context(UIContextInterface uiContextInterface) {
+        this.uiContextInterface = uiContextInterface;
+        addCommand("help", this::help, "[command] Get help");
+    }
+
+    public Context(UIContextInterface uiContextInterface, Context previousContext) {
+        this(uiContextInterface);
+        this.previousContext = previousContext;
+        addCommand("back", this::goBack, "Go back");
     }
 
     public void addCommand(String commandName, Command command, String helpString) {
@@ -41,12 +49,12 @@ public abstract class Context {
                 commands.get(command).execute(arguments);
             }
             catch (InvalidCommandException e) {
-                printer.println("Invalid command (" + e.getMessage() + ")");
-                printer.println("Try \"help\"");
+                uiContextInterface.println("Invalid command (" + e.getMessage() + ")");
+                uiContextInterface.println("Try \"help\"");
             }
             catch (ActionNotAllowedException e) {
-                printer.println("The server said you did something illegal:");
-                printer.println(e.getMessage());
+                uiContextInterface.println("The server said you did something illegal:");
+                uiContextInterface.println(e.getMessage());
             }
             catch (RemoteException | NetworkException e) {
                 e.printStackTrace();
@@ -54,34 +62,36 @@ public abstract class Context {
             }
         }
         else {
-            printer.println("This command does not exist. Try \"help\"");
+            uiContextInterface.println("This command does not exist. Try \"help\"");
         }
 
-        if(reprintPrompt) printer.printPrompt();
+        if(reprintPrompt) uiContextInterface.printPrompt();
+    }
+
+    private void help(String[] params) throws InvalidCommandException {
+        if(params.length > 1) throw new InvalidCommandException("Command \"help\" takes 0 or 1 arguments");
+
+        if (params.length == 1) {
+            if (helps.containsKey(params[0])) {
+                uiContextInterface.println(helps.get(params[0]));
+            }
+            else {
+                throw new InvalidCommandException(String.format("Command %s does not exist", params[0]));
+            }
+        }
+        else if (params.length == 0) {
+            for (String command : helps.keySet()) {
+                uiContextInterface.println("\t" + command + ": " + helps.get(command));
+            }
+        }
+    }
+
+    protected void goBack(String[] params) throws InvalidCommandException {
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
+        uiContextInterface.changeContext(previousContext);
     }
 
     public void printHelp(boolean reprintPrompt) {
         handleInput("help", reprintPrompt);
-    }
-
-    private class HelpCommand implements Command {
-        public void execute(String[] arguments) throws InvalidCommandException {
-            if (arguments.length == 1) {
-                if (helps.containsKey(arguments[0])) {
-                    printer.println(helps.get(arguments[0]));
-                }
-                else {
-                    printer.println(String.format("Command %s does not exist", arguments[0]));
-                }
-            }
-            else if (arguments.length == 0) {
-                for (String command : helps.keySet()) {
-                    printer.println("\t" + command + ": " + helps.get(command));
-                }
-            }
-            else {
-                throw new InvalidCommandException("Command \"help\" takes 0 or 1 argument");
-            }
-        }
     }
 }

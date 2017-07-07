@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 
 /**
- * This class is responsible for deserializing an obtained resource set.
+ * This class is responsible for deserializing an obtainable resource set.
  * <p>
  * Having this custom deserializer allows a more compact representation of
  * the resource sets that don't have resources that get multiplied,
@@ -21,7 +21,7 @@ import java.util.HashMap;
  * A resource set that has (also) multipliers is represented like this:
  * {"GOLD": 1, "multipliers": {"requirement": {"buildings": 1}, "resources": {"GOLD": 1}}}
  */
-public class ObtainedResourceSetDeserializer implements JsonDeserializer<ObtainableResourceSet> {
+public class ObtainableResourceSetDeserializer implements JsonDeserializer<ObtainableResourceSet> {
     @Override
     public ObtainableResourceSet deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         // The json we're deserializing
