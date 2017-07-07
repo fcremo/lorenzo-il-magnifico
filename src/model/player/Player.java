@@ -216,6 +216,16 @@ public class Player implements Serializable {
     }
 
     /**
+     * Shortcut method that returns true if the player has at least one effect implementing the given interface
+     *
+     * @param effectInterface
+     * @return
+     */
+    public boolean hasEffectsImplementing(Class<? extends EffectInterface> effectInterface) {
+        return !getEffectsImplementing(effectInterface).isEmpty();
+    }
+
+    /**
      * Utility method that checks if the player has enough resources to cover the given requirements
      * @param requirements
      * @return

@@ -80,7 +80,8 @@ public class TextBox implements ColumnInterface, RowInterface {
         for(String section : sections){
             int remainingWidth = maxWidth;
 
-            List<String> tokens = Arrays.asList(section.split(" "));
+            // New list created from Arrays.asList to support the remove operation
+            List<String> tokens = new ArrayList<>(Arrays.asList(section.split(" ")));
             int currentTokenIndex = 0;
 
             while(currentTokenIndex < tokens.size()) {
@@ -133,6 +134,7 @@ public class TextBox implements ColumnInterface, RowInterface {
         while(currentPosition < s.length()) {
             int substringEnd = Math.min(s.length(), currentPosition + l);
             strings.add(s.substring(currentPosition, substringEnd));
+            currentPosition = substringEnd;
         }
 
         return strings;

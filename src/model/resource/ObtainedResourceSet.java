@@ -2,6 +2,7 @@ package model.resource;
 
 import model.player.Player;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * This class represents a set of resources obtained by a player
  */
-public class ObtainedResourceSet {
+public class ObtainedResourceSet implements Serializable {
     /**
      * The player owning this resource set.
      * Needed when working with multipliers and requirements
@@ -26,6 +27,17 @@ public class ObtainedResourceSet {
     public ObtainedResourceSet(Player player, Map<ObtainableResource, Integer> resources) {
         this.player = player;
         this.resources = new HashMap<>(resources);
+    }
+
+    /**
+     * Clone constructor
+     * Creates a new clone of the original object
+     *
+     * @param otherObtainedResourceSet
+     */
+    public ObtainedResourceSet(ObtainedResourceSet otherObtainedResourceSet) {
+        this.player = otherObtainedResourceSet.player;
+        this.resources = new HashMap<>(otherObtainedResourceSet.resources);
     }
 
     /**

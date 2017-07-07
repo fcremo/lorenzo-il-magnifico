@@ -45,7 +45,7 @@ public class ConfigLoader {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .registerTypeAdapter(Board.class, new BoardDeserializer())
-                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainableResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
                 .registerTypeAdapter(EffectsContainer.class, new EffectsContainerDeserializer())
@@ -56,8 +56,8 @@ public class ConfigLoader {
          * Step 1: Deserialize personal bonus tiles
          * ----------------------------------------------------------- */
         InputStreamReader bonusTilesFileReader = new InputStreamReader(new FileInputStream(configDirectory + "/bonusTiles.json"));
-        ArrayList<PersonalBonusTile> personalBonusTiles = gson.fromJson(bonusTilesFileReader, new TypeToken<ArrayList<PersonalBonusTile>>() {
-        }.getType());
+        ArrayList<PersonalBonusTile> personalBonusTiles = gson.fromJson(bonusTilesFileReader,
+                new TypeToken<ArrayList<PersonalBonusTile>>() {}.getType());
         game.setAvailablePersonalBonusTiles(personalBonusTiles);
         bonusTilesFileReader.close();
 

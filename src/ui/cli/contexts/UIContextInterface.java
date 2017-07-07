@@ -2,7 +2,7 @@ package ui.cli.contexts;
 
 import ui.cli.layout.LayoutInterface;
 
-public interface PrintInterface {
+public interface UIContextInterface {
     /**
      * Prints a line on the screen, and reprints the prompt
      * @param line the line to print
@@ -29,4 +29,10 @@ public interface PrintInterface {
      * Prints the prompt
      */
     void printPrompt();
+
+    /**
+     * Changes the current context
+     * @param context
+     */
+    void changeContext(Context context);
 }

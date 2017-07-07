@@ -14,13 +14,13 @@ public class ChooseBonusTileContext extends Context {
 
     private Callback callback;
 
-    public ChooseBonusTileContext(PrintInterface printInterface, List<PersonalBonusTile> personalBonusTiles, Callback callback) {
-        super(printInterface);
+    public ChooseBonusTileContext(UIContextInterface uiContextInterface, List<PersonalBonusTile> personalBonusTiles, Callback callback) {
+        super(uiContextInterface);
         this.personalBonusTiles = personalBonusTiles;
         this.callback = callback;
         this.addCommand("show", this::showBonusTiles, "Show available bonus tiles");
         this.addCommand("choose", this::chooseBonusTile, "Choose a bonus tile");
-        printer.println("Choose a personal bonus tile");
+        this.uiContextInterface.println("Choose a personal bonus tile");
         this.printBonusTiles();
     }
 
@@ -31,9 +31,9 @@ public class ChooseBonusTileContext extends Context {
 
     private void printBonusTiles() {
         for (int i = 1; i <= personalBonusTiles.size(); i++) {
-            printer.println(i + ") " + personalBonusTiles.get(i - 1).toString());
+            uiContextInterface.println(i + ") " + personalBonusTiles.get(i - 1).toString());
         }
-        printer.printPrompt();
+        uiContextInterface.printPrompt();
     }
 
     private void chooseBonusTile(String[] params) throws InvalidCommandException, RemoteException, PersonalBonusTileNotAvailableException, NetworkException, ActionNotAllowedException {

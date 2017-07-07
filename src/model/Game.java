@@ -303,9 +303,9 @@ public class Game implements Serializable {
     }
 
     public int getInitialValueForFamilyMember(FamilyMemberColor familyMember) {
-        if(familyMember == FamilyMemberColor.NEUTRAL) return 0;
-        else if(familyMember == FamilyMemberColor.BLACK) return blackDie;
+        if(familyMember == FamilyMemberColor.BLACK) return blackDie;
         else if(familyMember == FamilyMemberColor.ORANGE) return orangeDie;
         else if(familyMember == FamilyMemberColor.WHITE) return whiteDie;
+        else return 0;
     }
 }

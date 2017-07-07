@@ -7,12 +7,14 @@ import client.exceptions.NetworkException;
 import client.exceptions.NoAvailableRoomsException;
 import gamecontroller.GameState;
 import model.board.actionspace.ActionSpace;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResourceSet;
+import model.resource.RequiredResourceSet;
 import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
@@ -99,9 +101,49 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         connection.goToCouncilPalace(familyMemberColor, chosenPrivileges);
     }
 
+    @Override
+    public void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
+    @Override
+    public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+
+    }
+
     /* ----------------------------------------------------------
-         * SERVER TO CLIENT INTERFACE
-         * ---------------------------------------------------------- */
+     * SERVER TO CLIENT INTERFACE
+     * ---------------------------------------------------------- */
     @Override
     public void pingClient() throws RemoteException {
         System.out.println("Client pinged by the server");
@@ -145,6 +187,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onPlayerTurnStarted(Player player) throws RemoteException {
         clientController.onPlayerTurnStarted(player);
+    }
+
+    @Override
+    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+
     }
 
     @Override
