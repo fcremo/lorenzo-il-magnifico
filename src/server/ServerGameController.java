@@ -1,6 +1,5 @@
 package server;
 
-import client.exceptions.NetworkException;
 import gamecontroller.GameController;
 import gamecontroller.GameState;
 import gamecontroller.exceptions.ActionNotAllowedException;
@@ -8,15 +7,12 @@ import gamecontroller.exceptions.PlayerDoesNotExistException;
 import gamecontroller.utils.StreamUtils;
 import model.Excommunication;
 import model.Game;
-import model.board.actionspace.ActionSpace;
-import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
-import model.player.PersonalBonusTile;
 import model.player.Player;
 import model.player.PlayerColor;
 import model.resource.ObtainableResource;
@@ -25,7 +21,6 @@ import model.resource.RequiredResourceSet;
 import server.configloader.ConfigLoader;
 import server.exceptions.GameNotJoinableException;
 import server.exceptions.LeaderCardNotAvailableException;
-import server.exceptions.PersonalBonusTileNotAvailableException;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -557,7 +552,6 @@ public class ServerGameController {
      * @param floor
      * @param familyMember
      * @param paymentForCard
-     * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */

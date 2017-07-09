@@ -1,7 +1,6 @@
 package ui.cli.contexts;
 
 import server.exceptions.LoginException;
-import client.exceptions.NetworkException;
 import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
@@ -17,7 +16,7 @@ public class LoginContext extends Context {
         this.printHelp(false);
     }
 
-    private void login(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
+    private void login(String[] params) throws InvalidCommandException, RemoteException {
         if (params.length != 1) throw new InvalidCommandException("You have to specify a username");
 
         String username = params[0];
@@ -31,6 +30,6 @@ public class LoginContext extends Context {
 
     @FunctionalInterface
     public interface Callback {
-        void login(String username) throws NetworkException, LoginException, RemoteException;
+        void login(String username) throws LoginException, RemoteException;
     }
 }

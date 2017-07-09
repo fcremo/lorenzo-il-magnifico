@@ -1,6 +1,5 @@
 package ui.cli.contexts;
 
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 
@@ -17,5 +16,5 @@ public interface Command {
      * @param arguments
      * @throws InvalidCommandException
      */
-    void execute(String[] arguments) throws InvalidCommandException, ActionNotAllowedException, NetworkException, RemoteException;
+    void execute(String[] arguments) throws InvalidCommandException, ActionNotAllowedException, RemoteException;
 }

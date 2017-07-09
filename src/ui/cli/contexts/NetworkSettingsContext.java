@@ -1,7 +1,6 @@
 package ui.cli.contexts;
 
 import client.ConnectionMethod;
-import client.exceptions.NetworkException;
 import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
@@ -79,13 +78,13 @@ public class NetworkSettingsContext extends Context {
         try {
             callback.connect(connectionMethod, hostname, port);
         }
-        catch (NetworkException | RemoteException e) {
+        catch (RemoteException e) {
             uiContextInterface.println("Connection error! Please double check the settings.");
         }
     }
 
     @FunctionalInterface
     public interface Callback {
-        void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException;
+        void connect(ConnectionMethod connectionMethod, String hostname, int port) throws RemoteException;
     }
 }

@@ -1,7 +1,6 @@
 package server;
 
 import client.ServerToClientInterface;
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResourceSet;
@@ -48,10 +47,9 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      *
      * @param username the username chosen by the user
      * @throws LoginException   thrown if the name provided is already used or invalid
-     * @throws NetworkException
      */
     @Override
-    public void loginPlayer(String username) throws LoginException, NetworkException, RemoteException {
+    public void loginPlayer(String username) throws LoginException, RemoteException {
         LOGGER.fine(String.format("Player %s is logging in", username));
 
         // check if the same username is already used on the server
@@ -68,11 +66,10 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * Join the first available game
      *
      * @throws NoAvailableGamesException thrown if there are no games available
-     * @throws NetworkException
      * @throws RemoteException
      */
     @Override
-    public void joinFirstAvailableGame() throws NoAvailableGamesException, NetworkException, RemoteException {
+    public void joinFirstAvailableGame() throws NoAvailableGamesException, RemoteException {
         LOGGER.fine(String.format("Player %s is trying to join a game", username));
         for (ServerGameController game : gameControllers) {
             if (game.isJoinable()) {
@@ -93,11 +90,10 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     /**
      * Create a game and join it
      *
-     * @throws NetworkException
      * @throws RemoteException
      */
     @Override
-    public void createAndJoinGame() throws NetworkException, RemoteException {
+    public void createAndJoinGame() throws RemoteException {
         LOGGER.fine(String.format("Player %s is trying to create a new game", username));
         serverGameController = new ServerGameController();
         serverGameController.addPlayer(this);
@@ -108,11 +104,10 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * Choose a personal bonus tile
      *
      * @param personalBonusTileId
-     * @throws NetworkException
      * @throws RemoteException
      */
     @Override
-    public void choosePersonalBonusTile(UUID personalBonusTileId) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void choosePersonalBonusTile(UUID personalBonusTileId) throws RemoteException, ActionNotAllowedException {
         serverGameController.choosePersonalBonusTile(username, personalBonusTileId);
     }
 
@@ -120,17 +115,16 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * Choose a leader card
      *
      * @param leaderCardId
-     * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
     @Override
-    public void chooseLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void chooseLeaderCard(UUID leaderCardId) throws RemoteException, ActionNotAllowedException {
         serverGameController.chooseLeaderCard(username, leaderCardId);
     }
 
     @Override
-    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void spendServants(int servants) throws RemoteException, ActionNotAllowedException {
         serverGameController.spendServants(username, servants);
     }
 
@@ -140,17 +134,16 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * @param actionSpaceId
      * @param familyMemberColor
      * @param chosenPrivileges
-     * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
     @Override
-    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws RemoteException, ActionNotAllowedException {
         serverGameController.goToActionSpace(username, actionSpaceId, familyMemberColor, chosenPrivileges);
     }
 
     @Override
-    public void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws RemoteException, ActionNotAllowedException {
         serverGameController.goToFloor(username, floorId, familyMemberColor, paymentForCard, councilPrivileges);
     }
 
@@ -160,12 +153,12 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     }
 
     @Override
-    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilegeA) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilegeA) throws RemoteException, ActionNotAllowedException {
         // TODO
     }
 
     @Override
-    public void playLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void playLeaderCard(UUID leaderCardId) throws RemoteException, ActionNotAllowedException {
         // TODO
     }
 

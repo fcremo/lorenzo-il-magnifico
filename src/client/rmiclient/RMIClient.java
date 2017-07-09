@@ -2,7 +2,6 @@ package client.rmiclient;
 
 import client.ClientController;
 import client.ServerToClientInterface;
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.Game;
 import model.card.leader.LeaderCard;
@@ -34,7 +33,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
 
     private ClientToServerInterface connection;
 
-    public RMIClient(String serverHostname, int serverPort, ClientController clientController) throws RemoteException, NetworkException {
+    public RMIClient(String serverHostname, int serverPort, ClientController clientController) throws RemoteException {
         this.clientController = clientController;
 
         Registry registry = LocateRegistry.getRegistry(serverHostname, serverPort);
@@ -59,63 +58,63 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
      * CLIENT TO SERVER INTERFACE
      * ---------------------------------------------------------- */
     @Override
-    public void loginPlayer(String name) throws LoginException, NetworkException, RemoteException {
+    public void loginPlayer(String name) throws LoginException, RemoteException {
         connection.loginPlayer(name);
     }
 
     @Override
-    public void joinFirstAvailableGame() throws NoAvailableGamesException, NetworkException, RemoteException {
+    public void joinFirstAvailableGame() throws NoAvailableGamesException, RemoteException {
         connection.joinFirstAvailableGame();
 
     }
 
     @Override
-    public void createAndJoinGame() throws NetworkException, RemoteException {
+    public void createAndJoinGame() throws RemoteException {
         connection.createAndJoinGame();
     }
 
     @Override
-    public void choosePersonalBonusTile(UUID personalBonusTileId) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException {
+    public void choosePersonalBonusTile(UUID personalBonusTileId) throws RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException {
         connection.choosePersonalBonusTile(personalBonusTileId);
     }
 
     @Override
-    public void chooseLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
+    public void chooseLeaderCard(UUID leaderCardId) throws RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException {
         connection.chooseLeaderCard(leaderCardId);
     }
 
     @Override
-    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void spendServants(int servants) throws RemoteException, ActionNotAllowedException {
         connection.spendServants(servants);
     }
 
     @Override
-    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws RemoteException, ActionNotAllowedException {
         connection.goToActionSpace(actionSpaceId, familyMemberColor, chosenPrivileges);
     }
 
     @Override
-    public void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws RemoteException, ActionNotAllowedException {
         connection.goToFloor(floorId, familyMemberColor, councilPrivileges, paymentForCard);
     }
 
     @Override
-    public void takeDevelopmentCard(UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws NetworkException, ActionNotAllowedException, RemoteException {
+    public void takeDevelopmentCard(UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException, RemoteException {
         connection.takeDevelopmentCard(cardId, councilPrivileges);
     }
 
     @Override
-    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws RemoteException, ActionNotAllowedException {
         connection.discardLeaderCard(leaderCardId, councilPrivilege);
     }
 
     @Override
-    public void playLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void playLeaderCard(UUID leaderCardId) throws RemoteException, ActionNotAllowedException {
         connection.playLeaderCard(leaderCardId);
     }
 
     @Override
-    public void endTurn() throws NetworkException, ActionNotAllowedException, RemoteException {
+    public void endTurn() throws ActionNotAllowedException, RemoteException {
         connection.endTurn();
     }
 

@@ -1,6 +1,5 @@
 package ui.cli.contexts;
 
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidChoiceException;
 import ui.cli.exceptions.InvalidCommandException;
@@ -96,7 +95,7 @@ public class MultipleChoiceContext<T> extends Context {
         if(choicesMustBeUnique) uiContextInterface.println("The choices must be unique");
     }
 
-    private void choose(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+    private void choose(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
         if (params.length == 0) throw new InvalidCommandException("You have to specify what you want to choose!");
 
         List<Integer> chosenIndexes = new ArrayList<>();
@@ -140,7 +139,7 @@ public class MultipleChoiceContext<T> extends Context {
         }
     }
 
-    private void remove(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+    private void remove(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
         if (params.length != 1) throw new InvalidCommandException("You have to specify what you want to remove!");
 
         int chosenIndex;
@@ -161,7 +160,7 @@ public class MultipleChoiceContext<T> extends Context {
         choices.remove(chosenIndex - 1);
     }
 
-    private void done(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+    private void done(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
         if (params.length != 0) throw new InvalidCommandException("This command does not take arguments!");
 
         if(choices.size() < minChoices) throw new ActionNotAllowedException(String.format("You have to choose at least %d objects", minChoices));
@@ -199,6 +198,6 @@ public class MultipleChoiceContext<T> extends Context {
 
     @FunctionalInterface
     public interface Callback<T> {
-        void choose(List<T> choices) throws NetworkException, RemoteException, ActionNotAllowedException, InvalidChoiceException;
+        void choose(List<T> choices) throws RemoteException, ActionNotAllowedException, InvalidChoiceException;
     }
 }

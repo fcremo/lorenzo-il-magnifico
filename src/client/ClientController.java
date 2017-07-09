@@ -1,6 +1,5 @@
 package client;
 
-import client.exceptions.NetworkException;
 import client.rmiclient.RMIClient;
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
@@ -26,6 +25,7 @@ import ui.UIType;
 import ui.cli.CommandLineUI;
 import ui.cli.contexts.*;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +70,10 @@ public class ClientController implements GameEventsInterface,
      * @param connectionMethod the desired connection method
      * @param hostname the server hostname
      * @param port the server port
-     * @throws NetworkException
      * @throws RemoteException
      */
     @Override
-    public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
+    public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws RemoteException {
         if (connectionMethod == ConnectionMethod.SOCKET) {
             // clientConnection = new SocketClient(hostname, port, this);
         }
@@ -89,13 +88,12 @@ public class ClientController implements GameEventsInterface,
      * Logs in the player with the given username
      *
      * @param username the username
-     * @throws NetworkException
      * @throws LoginException
      * @throws RemoteException
      */
     @Override
     @SuppressWarnings("squid:S1166") // Suppress "rethrow this exception" warning
-    public void login(String username) throws NetworkException, LoginException, RemoteException {
+    public void login(String username) throws LoginException, RemoteException {
         ourUsername = username;
         clientConnection.loginPlayer(username);
 
@@ -114,12 +112,11 @@ public class ClientController implements GameEventsInterface,
      * Chooses a bonus tile during the draft
      *
      * @param bonusTile the chosen bonus tile
-     * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
     @Override
-    public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void chooseBonusTile(PersonalBonusTile bonusTile) throws RemoteException, ActionNotAllowedException {
         clientConnection.choosePersonalBonusTile(bonusTile.getId());
     }
 
@@ -128,31 +125,27 @@ public class ClientController implements GameEventsInterface,
      * Chooses a leader card during the draft
      *
      * @param leaderCard the chosen leader card
-     * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
     @Override
-    public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void chooseLeaderCard(LeaderCard leaderCard) throws RemoteException, ActionNotAllowedException {
         clientConnection.chooseLeaderCard(leaderCard.getId());
     }
 
     @Override
-    public void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws RemoteException, ActionNotAllowedException {
         clientConnection.goToFloor(floor.getId(), familyMemberColor, councilPrivileges, paymentForCard);
-
-        ui.showMainTurnContext();
     }
 
-
-    public void chooseDevelopmentCardCouncilPrivileges(List<ObtainableResourceSet> councilPrivileges) throws NetworkException, ActionNotAllowedException, RemoteException {
+    public void chooseDevelopmentCardCouncilPrivileges(List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException, RemoteException {
         clientConnection.takeDevelopmentCard(gameController.getDevelopmentCardBeingTaken().getId(), councilPrivileges);
 
         ui.showMainTurnContext();
     }
 
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws RemoteException, ActionNotAllowedException {
         // TODO: locally check if the action is allowed
         clientConnection.goToActionSpace(actionSpace.getId(), familyMemberColor, chosenPrivileges);
 
@@ -160,27 +153,27 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void spendServants(int servants) throws RemoteException, ActionNotAllowedException {
         clientConnection.spendServants(servants);
     }
 
     @Override
-    public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws RemoteException, ActionNotAllowedException {
         clientConnection.discardLeaderCard(leaderCard.getId(), councilPrivilege);
     }
 
     @Override
-    public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void playLeaderCard(LeaderCard leaderCard) throws RemoteException, ActionNotAllowedException {
         clientConnection.playLeaderCard(leaderCard.getId());
     }
 
     @Override
-    public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws RemoteException, ActionNotAllowedException {
         //clientConnection.activateOncePerRoundEffect(card, effect);
     }
 
     @Override
-    public void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void endTurn() throws RemoteException, ActionNotAllowedException {
         clientConnection.endTurn();
     }
 
@@ -206,7 +199,7 @@ public class ClientController implements GameEventsInterface,
             card = gameController.getLocalCardFromTowers(cardId);
         }
         catch (ActionNotAllowedException e) {
-            e.printStackTrace();
+            handleOutOfSyncWithServer(e);
         }
 
         // Check if the card gives council privileges
@@ -228,21 +221,18 @@ public class ClientController implements GameEventsInterface,
             try {
                 this.chooseDevelopmentCardCouncilPrivileges(new ArrayList<>());
             }
-            catch (NetworkException e) {
-                e.printStackTrace();
-            }
-            catch (RemoteException e) {
-                e.printStackTrace();
+            catch (IOException e) {
+                handleNetworkFailure(e);
             }
             catch (ActionNotAllowedException e) {
-                e.printStackTrace();
+                handleOutOfSyncWithServer(e);
             }
         }
 
     }
 
     public void abortGame(String errorMessage) {
-        ui.showAbortGame(errorMessage);
+        ui.showFatalError(errorMessage);
     }
 
     @Override
@@ -256,19 +246,24 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onPlayerTurnStarted(String username) throws RemoteException {
+    public void onPlayerTurnStarted(String username) {
         try {
             gameController.startPlayerTurn(username);
         }
         catch (PlayerDoesNotExistException e) {
-            e.printStackTrace(); // This should never happen
+            handleOutOfSyncWithServer(e);
         }
 
         if(username.equals(ourUsername)){
             ui.showMainTurnContext();
         }
         else {
-            ui.onPlayerTurnStarted(username);
+            try {
+                ui.onPlayerTurnStarted(username);
+            }
+            catch (RemoteException e) {
+                handleNetworkFailure(e);
+            }
         }
     }
 
@@ -330,11 +325,40 @@ public class ClientController implements GameEventsInterface,
             gameController.takeDevelopmentCard(username, cardId, councilPrivileges);
         }
         catch (ActionNotAllowedException e) {
-            e.printStackTrace();
-            // This should never happen
+            handleOutOfSyncWithServer(e);
         }
 
         ui.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
+    }
+
+    /**
+     * This method handles network errors.
+     * For now we abort the game, but it should be possible to recover by
+     * reconnecting and requesting the full game state from the server.
+     *
+     * @param e
+     */
+    public void handleNetworkFailure(IOException e) {
+        ui.showFatalError("Lost connection with game server. Terminating..");
+        e.printStackTrace();
+        System.exit(-1);
+    }
+
+    /**
+     * This method should never be called.
+     * It handles exceptions thrown by the local game controller.
+     * If the server reports correctly all game events to all the clients and
+     * the game state of the clients should never get out of sync with the server game state.
+     *
+     * For now we abort the game, but in the future it should be possible to recover from this condition by requesting
+     * the whole game state from the server.
+     *
+     * @param e
+     */
+    public void handleOutOfSyncWithServer(Exception e) {
+        ui.showFatalError("Game out of sync with the server. Terminating..");
+        e.printStackTrace();
+        System.exit(-1);
     }
 
     /**

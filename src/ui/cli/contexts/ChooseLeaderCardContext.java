@@ -1,9 +1,8 @@
 package ui.cli.contexts;
 
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
-import server.exceptions.LeaderCardNotAvailableException;
 import model.card.leader.LeaderCard;
+import server.exceptions.LeaderCardNotAvailableException;
 import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
@@ -36,7 +35,7 @@ public class ChooseLeaderCardContext extends Context {
         uiContextInterface.printPrompt();
     }
 
-    private void chooseLeaderCard(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+    private void chooseLeaderCard(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
         if (params.length != 1) throw new InvalidCommandException("You have to choose a leader card!");
         try {
             int chosenLeaderCard = Integer.parseInt(params[0]);
@@ -52,6 +51,6 @@ public class ChooseLeaderCardContext extends Context {
 
     @FunctionalInterface
     public interface Callback {
-        void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
+        void chooseLeaderCard(LeaderCard leaderCard) throws RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
     }
 }

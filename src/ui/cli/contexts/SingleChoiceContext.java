@@ -1,6 +1,5 @@
 package ui.cli.contexts;
 
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidChoiceException;
 import ui.cli.exceptions.InvalidCommandException;
@@ -55,7 +54,7 @@ public class SingleChoiceContext<T> extends Context {
         uiContextInterface.printPrompt();
     }
 
-    private void choose(String[] params) throws InvalidCommandException, NetworkException, ActionNotAllowedException, RemoteException {
+    private void choose(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
         if (params.length != 1) throw new InvalidCommandException("You have to specify what you want to choose!");
 
         String indexStr = params[0];
@@ -80,7 +79,7 @@ public class SingleChoiceContext<T> extends Context {
 
     @FunctionalInterface
     public interface Callback<T> {
-        void choose(T choice) throws NetworkException, RemoteException, InvalidChoiceException, ActionNotAllowedException;
+        void choose(T choice) throws RemoteException, InvalidChoiceException, ActionNotAllowedException;
     }
 
     public interface Choosable<T> {

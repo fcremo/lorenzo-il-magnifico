@@ -1,6 +1,5 @@
 package ui.cli.contexts;
 
-import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 
@@ -56,7 +55,7 @@ public abstract class Context {
                 uiContextInterface.println("The server said you did something illegal:");
                 uiContextInterface.println(e.getMessage());
             }
-            catch (RemoteException | NetworkException e) {
+            catch (RemoteException e) {
                 e.printStackTrace();
                 // TODO: decide how to handle network exceptions
             }

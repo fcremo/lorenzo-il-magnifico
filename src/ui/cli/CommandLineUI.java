@@ -228,8 +228,7 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     }
 
     @Override
-    public void showAbortGame(String errorMessage) {
-        println("The server is aborting the game!");
+    public void showFatalError(String errorMessage) {
         println("Error: " + errorMessage);
     }
 

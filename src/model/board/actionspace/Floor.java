@@ -87,6 +87,8 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace implements Sin
 
     @Override
     public String getShortDescriptionForChoosing() {
+        if(card == null) return "Unavilable (card taken)";
+
         String str;
         if (card instanceof TerritoryCard) {
             str = "Territory ";

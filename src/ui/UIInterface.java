@@ -22,7 +22,7 @@ public interface UIInterface extends GameEventsInterface {
 
     void showChooseCouncilPrivileges(List<ObtainableResourceSet> allowedPrivileges, int councilPrivilegesAmount);
 
-    void showAbortGame(String errorMessage);
+    void showFatalError(String errorMessage);
 
     void onNetworkError();
 
