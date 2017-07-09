@@ -59,17 +59,17 @@ public interface GameEventsInterface {
     /**
      * Called when a player occupies an action space
      * @param username
-     * @param actionSpace
+     * @param actionSpaceId
      * @param familyMemberColor
      * @param councilPrivileges
      * @throws RemoteException
      */
-    void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
+    void onPlayerOccupiesActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
 
     /**
      * Called when a player occupies a floor
      * @param username
-     * @param floor
+     * @param floorId
      * @param familyMemberColor
      * @param chosenPrivileges
      * @param paymentForCard

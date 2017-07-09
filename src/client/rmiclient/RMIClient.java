@@ -91,8 +91,8 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
-        connection.goToActionSpace(actionSpace, familyMemberColor, chosenPrivileges);
+    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.goToActionSpace(actionSpaceId, familyMemberColor, chosenPrivileges);
     }
 
     @Override
@@ -174,8 +174,8 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-        clientController.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+    public void onPlayerOccupiesActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        clientController.onPlayerOccupiesActionSpace(username, actionSpaceId, familyMemberColor, councilPrivileges);
     }
 
     @Override

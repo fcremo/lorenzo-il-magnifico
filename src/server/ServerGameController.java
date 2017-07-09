@@ -589,14 +589,14 @@ public class ServerGameController {
      * @param familyMemberColor the family member he wants to use
      * @param chosenPrivileges the council privileges the player has chosen
      */
-    public void goToActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
+    public void goToActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
         // If the action is not allowed the game controller will throw an exception
-        gameController.goToActionSpace(username, actionSpace, familyMemberColor, chosenPrivileges);
+        gameController.goToActionSpace(username, actionSpaceId, familyMemberColor, chosenPrivileges);
 
         // Inform all players
         connections.forEach(connection -> {
             try {
-                connection.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, chosenPrivileges);
+                connection.onPlayerOccupiesActionSpace(username, actionSpaceId, familyMemberColor, chosenPrivileges);
             }
             catch (RemoteException e) {
                 handleRemoteException(e);

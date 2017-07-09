@@ -78,19 +78,19 @@ public interface ClientToServerInterface extends Remote {
     /**
      * Tell the server the player wants to go to an action space
      *
-     * @param actionSpace
+     * @param actionSpaceId
      * @param familyMemberColor
      * @param chosenPrivileges
      * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
-    void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     /**
      * Tell the server the player wants to go to a floor
      *
-     * @param floor
+     * @param floorId
      * @param familyMemberColor
      * @param councilPrivileges
      * @param paymentForCard
