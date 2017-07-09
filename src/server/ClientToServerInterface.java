@@ -1,22 +1,22 @@
 package server;
 
-import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
-import client.exceptions.NoAvailableRoomsException;
+import gamecontroller.exceptions.ActionNotAllowedException;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
-import model.player.PersonalBonusTile;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
-import server.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
+import server.exceptions.LoginException;
+import server.exceptions.NoAvailableGamesException;
 import server.exceptions.PersonalBonusTileNotAvailableException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This interface specifies all the requests from client to server.
@@ -33,19 +33,19 @@ public interface ClientToServerInterface extends Remote {
     void loginPlayer(String name) throws LoginException, NetworkException, RemoteException;
 
     /**
-     * Joins the first available room
+     * Joins the first available game
      *
-     * @throws NoAvailableRoomsException thrown if there are no rooms available
+     * @throws NoAvailableGamesException thrown if there are no games available
      * @throws NetworkException          thrown if there's a network error
      */
-    void joinFirstAvailableRoom() throws NoAvailableRoomsException, NetworkException, RemoteException;
+    void joinFirstAvailableGame() throws NoAvailableGamesException, NetworkException, RemoteException;
 
     /**
-     * Creates a new game room and joins it
+     * Creates a new game and joins it
      *
      * @throws NetworkException thrown if there's a network error
      */
-    void createAndJoinRoom() throws NetworkException, RemoteException;
+    void createAndJoinGame() throws NetworkException, RemoteException;
 
     /**
      * Chooses a personal bonus tile
@@ -54,7 +54,7 @@ public interface ClientToServerInterface extends Remote {
      * @throws NetworkException
      * @throws RemoteException
      */
-    void choosePersonalBonusTile(PersonalBonusTile personalBonusTile) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException;
+    void choosePersonalBonusTile(UUID personalBonusTileId) throws NetworkException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException;
 
     /**
      * Chooses a leader card
@@ -63,7 +63,7 @@ public interface ClientToServerInterface extends Remote {
      * @throws NetworkException
      * @throws RemoteException
      */
-    void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
+    void chooseLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
 
     /**
      * Tell the server how many servants the player wants to spend for the next action
@@ -76,31 +76,35 @@ public interface ClientToServerInterface extends Remote {
     void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     /**
-     * Tell the servants the player wants to go to the council palace
+     * Tell the server the player wants to go to an action space
      *
+     * @param actionSpace
      * @param familyMemberColor
      * @param chosenPrivileges
      * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
      */
-    void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException;
+    /**
+     * Tell the server the player wants to go to a floor
+     *
+     * @param floor
+     * @param familyMemberColor
+     * @param councilPrivileges
+     * @param paymentForCard
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
+    void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-    void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-    void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-    void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-    void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-    void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+    void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException ;
 
     // void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException;
 }

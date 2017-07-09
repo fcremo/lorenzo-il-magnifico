@@ -1,5 +1,7 @@
 package server.exceptions;
 
+import gamecontroller.exceptions.ActionNotAllowedException;
+
 /**
  * This exception signals that the player has tried to choose an invalid personal bonus tile.
  */

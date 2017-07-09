@@ -7,12 +7,9 @@ import model.player.PersonalBonusTile;
 import java.util.List;
 
 /**
- * This interface extends the GameEventInterface with more events that are specific to the UI
+ * This interface extends the GameEventInterface with more methods that are specific to the UI
  */
 public interface UIInterface extends GameEventsInterface {
-    // public void onChatMessage();
-
-    void showLoginPrompt();
 
     void showWaitingMessage(String message);
 
@@ -20,10 +17,14 @@ public interface UIInterface extends GameEventsInterface {
 
     void showChooseLeaderCard(List<LeaderCard> leaderCards);
 
-    void onNetworkError();
+    void showMainTurnContext();
 
     void showAbortGame(String errorMessage);
 
-    void showMainTurnContext();
+    void onNetworkError();
+
+    // public void onChatMessage();
+
+    void showLoginPrompt();
 
 }

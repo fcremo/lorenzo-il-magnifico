@@ -4,19 +4,21 @@ import model.player.FamilyMemberColor;
 import model.player.Player;
 import model.resource.ObtainableResourceSet;
 import model.util.Tuple;
+import ui.cli.contexts.SingleChoiceContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class represents an action space
  */
-public abstract class ActionSpace implements Serializable {
+public abstract class ActionSpace implements Serializable, SingleChoiceContext.Choosable {
     /**
      * A unique id of the action space
      */
-    private String id;
+    private UUID id = UUID.randomUUID();
 
     /**
      * True if the action space is enabled
@@ -39,10 +41,9 @@ public abstract class ActionSpace implements Serializable {
      */
     private int requiredFamilyMemberValue;
 
-    public ActionSpace(ObtainableResourceSet bonus, int requiredFamilyMemberValue, String id) {
+    public ActionSpace(ObtainableResourceSet bonus, int requiredFamilyMemberValue) {
         this.bonus = bonus;
         this.requiredFamilyMemberValue = requiredFamilyMemberValue;
-        this.id = id;
     }
 
     /**
@@ -116,7 +117,17 @@ public abstract class ActionSpace implements Serializable {
         return !occupants.isEmpty();
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ActionSpace)) return false;
+
+        ActionSpace that = (ActionSpace) o;
+
+        return id.equals(that.id);
     }
 }

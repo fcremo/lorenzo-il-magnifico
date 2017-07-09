@@ -1,13 +1,12 @@
 package ui.cli;
 
 import client.ClientController;
-import gamecontroller.GameState;
 import jline.Terminal;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.CandidateListCompletionHandler;
 import jline.console.completer.Completer;
-import model.board.actionspace.Floor;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -15,7 +14,6 @@ import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
-import model.player.Player;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import ui.UIInterface;
@@ -25,12 +23,12 @@ import ui.cli.layout.LayoutInterface;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Scanner;
+import java.util.UUID;
 
 /**
  * This is the command line implementation of the user interface.
  */
-public class CLIUserInterface implements UIInterface, UIContextInterface {
+public class CommandLineUI implements UIInterface, UIContextInterface {
     private ClientController controller;
 
     private Context currentContext;
@@ -52,7 +50,7 @@ public class CLIUserInterface implements UIInterface, UIContextInterface {
 
     private KeyboardHandler keyboardHandler;
 
-    public CLIUserInterface(ClientController controller) {
+    public CommandLineUI(ClientController controller) {
         this.controller = controller;
     }
 
@@ -79,6 +77,12 @@ public class CLIUserInterface implements UIInterface, UIContextInterface {
         }
         keyboardHandler.run();
     }
+
+    /* -------------------------------------------------------------------------
+     * UIContextInterface
+     * These methods are used by the context to
+     * print to the screen and change context
+     * ------------------------------------------------------------------------- */
 
     /**
      * Prints a row on the screen. Does not reprint the prompt!
@@ -122,49 +126,58 @@ public class CLIUserInterface implements UIInterface, UIContextInterface {
         this.currentContext = context;
     }
 
+    /* -------------------------------------------------------------------------
+     * Game events interface
+     * These methods get called when a player does something
+     * so the UI can report the events to the user.
+     * ------------------------------------------------------------------------- */
+
     @Override
     public void onNetworkError() {
-        println("Network error!");
+        println("Network error! Exiting..");
         System.exit(1);
     }
 
     @Override
-    public void onGameStateChange(GameState gameState) {
-        println("Game state changed to " + gameState.name(), true);
+    public void onPlayerTurnStarted(String username) throws RemoteException {
+        showWaitingMessage(String.format("It's %s's turn", username));
     }
 
     @Override
-    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
-        StringBuilder s = new StringBuilder("Player order is now ");
-        playerOrder.stream().forEach(player -> s.append(player.getUsername()).append(", "));
-        s.setLength(s.length() - 2); // Remove last ", "
-        println(s.toString(), true);
+    public void onPlayerSpendsServants(String username, int servants) throws RemoteException {
+        // Not interested in this event for now
     }
 
     @Override
-    public void onPlayerTurnStarted(Player player) throws RemoteException {
-        println(String.format("It's %s's turn", player.getUsername()), true);
+    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        // TODO
     }
 
     @Override
-    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-
-    }
-
-    @Override
-    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
-
+    public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
+        // TODO
     }
 
     @Override
     public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
-
+        // We're not interested in this event for now
     }
 
     @Override
     public void onDiceThrown(int blackDie, int whiteDie, int orangeDie) throws RemoteException {
-
+        // We're not interested in this event for now
     }
+
+    @Override
+    public void onPrepareNewRound() throws RemoteException {
+        // We're not interested in this event for now
+    }
+
+    /* -------------------------------------------------------------------------
+     * UIInterface
+     * These methods are called by the client controller.
+     * They basically just switch context.
+     * ------------------------------------------------------------------------- */
 
     @Override
     public void showLoginPrompt() {
@@ -183,7 +196,7 @@ public class CLIUserInterface implements UIInterface, UIContextInterface {
 
     @Override
     public void showMainTurnContext() {
-        currentContext = new MainTurnContext(this, controller.getGame(), controller);
+        currentContext = new MainTurnContext(this, controller.getGameController(), controller);
     }
 
     @Override
@@ -195,10 +208,6 @@ public class CLIUserInterface implements UIInterface, UIContextInterface {
     public void showAbortGame(String errorMessage) {
         println("The server is aborting the game!");
         println("Error: " + errorMessage);
-    }
-
-    private static String askForString() {
-        return new Scanner(System.in).nextLine();
     }
 
     private class KeyboardHandler implements Runnable {

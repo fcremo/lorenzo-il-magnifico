@@ -1,13 +1,11 @@
 package client;
 
-import client.exceptions.LoginException;
 import client.exceptions.NetworkException;
-import client.exceptions.NoAvailableRoomsException;
 import client.rmiclient.RMIClient;
-import client.socketclient.SocketClient;
 import gamecontroller.GameController;
 import gamecontroller.GameEventsInterface;
-import gamecontroller.GameState;
+import gamecontroller.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.PlayerDoesNotExistException;
 import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
@@ -20,18 +18,19 @@ import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
-import model.player.Player;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import server.ClientToServerInterface;
-import server.exceptions.ActionNotAllowedException;
+import server.exceptions.LoginException;
+import server.exceptions.NoAvailableGamesException;
 import ui.UIInterface;
 import ui.UIType;
-import ui.cli.CLIUserInterface;
+import ui.cli.CommandLineUI;
 import ui.cli.contexts.*;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class bridges the network interface, the UI and the game controller
@@ -49,13 +48,12 @@ public class ClientController implements GameEventsInterface,
 
     private ClientToServerInterface clientConnection;
 
-    private Player ourPlayer;
     private String ourUsername;
 
     public ClientController(UIType uiType) {
         switch (uiType) {
             case CLI:
-                CLIUserInterface cli = new CLIUserInterface(this);
+                CommandLineUI cli = new CommandLineUI(this);
                 ui = cli;
                 cli.start();
                 break;
@@ -79,7 +77,7 @@ public class ClientController implements GameEventsInterface,
     @Override
     public void connect(ConnectionMethod connectionMethod, String hostname, int port) throws NetworkException, RemoteException {
         if (connectionMethod == ConnectionMethod.SOCKET) {
-            clientConnection = new SocketClient(hostname, port, this);
+            // clientConnection = new SocketClient(hostname, port, this);
         }
         else if (connectionMethod == ConnectionMethod.RMI) {
             clientConnection = new RMIClient(hostname, port, this);
@@ -104,10 +102,10 @@ public class ClientController implements GameEventsInterface,
 
         // TODO: maybe handle this not-very-exceptional condition without exceptions
         try {
-            clientConnection.joinFirstAvailableRoom();
+            clientConnection.joinFirstAvailableGame();
         }
-        catch (NoAvailableRoomsException e) {
-            clientConnection.createAndJoinRoom();
+        catch (NoAvailableGamesException e) {
+            clientConnection.createAndJoinGame();
         }
         ui.showWaitingMessage("Waiting for the game to start...");
     }
@@ -123,7 +121,7 @@ public class ClientController implements GameEventsInterface,
      */
     @Override
     public void chooseBonusTile(PersonalBonusTile bonusTile) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.choosePersonalBonusTile(bonusTile);
+        clientConnection.choosePersonalBonusTile(bonusTile.getId());
     }
 
     /**
@@ -137,50 +135,22 @@ public class ClientController implements GameEventsInterface,
      */
     @Override
     public void chooseLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.chooseLeaderCard(leaderCard);
+        clientConnection.chooseLeaderCard(leaderCard.getId());
     }
 
     @Override
-    public void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+    public void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.goToFloor(floor.getId(), familyMemberColor, councilPrivileges, paymentForCard);
+
+        ui.showMainTurnContext();
+    }
+
+    @Override
+    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
         // TODO: locally check if the action is allowed
-        clientConnection.goToCouncilPalace(familyMemberColor, chosenPrivileges);
-    }
+        clientConnection.goToActionSpace(actionSpace, familyMemberColor, chosenPrivileges);
 
-    @Override
-    public void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
-    }
-
-    @Override
-    public void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException {
-
-    }
-
-    /*@Override
-    public void goToFloor(Floor floor, FamilyMemberColor familyMember) throws NetworkException, RemoteException, ActionNotAllowedException {
-        if(!gameController.canGoThere(ourPlayer, familyMember, floor)) throw new ActionNotAllowedException("You cannot go there!");
-
-        clientConnection.goToFloor(floor, familyMember);
-    }*/
-
-    @Override
-    public void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.goToSmallHarvest(familyMemberColor);
-    }
-
-    @Override
-    public void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.goToBigHarvest(familyMemberColor);
-    }
-
-    @Override
-    public void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.goToSmallProduction(familyMemberColor);
-    }
-
-    @Override
-    public void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.goToBigProduction(familyMemberColor);
+        ui.showMainTurnContext();
     }
 
     @Override
@@ -189,8 +159,8 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.discardLeaderCard(leaderCard);
+    public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.discardLeaderCard(leaderCard, councilPrivilege);
     }
 
     @Override
@@ -201,6 +171,11 @@ public class ClientController implements GameEventsInterface,
     @Override
     public void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException {
         //clientConnection.activateOncePerRoundEffect(card, effect);
+    }
+
+    @Override
+    public void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException {
+        clientConnection.endTurn();
     }
 
     /* ---------------------------------------
@@ -224,33 +199,29 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onGameStateChange(GameState gameState) throws RemoteException {
-        gameController.setGameState(gameState);
-        ui.onGameStateChange(gameState);
+    public void onPrepareNewRound() throws RemoteException {
+        gameController.prepareNewRound();
+        ui.onPrepareNewRound();
     }
 
     public void onSetGameConfiguration(Game game){
         gameController.setGame(game);
-        ourPlayer = gameController.getGame().getPlayers().stream()
-                                  .filter(p -> p.getUsername().equals(ourUsername))
-                                  .findFirst()
-                                  .get();
     }
 
     @Override
-    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
-        gameController.getGame().setPlayers(playerOrder);
-        ui.onTurnOrderChanged(playerOrder);
-    }
+    public void onPlayerTurnStarted(String username) throws RemoteException {
+        try {
+            gameController.startPlayerTurn(username);
+        }
+        catch (PlayerDoesNotExistException e) {
+            e.printStackTrace(); // This should never happen
+        }
 
-    @Override
-    public void onPlayerTurnStarted(Player player) throws RemoteException {
-        gameController.getGame().setCurrentPlayer(player);
-        if(player.getUsername().equals(ourUsername)){
+        if(username.equals(ourUsername)){
             ui.showMainTurnContext();
         }
         else {
-            ui.onPlayerTurnStarted(player);
+            ui.onPlayerTurnStarted(username);
         }
     }
 
@@ -267,19 +238,37 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+    public void onPlayerSpendsServants(String username, int servants) throws RemoteException {
         try {
-            gameController.goToCouncilPalace(player, familyMemberColor, councilPrivileges);
+            gameController.spendServants(username, servants);
         }
         catch (ActionNotAllowedException e) {
             e.printStackTrace();
         }
-        ui.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+
+        ui.onPlayerSpendsServants(username, servants);
     }
 
     @Override
-    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
+    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        try {
+            gameController.goToActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+        }
+        catch (ActionNotAllowedException e) {
+            e.printStackTrace();
+        }
+        ui.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+    }
 
+    @Override
+    public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
+        try {
+            gameController.goToFloor(username, familyMemberColor, floorId, paymentForCard, chosenPrivileges);
+        }
+        catch (ActionNotAllowedException e) {
+            e.printStackTrace();
+        }
+        ui.onPlayerOccupiesFloor(username, floorId, familyMemberColor, chosenPrivileges, paymentForCard);
     }
 
     /**
@@ -287,5 +276,9 @@ public class ClientController implements GameEventsInterface,
      */
     public Game getGame() {
         return gameController.getGame();
+    }
+
+    public GameController getGameController() {
+        return gameController;
     }
 }

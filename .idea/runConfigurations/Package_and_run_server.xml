@@ -17,9 +17,6 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="lorenzo-il-magnifico" />
     <envs />
-    <method>
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="package" />
-      <option name="Make" enabled="true" />
-    </method>
+    <method />
   </configuration>
 </component>

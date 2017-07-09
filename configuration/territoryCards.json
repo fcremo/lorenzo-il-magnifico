@@ -1,116 +1,116 @@
 [
   {
-    "id": "1", "name": "Commercial Hub", "period": 1,
+    "name": "Commercial Hub", "period": 1,
     "harvestResourceSet":{"GOLD": 1}, "requiredValueForHarvest": 1
   },
   {
-    "id": "2", "name": "Woods", "period": 1,
+    "name": "Woods", "period": 1,
     "harvestResourceSet":{"WOOD": 1}, "requiredValueForHarvest": 2,
     "effects":[{"effectType": "ImmediateResources", "resources": {"WOOD": 1}}]
   },
   {
-    "id": "3", "name": "Village", "period": 1,
+    "name": "Village", "period": 1,
     "harvestResourceSet":{"GOLD": 1, "SERVANTS": 1}, "requiredValueForHarvest": 3
   },
   {
-    "id": "4", "name": "Gravel Pit", "period": 1,
+    "name": "Gravel Pit", "period": 1,
     "harvestResourceSet":{"STONE": 2}, "requiredValueForHarvest": 4,
     "effects":[{"effectType": "ImmediateResources", "resources": {"STONE": 2}}]
   },
   {
-    "id": "5", "name": "Forest", "period": 1,
+    "name": "Forest", "period": 1,
     "harvestResourceSet":{"WOOD": 3}, "requiredValueForHarvest": 5,
     "effects":[{"effectType": "ImmediateResources", "resources": {"WOOD": 1}}]
   },
   {
-    "id": "6", "name": "Monastery", "period": 1,
+    "name": "Monastery", "period": 1,
     "harvestResourceSet":{"FAITH_POINTS": 1, "STONE": 1}, "requiredValueForHarvest": 6,
     "effects":[{"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 2, "SERVANTS": 1}}]
   },
   {
-    "id": "7", "name": "Citadel", "period": 1,
+    "name": "Citadel", "period": 1,
     "harvestResourceSet":{"MILITARY_POINTS": 2, "STONE": 1}, "requiredValueForHarvest": 5
   },
   {
-    "id": "8", "name": "City", "period": 1,
+    "name": "City", "period": 1,
     "harvestResourceSet":{"COUNCIL_PRIVILEGES": 1}, "requiredValueForHarvest": 6,
     "effects":[{"effectType": "ImmediateResources", "resources": {"GOLD": 3} }]
   },
   {
-    "id": "9", "name": "Gold Mine", "period": 2,
+    "name": "Gold Mine", "period": 2,
     "harvestResourceSet":{"GOLD": 2}, "requiredValueForHarvest": 1,
     "effects":[{"effectType": "ImmediateResources", "resources": {"GOLD": 1}}]
   },
   {
-    "id": "10", "name": "Mountain Town", "period": 2,
+    "name": "Mountain Town", "period": 2,
     "harvestResourceSet":{"MILITARY_POINTS": 1, "WOOD": 2}, "requiredValueForHarvest": 3,
     "effects":[{"effectType": "ImmediateResources", "resources": {"SERVANTS": 1}}]
   },
   {
-    "id": "11", "name": "Mining Town", "period": 2,
+    "name": "Mining Town", "period": 2,
     "harvestResourceSet":{"SERVANTS": 1, "STONE": 2}, "requiredValueForHarvest": 4,
     "effects":[{"effectType": "ImmediateResources", "resources": {"SERVANTS": 2, "STONE": 1}}]
   },
   {
-    "id": "12", "name": "Rock Pit", "period": 2,
+    "name": "Rock Pit", "period": 2,
     "harvestResourceSet":{"STONE": 3}, "requiredValueForHarvest": 3,
     "effects":[{"effectType": "ImmediateResources", "resources": {"WOOD": 1}}]
   },
   {
-    "id": "13", "name": "Estate", "period": 2,
+    "name": "Estate", "period": 2,
     "harvestResourceSet":{"GOLD": 1, "WOOD": 2}, "requiredValueForHarvest": 4,
     "effects":[{"effectType": "ImmediateResources", "resources": {"SERVANTS": 2, "WOOD": 1}}]
   },
   {
-    "id": "14", "name": "Hermitage", "period": 2,
+    "name": "Hermitage", "period": 2,
     "harvestResourceSet":{"FAITH_POINTS": 1}, "requiredValueForHarvest": 2,
     "effects":[{"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}}]
   },
   {
-    "id": "15", "name": "Manor House", "period": 2,
+    "name": "Manor House", "period": 2,
     "harvestResourceSet":{"MILITARY_POINTS": 2, "SERVANTS": 2}, "requiredValueForHarvest": 5},
   {
-    "id": "16", "name": "Dukedom", "period": 2,
+    "name": "Dukedom", "period": 2,
     "harvestResourceSet":{"GOLD": 1, "STONE": 1, "WOOD": 2}, "requiredValueForHarvest": 6,
     "effects":[{"effectType": "ImmediateResources", "resources": {"GOLD": 4}}]
   },
   {
-    "id": "17", "name": "Trading Town", "period": 3,
+    "name": "Trading Town", "period": 3,
     "harvestResourceSet":{"GOLD": 3}, "requiredValueForHarvest": 1,
     "effects":[{"effectType": "ImmediateResources", "resources": {"GOLD": 1, "SERVANTS": 1}}]
   },
   {
-    "id": "18", "name": "Farm", "period": 3,
+    "name": "Farm", "period": 3,
     "harvestResourceSet":{"VICTORY_POINTS": 2, "WOOD": 2}, "requiredValueForHarvest": 3,
     "effects":[{"effectType": "ImmediateResources", "resources": {"VICTORY_POINTS": 1, "WOOD": 1}}]
   },
   {
-    "id": "19", "name": "Colony", "period": 3,
+    "name": "Colony", "period": 3,
     "harvestResourceSet":{"VICTORY_POINTS": 4, "WOOD": 1}, "requiredValueForHarvest": 5,
     "effects":[{"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 2}}]
   },
   {
-    "id": "20", "name": "Marble Pit", "period": 3,
+    "name": "Marble Pit", "period": 3,
     "harvestResourceSet":{"VICTORY_POINTS": 1, "STONE": 2}, "requiredValueForHarvest": 2,
     "effects":[{"effectType": "ImmediateResources", "resources": {"VICTORY_POINTS": 3}}]
   },
   {
-    "id": "21", "name": "Province", "period": 3,
+    "name": "Province", "period": 3,
     "harvestResourceSet":{"VICTORY_POINTS": 4, "STONE": 1}, "requiredValueForHarvest": 6,
     "effects":[{"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGES": 1, "STONE": 1}}]
   },
   {
-    "id": "22", "name": "Sanctuary", "period": 3,
+    "name": "Sanctuary", "period": 3,
     "harvestResourceSet":{"GOLD": 1, "FAITH_POINTS": 1}, "requiredValueForHarvest": 1,
     "effects":[{"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}}]
   },
   {
-    "id": "23", "name": "Castle", "period": 3,
+    "name": "Castle", "period": 3,
     "harvestResourceSet":{"MILITARY_POINTS": 3, "SERVANTS": 1}, "requiredValueForHarvest": 4,
     "effects":[{"effectType": "ImmediateResources", "resources": {"VICTORY_POINTS": 2, "GOLD": 2}}]
   },
   {
-    "id": "24", "name": "Fortified Town", "period": 3,
+    "name": "Fortified Town", "period": 3,
     "harvestResourceSet":{"MILITARY_POINTS": 1, "SERVANTS": 2}, "requiredValueForHarvest": 2,
     "effects":[{"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 2, "SERVANTS": 1}}]
   }

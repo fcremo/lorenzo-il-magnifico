@@ -12,10 +12,10 @@ public class BuildingCard extends DevelopmentCard {
     private ArrayList<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions;
     private int requiredValueForProduction;
 
-    public BuildingCard(String id, String name, RequiredResourceSet requiredResourceSet, int period,
+    public BuildingCard(String name, RequiredResourceSet requiredResourceSet, int period,
                         List<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions,
                         int requiredValueForProduction) {
-        super(id, name, new ArrayList<>(), period);
+        super(name, new ArrayList<>(), period);
 
         // Set required resource sets
         ArrayList<RequiredResourceSet> requiredResourceSets = new ArrayList<>();

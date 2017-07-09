@@ -7,6 +7,7 @@ import model.resource.RequiredResourceSet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The base class representing a leader or development card
@@ -15,7 +16,7 @@ public class Card implements Serializable {
     /**
      * The unique id of the card
      */
-    private String id;
+    private UUID id;
 
     /**
      * The name of the card
@@ -33,8 +34,17 @@ public class Card implements Serializable {
     @SerializedName("effects")
     private EffectsContainer effectsContainer;
 
-    public Card(String id, String name, List<RequiredResourceSet> requiredResourceSet) {
-        this.id = id;
+    /**
+     * No-parameters constructor needed for creating an instance with a UUID
+     * when deserializing from JSON.
+     * See https://github.com/google/gson/issues/513
+     */
+    protected Card() {
+        this.id = UUID.randomUUID();
+    }
+
+    public Card(String name, List<RequiredResourceSet> requiredResourceSet) {
+        this();
         this.name = name;
         this.requiredResourceSet = new ArrayList<>(requiredResourceSet);
     }
@@ -53,12 +63,8 @@ public class Card implements Serializable {
         this.requiredResourceSet = new ArrayList<>(requiredResourceSet);
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

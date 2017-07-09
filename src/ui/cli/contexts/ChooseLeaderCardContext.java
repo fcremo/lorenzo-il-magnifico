@@ -1,7 +1,7 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
-import server.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.ActionNotAllowedException;
 import server.exceptions.LeaderCardNotAvailableException;
 import model.card.leader.LeaderCard;
 import ui.cli.exceptions.InvalidCommandException;

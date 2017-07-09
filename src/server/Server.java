@@ -1,7 +1,6 @@
 package server;
 
 import server.rmiserver.RMIServer;
-import server.socketserver.SocketServer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -23,21 +22,22 @@ public class Server {
     private Thread socketServer;
     private RMIServer rmiServer;
 
-    private ArrayList<ServerGameController> rooms = new ArrayList<>();
+    private ArrayList<ServerGameController> gameControllers = new ArrayList<>();
 
     public void start() {
         if (enableRMIServer) {
             try {
-                rmiServer = new RMIServer(rmiServerPort, rooms);
+                rmiServer = new RMIServer(rmiServerPort, gameControllers);
             }
             catch (RemoteException e) {
                 LOGGER.severe("Error while trying to create the RMI server: " + e.getMessage());
             }
         }
 
-        if (enableSocketServer) {
-            socketServer = new Thread(new SocketServer(socketServerPort, rooms));
-            socketServer.start();
-        }
+
+        //if (enableSocketServer) {
+            //socketServer = new Thread(new SocketServer(socketServerPort, gameControllers));
+            //socketServer.start();
+        //}
     }
 }

@@ -1,7 +1,7 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
-import server.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidChoiceException;
 import ui.cli.exceptions.InvalidCommandException;
 
@@ -19,7 +19,7 @@ public class MultipleChoiceContext<T> extends Context {
 
     public MultipleChoiceContext(UIContextInterface uiContextInterface, List<T> allowedChoices, int minChoices, int maxChoices, Callback callback, boolean choicesMustBeUnique) {
         super(uiContextInterface);
-        this.allowedChoices = allowedChoices;
+        this.allowedChoices = new ArrayList<>(allowedChoices);
         this.minChoices = minChoices;
         this.maxChoices = maxChoices;
         this.choicesMustBeUnique = choicesMustBeUnique;
@@ -122,7 +122,7 @@ public class MultipleChoiceContext<T> extends Context {
         }
 
         if(!choicesMustBeUnique) {
-            chosenIndexes.forEach(i -> choices.add(allowedChoices.get(i)));
+            chosenIndexes.forEach(i -> choices.add(allowedChoices.get(i - 1)));
         }
 
         else {
@@ -134,8 +134,8 @@ public class MultipleChoiceContext<T> extends Context {
             chosenIndexes.sort(Comparator.reverseOrder());
 
             chosenIndexes.forEach(i -> {
-                choices.add(allowedChoices.get(i));
-                allowedChoices.remove(i);
+                choices.add(allowedChoices.get(i - 1));
+                allowedChoices.remove(i - 1);
             });
         }
     }
@@ -198,7 +198,7 @@ public class MultipleChoiceContext<T> extends Context {
     }
 
     @FunctionalInterface
-    public interface Callback {
-        void choose(List choices) throws NetworkException, RemoteException, ActionNotAllowedException, InvalidChoiceException;
+    public interface Callback<T> {
+        void choose(List<T> choices) throws NetworkException, RemoteException, ActionNotAllowedException, InvalidChoiceException;
     }
 }

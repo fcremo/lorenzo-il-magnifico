@@ -16,14 +16,14 @@ public class NetworkSettingsContext extends Context {
     public NetworkSettingsContext(UIContextInterface uiContextInterface, Callback callback) {
         super(uiContextInterface);
         this.callback = callback;
-        this.addCommand("set-hostname", this::setHostname, "Set hostname");
-        this.addCommand("set-port", this::setPort, "Set port");
-        this.addCommand("set-method", this::setMethod, "Set connection method");
+        this.addCommand("set-hostname", this::setHostname, "<hostname>");
+        this.addCommand("set-port", this::setPort, "<port>");
+        this.addCommand("set-method", this::setMethod, "<RMI, SOCKET>");
         this.addCommand("show-settings", this::showSettings, "Show current settings");
-        this.addCommand("connect", this::connect, "Connect to the server");
+        this.addCommand("connect", this::connect, "");
         this.uiContextInterface.println("Network settings");
         printHelp(false);
-        this.handleInput("show-settings", true);
+        this.handleInput("show-settings", false);
     }
 
     private void setHostname(String[] params) throws InvalidCommandException {

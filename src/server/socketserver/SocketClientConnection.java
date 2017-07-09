@@ -66,6 +66,11 @@ public class SocketClientConnection extends ClientConnection implements Runnable
     }
 
     @Override
+    public void onPrepareNewRound() throws RemoteException {
+        
+    }
+
+    @Override
     public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
 
     }

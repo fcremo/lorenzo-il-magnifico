@@ -1,6 +1,6 @@
 package ui.cli.contexts;
 
-import client.exceptions.LoginException;
+import server.exceptions.LoginException;
 import client.exceptions.NetworkException;
 import ui.cli.exceptions.InvalidCommandException;
 
@@ -12,7 +12,7 @@ public class LoginContext extends Context {
     public LoginContext(UIContextInterface uiContextInterface, Callback callback) {
         super(uiContextInterface);
         this.callback = callback;
-        this.addCommand("login", this::login, "Login with [username]");
+        this.addCommand("login", this::login, "<username> Login");
         this.uiContextInterface.println("Please login");
         this.printHelp(false);
     }

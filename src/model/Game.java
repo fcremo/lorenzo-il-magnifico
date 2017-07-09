@@ -1,6 +1,7 @@
 package model;
 
 import model.board.Board;
+import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
@@ -294,7 +295,7 @@ public class Game implements Serializable {
         this.availableLeaderCards = new ArrayList<>(availableLeaderCards);
     }
 
-    public List<ObtainableResourceSet> getCouncilPrivileges() {
+    public List<ObtainableResourceSet> getAllowedCouncilPrivileges() {
         return councilPrivileges;
     }
 
@@ -307,5 +308,16 @@ public class Game implements Serializable {
         else if(familyMember == FamilyMemberColor.ORANGE) return orangeDie;
         else if(familyMember == FamilyMemberColor.WHITE) return whiteDie;
         else return 0;
+    }
+
+    public List<Floor> getFloors() {
+        List<Floor> floors = new ArrayList<>();
+
+        floors.addAll(board.getTerritoryTower().getFloors());
+        floors.addAll(board.getBuildingTower().getFloors());
+        floors.addAll(board.getCharacterTower().getFloors());
+        floors.addAll(board.getVentureTower().getFloors());
+
+        return floors;
     }
 }

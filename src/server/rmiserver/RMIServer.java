@@ -19,11 +19,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     private boolean createLocalRegistry = true;
     private int REGISTRY_PORT = 1099;
     private int port;
-    private List<ServerGameController> rooms;
+    private List<ServerGameController> games;
 
-    public RMIServer(int port, List<ServerGameController> rooms) throws RemoteException {
+    public RMIServer(int port, List<ServerGameController> games) throws RemoteException {
         this.port = port;
-        this.rooms = rooms;
+        this.games = games;
 
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
 
@@ -47,6 +47,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
 
     @Override
     public ClientToServerInterface getServerConnection(ServerToClientInterface client) throws RemoteException {
-        return new RMIClientConnection(rooms, client);
+        return new RMIClientConnection(games, client);
     }
 }

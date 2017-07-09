@@ -10,11 +10,11 @@ import java.util.List;
 /**
  * This effect modifies the quantity of a resource every time it is obtained by any mean
  */
-public class ObtainedResourceSetModifierEffect implements EffectInterface {
+public class ObtainableResourceSetModifierEffect implements EffectInterface {
     private ObtainableResource resourceToModify;
     private int modifier;
 
-    public ObtainedResourceSetModifierEffect(ObtainableResource resourceToModify, int modifier) {
+    public ObtainableResourceSetModifierEffect(ObtainableResource resourceToModify, int modifier) {
         this.resourceToModify = resourceToModify;
         this.modifier = modifier;
     }

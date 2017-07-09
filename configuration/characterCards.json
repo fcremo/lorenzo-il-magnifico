@@ -1,6 +1,6 @@
 [
   {
-    "id": "49", "name": "Warlord", "period": 1,
+    "name": "Warlord", "period": 1,
     "requiredResourceSet": [{"GOLD": 2}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 3}},
@@ -8,7 +8,7 @@
     ]
   },
   {
-    "id": "50", "name": "Stonemason", "period": 1,
+    "name": "Stonemason", "period": 1,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 2, "actionType": "TAKE_BUILDING_CARD"},
@@ -16,7 +16,7 @@
     ]
   },
   {
-    "id": "51", "name": "Dame", "period": 1,
+    "name": "Dame", "period": 1,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 2, "actionType": "TAKE_CHARACTER_CARD"},
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "id": "52", "name": "Knight", "period": 1,
+    "name": "Knight", "period": 1,
     "requiredResourceSet": [{"GOLD": 2}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGES": 1}},
@@ -32,21 +32,21 @@
     ]
   },
   {
-    "id": "53", "name": "Farmer", "period": 1,
+    "name": "Farmer", "period": 1,
     "requiredResourceSet": [{"GOLD": 3}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 2, "actionType": "HARVEST"}
     ]
   },
   {
-    "id": "54", "name": "Artisan", "period": 1,
+    "name": "Artisan", "period": 1,
     "requiredResourceSet": [{"GOLD": 3}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 2, "actionType": "PRODUCTION"}
     ]
   },
   {
-    "id": "55", "name": "Preacher", "period": 1,
+    "name": "Preacher", "period": 1,
     "requiredResourceSet": [{"GOLD": 2}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 4}},
@@ -54,7 +54,7 @@
     ]
   },
   {
-    "id": "56", "name": "Abbess", "period": 1,
+    "name": "Abbess", "period": 1,
     "requiredResourceSet": [{"GOLD": 3}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}},
@@ -62,7 +62,7 @@
     ]
   },
   {
-    "id": "57", "name": "Captain", "period": 2,
+    "name": "Captain", "period": 2,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"MILITARY_POINTS": 2}},
@@ -70,7 +70,7 @@
     ]
   },
   {
-    "id": "58", "name": "Architect", "period": 2,
+    "name": "Architect", "period": 2,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {
@@ -80,7 +80,7 @@
     ]
   },
   {
-    "id": "59", "name": "Patron", "period": 2,
+    "name": "Patron", "period": 2,
     "requiredResourceSet": [{"GOLD": 3}],
     "effects": [
       {
@@ -90,7 +90,7 @@
     ]
   },
   {
-    "id": "60", "name": "Hero", "period": 2,
+    "name": "Hero", "period": 2,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGES": 1}},
@@ -98,63 +98,63 @@
     ]
   },
   {
-    "id": "61", "name": "Peasant", "period": 2,
+    "name": "Peasant", "period": 2,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 3, "actionType": "PRODUCTION"}
     ]
   },
   {
-    "id": "62", "name": "Scholar", "period": 2,
+    "name": "Scholar", "period": 2,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ActionValueModifier", "value": 3, "actionType": "HARVEST"}
     ]
   },
   {
-    "id": "63", "name": "Papal Messenger", "period": 2,
+    "name": "Papal Messenger", "period": 2,
     "requiredResourceSet": [{"GOLD": 5}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 3}}
     ]
   },
   {
-    "id": "64", "name": "Royal Messenger", "period": 2,
+    "name": "Royal Messenger", "period": 2,
     "requiredResourceSet": [{"GOLD": 5}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGES": 3}}
     ]
   },
   {
-    "id": "65", "name": "Noble", "period": 3,
+    "name": "Noble", "period": 3,
     "requiredResourceSet": [{"GOLD": 6}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"multipliers": [{"requirements": {"REQUIRED_TERRITORIES": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}}
     ]
   },
   {
-    "id": "66", "name": "Governor", "period": 3,
+    "name": "Governor", "period": 3,
     "requiredResourceSet": [{"GOLD": 6}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"multipliers": [{"requirements": {"REQUIRED_BUILDINGS": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}}
     ]
   },
   {
-    "id": "67", "name": "Paramour", "period": 3,
+    "name": "Paramour", "period": 3,
     "requiredResourceSet": [{"GOLD": 7}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"multipliers": [{"requirements": {"REQUIRED_CHARACTERS": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}}
     ]
   },
   {
-    "id": "68", "name": "Herald", "period": 3,
+    "name": "Herald", "period": 3,
     "requiredResourceSet": [{"GOLD": 6}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"multipliers": [{"requirements": {"REQUIRED_VENTURES": 1}, "resourceSet": {"VICTORY_POINTS": 2}}]}}
     ]
   },
   {
-    "id": "69", "name": "Cardinal", "period": 3,
+    "name": "Cardinal", "period": 3,
     "requiredResourceSet": [{"GOLD": 4}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 2}},
@@ -162,7 +162,7 @@
     ]
   },
   {
-    "id": "70", "name": "Bishop", "period": 3,
+    "name": "Bishop", "period": 3,
     "requiredResourceSet": [{"GOLD": 5}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"FAITH_POINTS": 1}},
@@ -170,14 +170,14 @@
     ]
   },
   {
-    "id": "71", "name": "General", "period": 3,
+    "name": "General", "period": 3,
     "requiredResourceSet": [{"GOLD": 5}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"multipliers": [{"requirements": {"REQUIRED_MILITARY_POINTS": 2}, "resourceSet": {"VICTORY_POINTS": 1}}]}}
     ]
   },
   {
-    "id": "72", "name": "Ambassador", "period": 3,
+    "name": "Ambassador", "period": 3,
     "requiredResourceSet": [{"GOLD": 6}],
     "effects": [
       {"effectType": "ImmediateResources", "resources": {"COUNCIL_PRIVILEGE": 1}},

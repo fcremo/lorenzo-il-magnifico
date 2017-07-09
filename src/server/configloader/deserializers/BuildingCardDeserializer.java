@@ -14,7 +14,6 @@ public class BuildingCardDeserializer implements JsonDeserializer<BuildingCard> 
     public BuildingCard deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject buildingCardJsonObject = json.getAsJsonObject();
 
-        String id = buildingCardJsonObject.get("id").getAsString();
         String name = buildingCardJsonObject.get("name").getAsString();
         int period = buildingCardJsonObject.get("period").getAsInt();
 
@@ -36,6 +35,6 @@ public class BuildingCardDeserializer implements JsonDeserializer<BuildingCard> 
 
         int requiredValueForProduction = buildingCardJsonObject.get("requiredValueForProduction").getAsInt();
 
-        return new BuildingCard(id, name, requiredResourceSet, period, productions, requiredValueForProduction);
+        return new BuildingCard(name, requiredResourceSet, period, productions, requiredValueForProduction);
     }
 }

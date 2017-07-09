@@ -47,9 +47,14 @@ public class ConfigLoader {
                 .registerTypeAdapter(Board.class, new BoardDeserializer())
                 .registerTypeAdapter(ObtainableResourceSet.class, new ObtainableResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
-                .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
                 .registerTypeAdapter(EffectsContainer.class, new EffectsContainerDeserializer())
                 .registerTypeAdapter(EffectInterface.class, new EffectDeserializer())
+                .registerTypeAdapter(LeaderCard.class, new LeaderCard.InstanceCreator())
+                .registerTypeAdapter(TerritoryCard.class, new TerritoryCard.InstanceCreator())
+                .registerTypeAdapter(CharacterCard.class, new CharacterCard.InstanceCreator())
+                .registerTypeAdapter(VentureCard.class, new VentureCard.InstanceCreator())
+                .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
+                .registerTypeAdapter(PersonalBonusTile.class, new PersonalBonusTile.InstanceCreator())
                 .create();
 
         /* -----------------------------------------------------------

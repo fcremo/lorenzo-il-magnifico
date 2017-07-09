@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * This class represents the state of the board.
@@ -160,30 +161,14 @@ public class Board implements Serializable {
         this.faithTrackBonus = faithTrackBonus;
     }
 
-    public ActionSpace getActionSpaceById(String id) {
-        if(councilPalace.getId().equals(id)) return councilPalace;
-        else if(smallProductionArea.getId().equals(id)) return smallProductionArea;
-        else if(smallHarvestArea.getId().equals(id)) return smallHarvestArea;
-        else if(bigProductionArea.getId().equals(id)) return bigProductionArea;
-        else if(bigHarvestArea.getId().equals(id)) return bigHarvestArea;
-        else if(market1.getId().equals(id)) return market1;
-        else if(market2.getId().equals(id)) return market2;
-        else if(market3.getId().equals(id)) return market3;
-        else if(market4.getId().equals(id)) return market4;
-        else return getFloorById(id);
-
-        // TODO: throw an exception if the player gives an invalid id
-
-    }
-
-    public Floor getFloorById(String id) {
+    public Floor getFloorById(UUID id) {
         List<Floor> floors = new ArrayList<>();
         floors.addAll(territoryTower.getFloors());
         floors.addAll(characterTower.getFloors());
         floors.addAll(buildingTower.getFloors());
         floors.addAll(ventureTower.getFloors());
 
-        Optional<Floor> desiredFloor = floors.stream().filter(floor -> floor.getId().equals(id)).findAny();
+        Optional<Floor> desiredFloor = floors.stream().filter(floor -> floor.equals(id)).findAny();
 
         // TODO: throw an exception if the player gives an invalid id
         return desiredFloor.orElse(null);

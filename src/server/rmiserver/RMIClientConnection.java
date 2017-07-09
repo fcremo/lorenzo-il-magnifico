@@ -1,28 +1,26 @@
 package server.rmiserver;
 
 import client.ServerToClientInterface;
-import gamecontroller.GameState;
+import model.Game;
 import model.board.actionspace.ActionSpace;
-import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
+import model.player.PersonalBonusTile;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
-import server.ServerGameController;
-import model.Game;
-import model.card.leader.LeaderCard;
-import model.player.PersonalBonusTile;
-import model.player.Player;
 import server.ClientConnection;
 import server.ClientToServerInterface;
+import server.ServerGameController;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -37,8 +35,8 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     private ServerToClientInterface client;
 
     @SuppressWarnings("squid:S1166") // Silence "Log or rethrow this exception", there's no problem if the object is already exported
-    public RMIClientConnection(List<ServerGameController> gameRooms, ServerToClientInterface client) {
-        super(gameRooms);
+    public RMIClientConnection(List<ServerGameController> games, ServerToClientInterface client) {
+        super(games);
         this.client = client;
         try {
             UnicastRemoteObject.exportObject(this, 0);
@@ -86,18 +84,13 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
      * Game events interface
      * ---------------------------------------------------------------------- */
     @Override
-    public void onGameStateChange(GameState gameState) throws RemoteException {
-        client.onGameStateChange(gameState);
+    public void onPrepareNewRound() throws RemoteException {
+        client.onPrepareNewRound();
     }
 
     @Override
-    public void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException {
-        client.onTurnOrderChanged(playerOrder);
-    }
-
-    @Override
-    public void onPlayerTurnStarted(Player player) throws RemoteException {
-        client.onPlayerTurnStarted(player);
+    public void onPlayerTurnStarted(String username) throws RemoteException {
+        client.onPlayerTurnStarted(username);
     }
 
     @Override
@@ -111,12 +104,17 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-        client.onPlayerOccupiesCouncilPalace(player, familyMemberColor, councilPrivileges);
+    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        client.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
     }
 
     @Override
-    public void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException {
-        client.onPlayerOccupiesFloor(player, familyMemberColor, floor, paymentForCard);
+    public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
+        client.onPlayerOccupiesFloor(username, floorId, familyMemberColor, chosenPrivileges, paymentForCard);
+    }
+
+    @Override
+    public void onPlayerSpendsServants(String username, int servants) throws RemoteException {
+        client.onPlayerSpendsServants(username, servants);
     }
 }

@@ -3,18 +3,23 @@ package model.player;
 import model.Excommunication;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
+import model.card.Card;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
-import model.card.effects.ObtainedResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
-import model.resource.*;
+import model.resource.ObtainableResourceSet;
+import model.resource.ObtainedResourceSet;
+import model.resource.RequiredResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class represents the player state
@@ -199,6 +204,20 @@ public class Player implements Serializable {
     }
 
     /**
+     * Shortcut to get all the played cards (leader and development)
+     * @return
+     */
+    public List<Card> getAllPlayedCards() {
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(getPlayedLeaderCards());
+        cards.addAll(getTerritories());
+        cards.addAll(getBuildings());
+        cards.addAll(getCharacters());
+        cards.addAll(getVentures());
+        return cards;
+    }
+
+    /**
      * Shortcut to get all the effects implementing a given interface
      * @param effectInterface
      * @param <T>
@@ -257,7 +276,6 @@ public class Player implements Serializable {
     public void useFamilyMember(FamilyMemberColor familyMemberColor) {
         availableFamilyMembers.remove(familyMemberColor);
     }
-
 
     public void resetAvailableFamilyMembers() {
         availableFamilyMembers.clear();

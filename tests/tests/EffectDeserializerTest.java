@@ -6,7 +6,7 @@ import model.board.Board;
 import model.card.development.BuildingCard;
 import model.card.effects.EffectsContainer;
 import model.card.effects.ImmediateResourcesEffect;
-import model.card.effects.ObtainedResourceSetModifierEffect;
+import model.card.effects.ObtainableResourceSetModifierEffect;
 import model.card.effects.interfaces.EffectInterface;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
@@ -24,7 +24,7 @@ public class EffectDeserializerTest {
     public static void setupObjects() {
         deserializer = new GsonBuilder()
                 .registerTypeAdapter(EffectInterface.class, new EffectDeserializer())
-                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainableResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .create();
     }
@@ -36,7 +36,7 @@ public class EffectDeserializerTest {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .registerTypeAdapter(Board.class, new BoardDeserializer())
-                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainedResourceSetDeserializer())
+                .registerTypeAdapter(ObtainableResourceSet.class, new ObtainableResourceSetDeserializer())
                 .registerTypeAdapter(RequiredResourceSet.class, new RequiredResourceSetDeserializer())
                 .registerTypeAdapter(BuildingCard.class, new BuildingCardDeserializer())
                 .registerTypeAdapter(EffectsContainer.class, new EffectsContainerDeserializer())
@@ -51,7 +51,7 @@ public class EffectDeserializerTest {
     @Test
     public void testObtainedResourceSetDeserialization() {
         final String testCase = "{\"effectType\": \"ObtainedResourceSetModifier\", \"resourceType\": \"MILITARY_POINTS\", \"quantity\": -1}";
-        ObtainedResourceSetModifierEffect effect = deserializeEffect(testCase);
+        ObtainableResourceSetModifierEffect effect = deserializeEffect(testCase);
 
         // TODO: test something
     }

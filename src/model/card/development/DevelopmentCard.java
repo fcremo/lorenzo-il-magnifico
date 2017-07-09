@@ -12,8 +12,12 @@ import java.util.List;
 public abstract class DevelopmentCard extends Card {
     private int period;
 
-    public DevelopmentCard(String id, String name, List<RequiredResourceSet> requiredResourceSet, int period) {
-        super(id, name, requiredResourceSet);
+    public DevelopmentCard() {
+        super();
+    }
+
+    public DevelopmentCard(String name, List<RequiredResourceSet> requiredResourceSet, int period) {
+        super(name, requiredResourceSet);
         this.period = period;
     }
 

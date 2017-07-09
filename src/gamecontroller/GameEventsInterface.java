@@ -1,17 +1,17 @@
 package gamecontroller;
 
-import model.board.actionspace.Floor;
+import model.board.actionspace.ActionSpace;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
-import model.player.Player;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This interface specifies all the game-related events
@@ -19,20 +19,15 @@ import java.util.List;
  */
 public interface GameEventsInterface {
     /**
-     * Called when the state of the game changes
-     */
-    void onGameStateChange(GameState gameState) throws RemoteException;
-
-    /**
-     * Called when the turn order changes
-     * @param playerOrder the new turn order
+     * Called when a new round starts
+     *
      * @throws RemoteException
      */
-    void onTurnOrderChanged(List<Player> playerOrder) throws RemoteException;
+    void onPrepareNewRound() throws RemoteException;
 
     /**
      * Called when new development cards are drawn
-     *
+     * <p>
      * The list of territory cards must be ordered from lower to higher floors
      *
      * @param territoryCards
@@ -45,8 +40,9 @@ public interface GameEventsInterface {
 
     /**
      * Called when the dice are thrown
-     * @param blackDie black die value
-     * @param whiteDie white die value
+     *
+     * @param blackDie  black die value
+     * @param whiteDie  white die value
      * @param orangeDie orange die value
      * @throws RemoteException
      */
@@ -54,27 +50,38 @@ public interface GameEventsInterface {
 
     /**
      * Called when the turn of a player starts
-     * @param player
+     *
+     * @param username the username of the player
      * @throws RemoteException
      */
-    void onPlayerTurnStarted(Player player) throws RemoteException;
+    void onPlayerTurnStarted(String username) throws RemoteException;
 
     /**
-     * Called when a player occupies the council palace
-     * @param player the player
-     * @param familyMemberColor the family member used
-     * @param councilPrivileges the chosen council privileges
+     * Called when a player occupies an action space
+     * @param username
+     * @param actionSpace
+     * @param familyMemberColor
+     * @param councilPrivileges
+     * @throws RemoteException
      */
-    void onPlayerOccupiesCouncilPalace(Player player, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
+    void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
 
     /**
      * Called when a player occupies a floor
-     * @param player
-     * @param familyMemberColor
+     * @param username
      * @param floor
+     * @param familyMemberColor
+     * @param chosenPrivileges
+     * @param paymentForCard
      * @throws RemoteException
      */
-    void onPlayerOccupiesFloor(Player player, FamilyMemberColor familyMemberColor, Floor floor, RequiredResourceSet paymentForCard) throws RemoteException;
+    void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException;
 
-
+    /**
+     * Called when a player commits servants for his next action
+     *
+     * @param username
+     * @param servants
+     */
+    void onPlayerSpendsServants(String username, int servants) throws RemoteException;
 }

@@ -210,7 +210,7 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             case "ObtainedResourceSetModifier": {
                 ObtainableResource resource = context.deserialize(jsonEffect.get("resource"), ObtainableResource.class);
                 int qty = jsonEffect.get("quantity").getAsInt();
-                effect = new ObtainedResourceSetModifierEffect(resource, qty);
+                effect = new ObtainableResourceSetModifierEffect(resource, qty);
                 break;
             }
             default:

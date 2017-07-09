@@ -1,10 +1,13 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
+import gamecontroller.GameController;
+import gamecontroller.exceptions.ActionNotAllowedException;
 import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.Card;
+import model.card.development.DevelopmentCard;
 import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
@@ -12,39 +15,40 @@ import model.player.Player;
 import model.resource.ObtainableResource;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
-import server.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 import ui.cli.layout.table.*;
 
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MainTurnContext extends Context {
+    private GameController gameController;
     private Game game;
 
     private Callback callback;
 
+    // Context state
     private FamilyMemberColor familyMemberColor;
+    private ActionSpace actionSpace;
+    private RequiredResourceSet paymentForCard;
+    private List<ObtainableResourceSet> chosenCouncilPrivileges;
 
-    public MainTurnContext(UIContextInterface uiContextInterface, Game game, Callback callback) {
+    public MainTurnContext(UIContextInterface uiContextInterface, GameController gameController, Callback callback) {
         super(uiContextInterface);
-        this.game = game;
+        this.gameController = gameController;
+        this.game = gameController.getGame();
         this.callback = callback;
-        this.addCommand("show-board", this::showBoard,
-                "Show board status");
-        this.addCommand("show-player", this::showPlayer,
-                "Show player status");
-        this.addCommand("spend-servants", this::spendServants,
-                "Commit some servants to spend for the next action");
-        this.addCommand("go-to", this::goTo,
-                "{floor, market, council, harvest, production} Go to a position on the board");
-        this.addCommand("play-leader", this::playLeaderCard,
-                "Play a Leader Card from your hand");
-        this.addCommand("activate-leader", this::activateLeaderCard,
-                "Activate a Leader’s Once Per Round Ability");
+        this.addCommand("show-board", this::showBoard, "Show board status");
+        this.addCommand("show-player", this::showPlayer, "<username> Show player status");
+        this.addCommand("list-players", this::listPlayers, "List players in turn order");
+        this.addCommand("spend-servants", this::spendServants, "<number> Commit servants to spend for the next action");
+        this.addCommand("place-family-member", this::placeFamilyMember,
+                "<black, white, orange, neutral> Go to an action space");
+        this.addCommand("play-leader", this::playLeaderCard, "Play a Leader Card from your hand");
+        this.addCommand("activate-effect", this::activateLeaderCard, "Activate a Leader’s once per round ability");
         this.addCommand("discard-leader", this::discardLeaderCard,
-                "Discard a Leader card from your hand and immediately receive a Council Privilege");
+                "Discard a Leader Card from your hand and immediately receive a Council Privilege");
+        this.addCommand("end-turn", this::endTurn, "End your turn");
         uiContextInterface.println("It's your turn!");
     }
 
@@ -60,8 +64,7 @@ public class MainTurnContext extends Context {
         layout.addRow(new ContainerRow());
 
         for (int i = 0; i < 4; i++) {
-            String description = String.format("T%d: ", i + 1)
-                    + game.getBoard().getTerritoryTower().getFloors().get(i).toString();
+            String description = game.getBoard().getTerritoryTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
@@ -76,8 +79,7 @@ public class MainTurnContext extends Context {
             ((ContainerRow) layout.getRows().get(i)).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
-            String description = String.format("B%d: ", i + 1)
-                    + game.getBoard().getBuildingTower().getFloors().get(i).toString();
+            String description = game.getBoard().getBuildingTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
@@ -92,8 +94,7 @@ public class MainTurnContext extends Context {
             ((ContainerRow) layout.getRows().get(i)).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
-            String description = String.format("C%d: ", i + 1)
-                    + game.getBoard().getCharacterTower().getFloors().get(i).toString();
+            String description = game.getBoard().getCharacterTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
@@ -108,8 +109,7 @@ public class MainTurnContext extends Context {
             ((ContainerRow) layout.getRows().get(i)).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
-            String description = String.format("V%d: ", i + 1)
-                    + game.getBoard().getVentureTower().getFloors().get(i).toString();
+            String description = game.getBoard().getVentureTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
@@ -228,7 +228,7 @@ public class MainTurnContext extends Context {
         ContainerRow territories = new ContainerRow();
         layout.addRow(territories);
         for (int i = 0; i < player.getTerritories().size(); i++) {
-           territories.addColumn(new TextBox(player.getTerritories().get(i).toString()));
+            territories.addColumn(new TextBox(player.getTerritories().get(i).toString()));
         }
         for (int i = player.getTerritories().size(); i < 6; i++) {
             territories.addColumn(new TextBox(""));
@@ -297,6 +297,18 @@ public class MainTurnContext extends Context {
 
     }
 
+    private void listPlayers(String[] params) throws InvalidCommandException {
+        if (params.length != 0) {
+            throw new InvalidCommandException("This command takes no arguments");
+        }
+
+        List<Player> players = game.getPlayers();
+
+        for (int i = 1; i <= players.size(); i++) {
+            uiContextInterface.println(String.format("%d) %s", i, players.get(i - 1).getUsername()));
+        }
+    }
+
     private void spendServants(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
         if (params.length != 1) {
             throw new InvalidCommandException("This command takes one argument (the number of servants you want to use)");
@@ -315,74 +327,235 @@ public class MainTurnContext extends Context {
         }
     }
 
-    private void goTo(String[] params) throws InvalidCommandException, NetworkException, RemoteException, ActionNotAllowedException {
+    /* -----------------------------------------------------------------
+     * Methods for going to an action space
+     * The callbacks are a bit messy to follow but this way is quick and
+     * convenient for the player
+     * ----------------------------------------------------------------- */
+
+    /**
+     * "Entry point" for the place-family-member command
+     *
+     * @param params
+     * @throws InvalidCommandException
+     * @throws NetworkException
+     * @throws RemoteException
+     * @throws ActionNotAllowedException
+     */
+    private void placeFamilyMember(String[] params) throws InvalidCommandException, NetworkException, RemoteException, ActionNotAllowedException {
         if (params.length != 1) {
-            throw new InvalidCommandException("You must specify where you want to go!");
+            throw new InvalidCommandException("You must specify what family member you want to use!");
         }
 
-        GoToContext goToContext = new GoToContext(uiContextInterface, game, callback, this, params[0]);
-        uiContextInterface.changeContext(goToContext);
+        String familyMember = params[0];
+
+        switch (familyMember) {
+            case "black":
+                familyMemberColor = FamilyMemberColor.BLACK;
+                break;
+            case "white":
+                familyMemberColor = FamilyMemberColor.WHITE;
+                break;
+            case "orange":
+                familyMemberColor = FamilyMemberColor.ORANGE;
+                break;
+            case "neutral":
+                familyMemberColor = FamilyMemberColor.NEUTRAL;
+                break;
+            default:
+                throw new InvalidCommandException("Invalid family member choice");
+        }
+
+        askWhereToPlaceFamilyMember();
+    }
+
+    /**
+     * Asks the player where he wants to go
+     */
+    private void askWhereToPlaceFamilyMember() {
+        // TODO: filter only action spaces where the player can go
+        List<ActionSpace> actionSpaces = gameController.getAllowedActionSpaces();
+
+        SingleChoiceContext<ActionSpace> choiceContext = new SingleChoiceContext<>(uiContextInterface,
+                actionSpaces,
+                choice -> this.chosenActionSpace(choice));
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
+    }
+
+    /**
+     * Takes the action space choice from the player
+     * @param actionSpace
+     * @throws NetworkException
+     * @throws ActionNotAllowedException
+     * @throws RemoteException
+     */
+    private void chosenActionSpace(ActionSpace actionSpace) throws NetworkException, ActionNotAllowedException, RemoteException {
+        this.actionSpace = actionSpace;
+
+        if(actionSpace instanceof Floor) askWhichResourcesToPayForCard();
+        else askWhichCouncilPrivileges();
+    }
+
+    /**
+     * Asks the player which resources he wants to play for taking the card
+     * when occupying a floor
+     */
+    private void askWhichResourcesToPayForCard() throws NetworkException, ActionNotAllowedException, RemoteException {
+        if(!(actionSpace instanceof Floor)) askWhichCouncilPrivileges();
+
+        Floor floor = (Floor) actionSpace;
+        DevelopmentCard card = floor.getCard();
+
+        List<RequiredResourceSet> choices = gameController.getAllowedPaymentsForCard(card);
+
+        SingleChoiceContext<RequiredResourceSet> choiceContext;
+        choiceContext = new SingleChoiceContext<>(uiContextInterface, choices,
+                choice -> this.chosenPaymentForCard(choice));
+
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
+    }
+
+    /**
+     * Takes the choice of the player for which resources to pay for the card
+     * @param paymentForCard
+     */
+    private void chosenPaymentForCard(RequiredResourceSet paymentForCard) throws NetworkException, ActionNotAllowedException, RemoteException {
+         this.paymentForCard = paymentForCard;
+         askWhichCouncilPrivileges();
+    }
+
+    /**
+     * Asks the player which council privileges to take as a bonus for
+     * occupying an action space
+     */
+    private void askWhichCouncilPrivileges() throws NetworkException, ActionNotAllowedException, RemoteException {
+        ObtainableResourceSet bonus = actionSpace.getBonus();
+        int bonusCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+
+        if (bonusCouncilPrivileges == 0) {
+            chosenCouncilPrivileges(new ArrayList<>());
+        }
+        else if (bonusCouncilPrivileges == 1) {
+            List<ObtainableResourceSet> allowedCouncilPrivileges = game.getAllowedCouncilPrivileges();
+            SingleChoiceContext<ObtainableResourceSet> choiceContext;
+            choiceContext = new SingleChoiceContext<>(uiContextInterface,
+                    allowedCouncilPrivileges,
+                    choice -> {
+                        List<ObtainableResourceSet> privileges = new ArrayList<>();
+                        privileges.add(choice);
+                        chosenCouncilPrivileges(privileges);
+                    });
+            choiceContext.setPreviousContext(this);
+            uiContextInterface.changeContext(choiceContext);
+        }
+        else {
+            List<ObtainableResourceSet> allowedCouncilPrivileges = game.getAllowedCouncilPrivileges();
+            MultipleChoiceContext<ObtainableResourceSet> choiceContext;
+            choiceContext = new MultipleChoiceContext<>(uiContextInterface,
+                    allowedCouncilPrivileges,
+                    bonusCouncilPrivileges,
+                    bonusCouncilPrivileges,
+                    choices -> chosenCouncilPrivileges(choices),
+                    true);
+            choiceContext.setPreviousContext(this);
+            uiContextInterface.changeContext(choiceContext);
+        }
+    }
+
+    /**
+     * Takes the player choice for which council privileges to take
+     * @param chosenCouncilPrivileges
+     */
+    private void chosenCouncilPrivileges(List<ObtainableResourceSet> chosenCouncilPrivileges) throws NetworkException, ActionNotAllowedException, RemoteException {
+        this.chosenCouncilPrivileges = chosenCouncilPrivileges;
+
+        if(actionSpace instanceof Floor) callback.goToFloor((Floor)actionSpace, familyMemberColor, chosenCouncilPrivileges, paymentForCard);
+        else callback.goToActionSpace(actionSpace, familyMemberColor, chosenCouncilPrivileges);
     }
 
     private void discardLeaderCard(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
-        if (params.length != 1) {
-            throw new InvalidCommandException("This command takes one argument (the index of the Leader Card you want to discard)");
-        }
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
-        try {
-            int i = Integer.parseInt(params[0]);
-            LeaderCard leaderCard = game.getCurrentPlayer().getAvailableLeaderCards().get(i - 1);
-            callback.discardLeaderCard(leaderCard);
-        }
-        catch (NumberFormatException | IndexOutOfBoundsException e) {
-            uiContextInterface.println("Invalid Leader Card");
-        }
-        catch (ActionNotAllowedException e) {
-            uiContextInterface.println("You cannot discard this Leader Card");
-        }
+        List<LeaderCard> availableLeaderCards = gameController.getAllowedLeaderCards();
+        SingleChoiceContext<LeaderCard> choiceContext = new SingleChoiceContext<>(uiContextInterface,
+                availableLeaderCards,
+                chosenLeaderCard -> chooseCouncilPrivilegeForDiscardingLeaderCard(chosenLeaderCard)
+        );
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
+    }
+
+    private void chooseCouncilPrivilegeForDiscardingLeaderCard(LeaderCard card) {
+        List<ObtainableResourceSet> allowedCouncilPrivileges = game.getAllowedCouncilPrivileges();
+        SingleChoiceContext<ObtainableResourceSet> choiceContext;
+        choiceContext = new SingleChoiceContext<>(uiContextInterface,
+                allowedCouncilPrivileges,
+                choice -> callback.discardLeaderCard(card, choice)
+        );
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
     }
 
     private void playLeaderCard(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
-        if (params.length != 1) {
-            throw new InvalidCommandException("This command takes one argument (the Leader Card you want to play)");
-        }
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
-        try {
-            int i = Integer.parseInt(params[0]);
-            LeaderCard leaderCard = game.getCurrentPlayer().getAvailableLeaderCards().get(i - 1);
-            callback.playLeaderCard(leaderCard);
-        }
-        catch (NumberFormatException | IndexOutOfBoundsException e) {
-            uiContextInterface.println("Invalid Leader Card");
-        }
-        catch (ActionNotAllowedException e) {
-            uiContextInterface.println("You cannot play this Leader Card");
-        }
+        List<LeaderCard> availableLeaderCards = gameController.getAllowedLeaderCards();
+        SingleChoiceContext<LeaderCard> choiceContext = new SingleChoiceContext<>(uiContextInterface,
+                availableLeaderCards,
+                choice -> callback.playLeaderCard(choice));
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
     }
 
     private void activateLeaderCard(String[] params) throws InvalidCommandException, NetworkException, RemoteException {
+        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
+
+        List<Card> activatableCards = gameController.getActivatableCards();
+
+        Map<OncePerRoundEffectInterface, Card> effectsToCards = new HashMap<>();
+
+        List choices = new ArrayList<>();
+
+        for (Card card : activatableCards) {
+            List<OncePerRoundEffectInterface> effects = card.getEffectsContainer().getEffectsImplementing(OncePerRoundEffectInterface.class);
+            for (OncePerRoundEffectInterface e : effects) {
+                effectsToCards.put(e, card);
+                String description = card.getName() + ": " + e.toString();
+                ChoosableItem<OncePerRoundEffectInterface> choice = new ChoosableItem(description, e);
+                choices.add(choice);
+            }
+        }
+
+        SingleChoiceContext choiceContext;
+        choiceContext = new SingleChoiceContext<OncePerRoundEffectInterface>(uiContextInterface,
+                choices,
+                choice -> {
+                    Card chosenCard = effectsToCards.get(choice);
+                    callback.activateOncePerRoundEffect(chosenCard, choice);
+                });
+        choiceContext.setPreviousContext(this);
+        uiContextInterface.changeContext(choiceContext);
+
+    }
+
+    private void endTurn(String[] params) throws InvalidCommandException, NetworkException, RemoteException, ActionNotAllowedException {
+        callback.endTurn();
     }
 
     public interface Callback {
         void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-        void goToCouncilPalace(FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
+        void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-        void goToFloor(Floor floor, FamilyMemberColor familyMember, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+        void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-        void goToSmallHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-        void goToBigHarvest(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-        void goToSmallProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-        void goToBigProduction(FamilyMemberColor familyMemberColor) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-        void goToMarket(FamilyMemberColor familyMemberColor, ActionSpace marketActionSpace) throws NetworkException, RemoteException, ActionNotAllowedException;
-
-        void discardLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+        void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet privilege) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+        void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void activateOncePerRoundEffect(Card Card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException;
     }

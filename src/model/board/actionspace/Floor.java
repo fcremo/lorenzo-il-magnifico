@@ -1,21 +1,22 @@
 package model.board.actionspace;
 
 import model.board.Tower;
-import model.card.development.DevelopmentCard;
+import model.card.development.*;
 import model.resource.ObtainableResource;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
+import ui.cli.contexts.SingleChoiceContext;
 
 /**
  * This class represents the tower floors, keeping track of whether it's occupied and the relative card and optional bonus.
  */
-public class Floor<T extends DevelopmentCard> extends ActionSpace {
+public class Floor<T extends DevelopmentCard> extends ActionSpace implements SingleChoiceContext.Choosable {
     private Tower<T> tower;
 
     private T card;
 
-    public Floor(ObtainableResourceSet bonus, int requiredFamilyMemberValue, Tower<T> tower, T card, String id) {
-        super(bonus, requiredFamilyMemberValue, id);
+    public Floor(ObtainableResourceSet bonus, int requiredFamilyMemberValue, Tower<T> tower, T card) {
+        super(bonus, requiredFamilyMemberValue);
         this.tower = tower;
         this.card = card;
     }
@@ -68,5 +69,18 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace {
         }
 
         return string;
+    }
+
+    @Override
+    public String getShortDescriptionForChoosing() {
+        String str;
+        if(card instanceof TerritoryCard) str = "Territory ";
+        else if (card instanceof BuildingCard) str = "Building ";
+        else if (card instanceof CharacterCard) str = "Character ";
+        else str = "Venture ";
+
+        str += card.getName();
+
+        return str;
     }
 }

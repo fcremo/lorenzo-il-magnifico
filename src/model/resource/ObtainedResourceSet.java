@@ -46,6 +46,8 @@ public class ObtainedResourceSet implements Serializable {
      * @param qty
      */
     public void addResource(ObtainableResource resource, int qty) {
+        if(resource.equals(ObtainableResource.COUNCIL_PRIVILEGES)) return;
+
         int newQty = resources.getOrDefault(resource, 0) + qty;
         resources.put(resource, newQty);
     }
@@ -56,6 +58,8 @@ public class ObtainedResourceSet implements Serializable {
      * @param qty
      */
     public void subtractResource(ObtainableResource resource, int qty) {
+        if(resource.equals(ObtainableResource.COUNCIL_PRIVILEGES)) return;
+
         int newQty = resources.getOrDefault(resource, 0) - qty;
         resources.put(resource, newQty);
     }
@@ -110,6 +114,7 @@ public class ObtainedResourceSet implements Serializable {
      */
     private void addStaticResources(ObtainableResourceSet obtainableResourceSet, int qtyToAdd) {
         for (ObtainableResource obtainableResource : obtainableResourceSet.getObtainedResources().keySet()) {
+            if(obtainableResource.equals(ObtainableResource.COUNCIL_PRIVILEGES)) continue;
             addResource(obtainableResource, obtainableResourceSet.getObtainedAmount(obtainableResource) * qtyToAdd);
         }
     }
@@ -139,6 +144,7 @@ public class ObtainedResourceSet implements Serializable {
             // We don't subtract requirements, only costs
             if(resourceType instanceof ObtainableResource) {
                 ObtainableResource resource = (ObtainableResource) resourceType;
+                if(resource.equals(ObtainableResource.COUNCIL_PRIVILEGES)) continue;
                 int newQty = this.resources.getOrDefault(resource, 0) - resources.getRequiredAmount(resource);
                 this.resources.put(resource, newQty);
             }

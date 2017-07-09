@@ -4,6 +4,7 @@ import model.action.ActionType;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -13,8 +14,12 @@ public class TerritoryCard extends DevelopmentCard {
     private ObtainableResourceSet harvestResourceSet;
     private int requiredValueForHarvest;
 
-    public TerritoryCard(String id, String name, int period, ObtainableResourceSet harvestResourceSet, int requiredValueForHarvest) {
-        super(id, name, new ArrayList<>(), period);
+    private TerritoryCard() {
+        super();
+    }
+
+    public TerritoryCard(String name, int period, ObtainableResourceSet harvestResourceSet, int requiredValueForHarvest) {
+        super(name, new ArrayList<>(), period);
         this.harvestResourceSet = harvestResourceSet;
         this.requiredValueForHarvest = requiredValueForHarvest;
     }
@@ -69,5 +74,12 @@ public class TerritoryCard extends DevelopmentCard {
         }
 
         return string.toString();
+    }
+
+    public static class InstanceCreator implements com.google.gson.InstanceCreator<TerritoryCard> {
+        @Override
+        public TerritoryCard createInstance(Type type) {
+            return new TerritoryCard();
+        }
     }
 }

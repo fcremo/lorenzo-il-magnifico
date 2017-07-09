@@ -1,7 +1,7 @@
 package ui.cli.contexts;
 
 import client.exceptions.NetworkException;
-import server.exceptions.ActionNotAllowedException;
+import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 
 import java.rmi.RemoteException;
@@ -27,7 +27,7 @@ public abstract class Context {
     public Context(UIContextInterface uiContextInterface, Context previousContext) {
         this(uiContextInterface);
         this.previousContext = previousContext;
-        addCommand("back", this::goBack, "Go back");
+        addCommand("back", args -> goBack(), "Go back");
     }
 
     public void addCommand(String commandName, Command command, String helpString) {
@@ -65,11 +65,11 @@ public abstract class Context {
             uiContextInterface.println("This command does not exist. Try \"help\"");
         }
 
-        if(reprintPrompt) uiContextInterface.printPrompt();
+        if (reprintPrompt) uiContextInterface.printPrompt();
     }
 
     private void help(String[] params) throws InvalidCommandException {
-        if(params.length > 1) throw new InvalidCommandException("Command \"help\" takes 0 or 1 arguments");
+        if (params.length > 1) throw new InvalidCommandException("Command \"help\" takes 0 or 1 arguments");
 
         if (params.length == 1) {
             if (helps.containsKey(params[0])) {
@@ -81,14 +81,25 @@ public abstract class Context {
         }
         else if (params.length == 0) {
             for (String command : helps.keySet()) {
-                uiContextInterface.println("\t" + command + ": " + helps.get(command));
+                uiContextInterface.println(" " + command + " \t" + helps.get(command));
             }
         }
     }
 
-    protected void goBack(String[] params) throws InvalidCommandException {
-        if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
-        uiContextInterface.changeContext(previousContext);
+    /**
+     * Sets the previous context
+     *
+     * @param previousContext
+     */
+    public void setPreviousContext(Context previousContext) {
+        this.previousContext = previousContext;
+        if (!commands.containsKey("back")) {
+            addCommand("back", s -> goBack(), "Go back");
+        }
+    }
+
+    protected void goBack() {
+        if (previousContext != null) uiContextInterface.changeContext(previousContext);
     }
 
     public void printHelp(boolean reprintPrompt) {

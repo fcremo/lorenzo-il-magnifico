@@ -1,4 +1,4 @@
-package server.exceptions;
+package gamecontroller.exceptions;
 
 /**
  * This exceptions signals that the player attempted to perform an action that was not allowed
