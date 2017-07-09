@@ -2,10 +2,8 @@ package ui.cli.contexts;
 
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.player.PersonalBonusTile;
-import server.exceptions.PersonalBonusTileNotAvailableException;
 import ui.cli.exceptions.InvalidCommandException;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class ChooseBonusTileContext extends Context {
@@ -35,7 +33,7 @@ public class ChooseBonusTileContext extends Context {
         uiContextInterface.printPrompt();
     }
 
-    private void chooseBonusTile(String[] params) throws InvalidCommandException, RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException {
+    private void chooseBonusTile(String[] params) throws InvalidCommandException, ActionNotAllowedException {
         if (params.length != 1) throw new InvalidCommandException("You have to choose a bonus tile!");
         try {
             int chosenBonusTileIndex = Integer.parseInt(params[0]);
@@ -51,6 +49,6 @@ public class ChooseBonusTileContext extends Context {
 
     @FunctionalInterface
     public interface Callback {
-        void chooseBonusTile(PersonalBonusTile bonusTile) throws RemoteException, PersonalBonusTileNotAvailableException, ActionNotAllowedException;
+        void chooseBonusTile(PersonalBonusTile bonusTile) throws ActionNotAllowedException;
     }
 }

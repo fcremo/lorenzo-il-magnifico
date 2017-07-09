@@ -17,7 +17,6 @@ import model.resource.RequiredResourceSet;
 import ui.cli.exceptions.InvalidCommandException;
 import ui.cli.layout.table.*;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class MainTurnContext extends Context {
@@ -249,7 +248,7 @@ public class MainTurnContext extends Context {
         }
     }
 
-    private void spendServants(String[] params) throws InvalidCommandException, RemoteException {
+    private void spendServants(String[] params) throws InvalidCommandException {
         if (params.length != 1) {
             throw new InvalidCommandException("This command takes one argument (the number of servants you want to use)");
         }
@@ -278,10 +277,9 @@ public class MainTurnContext extends Context {
      *
      * @param params
      * @throws InvalidCommandException
-     * @throws RemoteException
      * @throws ActionNotAllowedException
      */
-    private void placeFamilyMember(String[] params) throws InvalidCommandException, RemoteException, ActionNotAllowedException {
+    private void placeFamilyMember(String[] params) throws InvalidCommandException, ActionNotAllowedException {
         if (params.length != 1) {
             throw new InvalidCommandException("You must specify what family member you want to use!");
         }
@@ -326,9 +324,8 @@ public class MainTurnContext extends Context {
      * Takes the action space choice from the player
      * @param actionSpace
      * @throws ActionNotAllowedException
-     * @throws RemoteException
      */
-    private void chosenActionSpace(ActionSpace actionSpace) throws ActionNotAllowedException, RemoteException {
+    private void chosenActionSpace(ActionSpace actionSpace) throws ActionNotAllowedException {
         this.actionSpace = actionSpace;
 
         if(actionSpace instanceof Floor) askWhichResourcesToPayForCard();
@@ -339,7 +336,7 @@ public class MainTurnContext extends Context {
      * Asks the player which resources he wants to play for taking the card
      * when occupying a floor
      */
-    private void askWhichResourcesToPayForCard() throws ActionNotAllowedException, RemoteException {
+    private void askWhichResourcesToPayForCard() throws ActionNotAllowedException {
         if(!(actionSpace instanceof Floor)) askWhichCouncilPrivileges();
 
         Floor floor = (Floor) actionSpace;
@@ -364,7 +361,7 @@ public class MainTurnContext extends Context {
      * Takes the choice of the player for which resources to pay for the card
      * @param paymentForCard
      */
-    private void chosenPaymentForCard(RequiredResourceSet paymentForCard) throws ActionNotAllowedException, RemoteException {
+    private void chosenPaymentForCard(RequiredResourceSet paymentForCard) throws ActionNotAllowedException {
          this.paymentForCard = paymentForCard;
          askWhichCouncilPrivileges();
     }
@@ -373,7 +370,7 @@ public class MainTurnContext extends Context {
      * Asks the player which council privileges to take as a bonus for
      * occupying an action space
      */
-    private void askWhichCouncilPrivileges() throws ActionNotAllowedException, RemoteException {
+    private void askWhichCouncilPrivileges() throws ActionNotAllowedException {
         ObtainableResourceSet bonus = actionSpace.getBonus();
         int bonusCouncilPrivileges = bonus.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
 
@@ -411,14 +408,14 @@ public class MainTurnContext extends Context {
      * Takes the player choice for which council privileges to take
      * @param chosenCouncilPrivileges
      */
-    private void chosenCouncilPrivileges(List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException, RemoteException {
+    private void chosenCouncilPrivileges(List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
         this.chosenCouncilPrivileges = chosenCouncilPrivileges;
 
         if(actionSpace instanceof Floor) callback.goToFloor((Floor)actionSpace, familyMemberColor, chosenCouncilPrivileges, paymentForCard);
         else callback.goToActionSpace(actionSpace, familyMemberColor, chosenCouncilPrivileges);
     }
 
-    private void discardLeaderCard(String[] params) throws InvalidCommandException, RemoteException {
+    private void discardLeaderCard(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
         List<LeaderCard> availableLeaderCards = gameController.getAllowedLeaderCards();
@@ -441,7 +438,7 @@ public class MainTurnContext extends Context {
         uiContextInterface.changeContext(choiceContext);
     }
 
-    private void playLeaderCard(String[] params) throws InvalidCommandException, RemoteException {
+    private void playLeaderCard(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
         List<LeaderCard> availableLeaderCards = gameController.getAllowedLeaderCards();
@@ -452,7 +449,7 @@ public class MainTurnContext extends Context {
         uiContextInterface.changeContext(choiceContext);
     }
 
-    private void activateLeaderCard(String[] params) throws InvalidCommandException, RemoteException {
+    private void activateLeaderCard(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
         List<Card> activatableCards = gameController.getActivatableCards();
@@ -483,24 +480,25 @@ public class MainTurnContext extends Context {
 
     }
 
-    private void endTurn(String[] params) throws InvalidCommandException, RemoteException, ActionNotAllowedException {
+    private void endTurn(String[] params) throws InvalidCommandException, ActionNotAllowedException {
         callback.endTurn();
     }
 
     public interface Callback {
 
-        void spendServants(int servants) throws RemoteException, ActionNotAllowedException;
+        void spendServants(int servants) throws ActionNotAllowedException;
 
-        void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws RemoteException, ActionNotAllowedException;
-        void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException, ActionNotAllowedException;
+        void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws ActionNotAllowedException;
 
-        void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet privilege) throws RemoteException, ActionNotAllowedException;
+        void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException;
 
-        void playLeaderCard(LeaderCard leaderCard) throws RemoteException, ActionNotAllowedException;
+        void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet privilege) throws ActionNotAllowedException;
 
-        void endTurn() throws RemoteException, ActionNotAllowedException;
+        void playLeaderCard(LeaderCard leaderCard) throws ActionNotAllowedException;
 
-        void activateOncePerRoundEffect(Card Card, OncePerRoundEffectInterface effect) throws RemoteException, ActionNotAllowedException;
+        void endTurn() throws ActionNotAllowedException;
+
+        void activateOncePerRoundEffect(Card Card, OncePerRoundEffectInterface effect) throws ActionNotAllowedException;
 
     }
 

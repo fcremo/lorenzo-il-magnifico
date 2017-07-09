@@ -3,7 +3,6 @@ package ui.cli.contexts;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 
-import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -54,10 +53,6 @@ public abstract class Context {
             catch (ActionNotAllowedException e) {
                 uiContextInterface.println("The server said you did something illegal:");
                 uiContextInterface.println(e.getMessage());
-            }
-            catch (RemoteException e) {
-                e.printStackTrace();
-                // TODO: decide how to handle network exceptions
             }
         }
         else {

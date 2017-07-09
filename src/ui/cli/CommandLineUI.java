@@ -262,6 +262,12 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
                     currentContext.handleInput(input, false);
                 }
                 catch (IOException e) {
+                    // If this happens we cannot read input from the user,
+                    // there's no point in hiding the exception since
+                    // it's probably an unrecoverable condition.
+                    //
+                    // This way the player can report the stack trace.
+                    // This exception should never occur anyway.
                     e.printStackTrace();
                 }
             }

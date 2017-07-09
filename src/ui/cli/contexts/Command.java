@@ -3,8 +3,6 @@ package ui.cli.contexts;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import ui.cli.exceptions.InvalidCommandException;
 
-import java.rmi.RemoteException;
-
 /**
  * This is the interface for a generic CLI UI command
  */
@@ -16,5 +14,5 @@ public interface Command {
      * @param arguments
      * @throws InvalidCommandException
      */
-    void execute(String[] arguments) throws InvalidCommandException, ActionNotAllowedException, RemoteException;
+    void execute(String[] arguments) throws InvalidCommandException, ActionNotAllowedException;
 }

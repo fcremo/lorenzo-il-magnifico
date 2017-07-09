@@ -5,7 +5,6 @@ import model.card.leader.LeaderCard;
 import server.exceptions.LeaderCardNotAvailableException;
 import ui.cli.exceptions.InvalidCommandException;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class ChooseLeaderCardContext extends Context {
@@ -35,7 +34,7 @@ public class ChooseLeaderCardContext extends Context {
         uiContextInterface.printPrompt();
     }
 
-    private void chooseLeaderCard(String[] params) throws InvalidCommandException, ActionNotAllowedException, RemoteException {
+    private void chooseLeaderCard(String[] params) throws InvalidCommandException, ActionNotAllowedException {
         if (params.length != 1) throw new InvalidCommandException("You have to choose a leader card!");
         try {
             int chosenLeaderCard = Integer.parseInt(params[0]);
@@ -51,6 +50,6 @@ public class ChooseLeaderCardContext extends Context {
 
     @FunctionalInterface
     public interface Callback {
-        void chooseLeaderCard(LeaderCard leaderCard) throws RemoteException, LeaderCardNotAvailableException, ActionNotAllowedException;
+        void chooseLeaderCard(LeaderCard leaderCard) throws LeaderCardNotAvailableException, ActionNotAllowedException;
     }
 }
