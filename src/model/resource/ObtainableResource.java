@@ -3,11 +3,23 @@ package model.resource;
 import java.io.Serializable;
 
 public enum ObtainableResource implements ResourceType, Serializable {
-    GOLD, WOOD, STONE, SERVANTS, COUNCIL_PRIVILEGES,
-    MILITARY_POINTS, FAITH_POINTS, VICTORY_POINTS,;
+    GOLD("GOLD"),
+    WOOD("WOOD"),
+    STONE("STONE"),
+    SERVANTS("SERVANTS"),
+    COUNCIL_PRIVILEGES("COUNCIL PRIVILEGES"),
+    MILITARY_POINTS("MILITARY POINTS"),
+    FAITH_POINTS("FAITH POINTS"),
+    VICTORY_POINTS("VICTORY POINTS");
+
+    String name;
+
+    ObtainableResource(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
-        return this.name();
+        return this.name;
     }
 }
