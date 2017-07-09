@@ -28,8 +28,8 @@ public class TableLayout implements LayoutInterface {
     public TableLayout() {
     }
 
-    public TableLayout(List<RowInterface> rows) {
-        this.rows = rows;
+    public TableLayout(List<? extends RowInterface> rows) {
+        this.rows = (List<RowInterface>) rows;
     }
 
     @Override

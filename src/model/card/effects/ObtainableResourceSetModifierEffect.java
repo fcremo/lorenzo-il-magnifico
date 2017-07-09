@@ -37,6 +37,18 @@ public class ObtainableResourceSetModifierEffect implements EffectInterface {
         return newResourceSets;
     }
 
+    /**
+     * Compute the modified resource set
+     *
+     * @param currentResources the current list of resource sets that the player can receive
+     * @return the modified list of resource sets the player can choose from
+     */
+    public ObtainableResourceSet modifyResources(ObtainableResourceSet currentResources) {
+        ObtainableResourceSet clonedResourceSet = new ObtainableResourceSet(currentResources);
+        clonedResourceSet.addResource(resourceToModify, modifier);
+        return clonedResourceSet;
+    }
+
     @Override
     public String toString() {
         if (modifier > 0) {

@@ -3,9 +3,6 @@ package server;
 import client.ServerToClientInterface;
 import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
-import model.board.actionspace.ActionSpace;
-import model.board.actionspace.Floor;
-import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
@@ -110,7 +107,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     /**
      * Choose a personal bonus tile
      *
-     * @param personalBonusTile
+     * @param personalBonusTileId
      * @throws NetworkException
      * @throws RemoteException
      */
@@ -122,7 +119,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     /**
      * Choose a leader card
      *
-     * @param leaderCard
+     * @param leaderCardId
      * @throws NetworkException
      * @throws RemoteException
      * @throws ActionNotAllowedException
@@ -155,6 +152,11 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     @Override
     public void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException {
         serverGameController.goToFloor(username, floorId, familyMemberColor, paymentForCard, councilPrivileges);
+    }
+
+    @Override
+    public void takeDevelopmentCard(UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException, ActionNotAllowedException {
+        serverGameController.takeDevelopmentCard(username, cardId, councilPrivileges);
     }
 
     @Override

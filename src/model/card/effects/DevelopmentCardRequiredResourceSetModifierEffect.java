@@ -46,6 +46,28 @@ public class DevelopmentCardRequiredResourceSetModifierEffect implements EffectI
         return currentRequiredResourceSets;
     }
 
+    /**
+     * Modify the set of resources needed to take a certain development card
+     * @param currentRequiredResourceSet the current cost of the card
+     * @param card the card being taken
+     * @return the updated required resource set
+     */
+    public RequiredResourceSet modifyResources(RequiredResourceSet currentRequiredResourceSet, DevelopmentCard card) {
+        if (card.getClass().equals(cardType)) {
+            RequiredResourceSet newRequiredResourceSet = new RequiredResourceSet(currentRequiredResourceSet);
+
+            for (ResourceType resource : newRequiredResourceSet.getRequiredResources().keySet()) {
+                int newValue = newRequiredResourceSet.getRequiredAmount(resource) + discount.getRequiredAmount(resource);
+                newRequiredResourceSet.setRequiredAmount(resource, newValue);
+            }
+
+            return newRequiredResourceSet;
+        }
+        else {
+            return currentRequiredResourceSet;
+        }
+    }
+
     @Override
     public String toString() {
         return "You get a discount of " + discount + " when you take a " + cardType.getSimpleName();

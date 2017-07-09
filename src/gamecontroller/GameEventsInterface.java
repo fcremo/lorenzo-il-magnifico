@@ -1,10 +1,5 @@
 package gamecontroller;
 
-import model.board.actionspace.ActionSpace;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
@@ -76,6 +71,15 @@ public interface GameEventsInterface {
      * @throws RemoteException
      */
     void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException;
+
+    /**
+     * Called when a player takes a development card
+     * @param username
+     * @param cardId
+     * @param councilPrivileges
+     * @throws RemoteException
+     */
+    void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException;
 
     /**
      * Called when a player commits servants for his next action

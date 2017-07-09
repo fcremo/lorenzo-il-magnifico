@@ -3,6 +3,7 @@ package ui;
 import gamecontroller.GameEventsInterface;
 import model.card.leader.LeaderCard;
 import model.player.PersonalBonusTile;
+import model.resource.ObtainableResourceSet;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface UIInterface extends GameEventsInterface {
 
     void showMainTurnContext();
 
+    void showChooseCouncilPrivileges(List<ObtainableResourceSet> allowedPrivileges, int councilPrivilegesAmount);
+
     void showAbortGame(String errorMessage);
 
     void onNetworkError();
@@ -26,5 +29,4 @@ public interface UIInterface extends GameEventsInterface {
     // public void onChatMessage();
 
     void showLoginPrompt();
-
 }

@@ -4,10 +4,7 @@ import model.Excommunication;
 import model.action.Action;
 import model.board.actionspace.ActionSpace;
 import model.card.Card;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
+import model.card.development.*;
 import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
 import model.resource.ObtainableResourceSet;
@@ -283,5 +280,12 @@ public class Player implements Serializable {
         availableFamilyMembers.add(FamilyMemberColor.WHITE);
         availableFamilyMembers.add(FamilyMemberColor.ORANGE);
         availableFamilyMembers.add(FamilyMemberColor.NEUTRAL);
+    }
+
+    public void addDevelopmentCard(DevelopmentCard card) {
+        if(card instanceof TerritoryCard) territories.add((TerritoryCard)card);
+        else if(card instanceof BuildingCard) buildings.add((BuildingCard)card);
+        else if(card instanceof CharacterCard) characters.add((CharacterCard)card);
+        else if(card instanceof VentureCard) ventures.add((VentureCard)card);
     }
 }

@@ -10,14 +10,12 @@ import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.Card;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
+import model.card.effects.ImmediateResourcesEffect;
 import model.card.effects.interfaces.OncePerRoundEffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
+import model.resource.ObtainableResource;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
 import server.ClientToServerInterface;
@@ -29,6 +27,7 @@ import ui.cli.CommandLineUI;
 import ui.cli.contexts.*;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +60,7 @@ public class ClientController implements GameEventsInterface,
     }
 
     /* ---------------------------------------
-     * CALLBACKS
+     * Actions from the UI
      * --------------------------------------- */
 
     /**
@@ -145,6 +144,13 @@ public class ClientController implements GameEventsInterface,
         ui.showMainTurnContext();
     }
 
+
+    public void chooseDevelopmentCardCouncilPrivileges(List<ObtainableResourceSet> councilPrivileges) throws NetworkException, ActionNotAllowedException, RemoteException {
+        clientConnection.takeDevelopmentCard(gameController.getDevelopmentCardBeingTaken().getId(), councilPrivileges);
+
+        ui.showMainTurnContext();
+    }
+
     @Override
     public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
         // TODO: locally check if the action is allowed
@@ -192,6 +198,47 @@ public class ClientController implements GameEventsInterface,
 
     public void showWaitingMessage(String message) throws RemoteException {
         ui.showWaitingMessage(message);
+    }
+
+    public void showChooseImmediateCouncilPrivileges(UUID cardId) {
+        Card card = null;
+        try {
+            card = gameController.getLocalCardFromTowers(cardId);
+        }
+        catch (ActionNotAllowedException e) {
+            e.printStackTrace();
+        }
+
+        // Check if the card gives council privileges
+        List<ImmediateResourcesEffect> immediateResourcesEffects = card.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class);
+
+        int councilPrivilegesAmount = 0;
+
+        List<ObtainableResourceSet> allowedCouncilPrivileges = getGame().getAllowedCouncilPrivileges();
+
+        for(ImmediateResourcesEffect e : immediateResourcesEffects) {
+            ObtainableResourceSet immediateResources = e.getObtainableResourceSet();
+            councilPrivilegesAmount += immediateResources.getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        }
+
+        if(councilPrivilegesAmount > 0) {
+            ui.showChooseCouncilPrivileges(allowedCouncilPrivileges, councilPrivilegesAmount);
+        }
+        else {
+            try {
+                this.chooseDevelopmentCardCouncilPrivileges(new ArrayList<>());
+            }
+            catch (NetworkException e) {
+                e.printStackTrace();
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            catch (ActionNotAllowedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void abortGame(String errorMessage) {
@@ -269,11 +316,25 @@ public class ClientController implements GameEventsInterface,
     public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
         try {
             gameController.goToFloor(username, familyMemberColor, floorId, paymentForCard, chosenPrivileges);
+            ui.onPlayerOccupiesFloor(username, floorId, familyMemberColor, chosenPrivileges, paymentForCard);
+        }
+        catch (ActionNotAllowedException e) {
+            // This should never happen
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        try {
+            gameController.takeDevelopmentCard(username, cardId, councilPrivileges);
         }
         catch (ActionNotAllowedException e) {
             e.printStackTrace();
+            // This should never happen
         }
-        ui.onPlayerOccupiesFloor(username, floorId, familyMemberColor, chosenPrivileges, paymentForCard);
+
+        ui.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
     }
 
     /**
@@ -286,4 +347,6 @@ public class ClientController implements GameEventsInterface,
     public GameController getGameController() {
         return gameController;
     }
+
+
 }

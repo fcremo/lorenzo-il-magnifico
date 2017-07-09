@@ -1,5 +1,6 @@
 package gamecontroller;
 
+import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.PlayerDoesNotExistException;
 import model.Game;
@@ -48,6 +49,12 @@ public class GameController {
      * True if the current player has not already placed his family member
      */
     private boolean hasCurrentPlayerPlacedFamilyMember;
+
+    /**
+     * The development card being taken when going to a floor
+     * or performing an action
+     */
+    private DevelopmentCard developmentCardBeingTaken;
 
     public GameController() {
         this.gameState = GameState.WAITING_FOR_PLAYERS_TO_CONNECT;
@@ -215,8 +222,8 @@ public class GameController {
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
-        assertActionValueIsAtLeast(player, floor.getCard().getCardTakingActionType(), familyMemberColor, floor.getRequiredFamilyMemberValue());
-        assertFloorOccupiableBy(floor, player, familyMemberColor, paymentForCard);
+        assertEffectiveActionValueIsAtLeast(player, floor.getCard().getCardTakingActionType(), familyMemberColor, floor.getRequiredFamilyMemberValue());
+        assertFloorOccupiableBy(floor, player, familyMemberColor, paymentForCard, chosenPrivileges);
 
         // Spend servants and reset spent servants count
         player.getResources().subtractResource(ObtainableResource.SERVANTS, player.getSpentServants());
@@ -229,31 +236,70 @@ public class GameController {
         }
 
         // Add bonus resources to the player
-        ObtainableResourceSet bonus = floor.getBonus();
-        for (FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)) {
-            // If there's more than one such effect the rules don't specify what to do.
-            // Not an issue since in the original game there's only one card with this effect (the Preacher).
-            bonus = e.setObtainedResourceSet();
+        ObtainableResourceSet actionSpaceBonus = floor.getBonus();
+        for(ObtainableResourceSet privilege : chosenPrivileges) {
+            actionSpaceBonus.addResources(privilege);
         }
 
-        for (ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)) {
-            // TODO: theoretically the effect could return more than one choice
-            List<ObtainableResourceSet> tmpList = new ArrayList<>();
-            tmpList.add(bonus);
-            tmpList = e.modifyResources(tmpList);
-            bonus = tmpList.get(0);
+        // Apply action space bonus setter effect (Preacher)
+        for(FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)){
+            actionSpaceBonus = e.setObtainedResourceSet();
         }
-        player.addResources(bonus);
+
+        // Apply obtained resource set modifier effects
+        for(ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)){
+            actionSpaceBonus = e.modifyResources(actionSpaceBonus);
+        }
+
+        player.addResources(actionSpaceBonus);
+
+        // Pay the card
+        // Apply effects that modify the cost of the card
+        for(DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
+            paymentForCard = e.modifyResources(paymentForCard, floor.getCard());
+        }
+        player.getResources().subtractResources(paymentForCard);
 
         // Set the floor as occupied
         floor.addOccupant(player, familyMemberColor);
 
         hasCurrentPlayerPlacedFamilyMember = true;
 
+        developmentCardBeingTaken = floor.getCard();
+
         gameState = GameState.TAKING_CARD;
     }
 
-    public void chooseCouncilPrivileges(String username, List<ObtainableResourceSet> councilPrivileges) {
+    /**
+     * Called when a player takes a development card
+     * @param username
+     * @param cardId
+     * @param councilPrivileges
+     */
+    public void takeDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
+        Player player = getLocalPlayer(username);
+        if(!developmentCardBeingTaken.getId().equals(cardId)) throw new ActionNotAllowedException("Unrecognized card ID");
+        DevelopmentCard card = developmentCardBeingTaken;
+
+        assertPlayerTurn(player);
+        assertGameState(GameState.TAKING_CARD);
+        assertValidCouncilPrivilegesChoiceForCard(card, councilPrivileges);
+
+        // Add immediate resources
+        for(ImmediateResourcesEffect e : card.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class)) {
+            player.addResources(e.getObtainableResourceSet());
+        }
+
+        // Add council privileges
+        for (ObtainableResourceSet councilPrivilege : councilPrivileges) {
+            player.addResources(councilPrivilege);
+        }
+
+        player.addDevelopmentCard(card);
+
+        game.getBoard().removeDevelopmentCardFromFloor(card);
+
+        gameState = GameState.PLAYER_TURN;
     }
 
     public void playLeaderCard(String username, LeaderCard leaderCard) {
@@ -268,7 +314,7 @@ public class GameController {
     /**
      * Performs the action and returns the set of resources obtained
      *
-     * @param username            the player performing the action
+     * @param username          the player performing the action
      * @param familyMemberValue the family member value used for performing the action
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
@@ -353,7 +399,7 @@ public class GameController {
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
-        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+        assertEffectiveActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
 
         ActionSpace harvestArea = game.getBoard().getSmallHarvestArea();
         assertSmallActionSpaceOccupiableBy(harvestArea, player, familyMemberColor);
@@ -378,7 +424,7 @@ public class GameController {
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
-        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+        assertEffectiveActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
 
         ActionSpace productionArea = game.getBoard().getBigHarvestArea();
         assertBigActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
@@ -403,7 +449,7 @@ public class GameController {
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
-        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+        assertEffectiveActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
 
         ActionSpace productionArea = game.getBoard().getSmallProductionArea();
         assertSmallActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
@@ -428,7 +474,7 @@ public class GameController {
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
-        assertActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
+        assertEffectiveActionValueIsAtLeast(player, ActionType.HARVEST, familyMemberColor, 1);
 
         ActionSpace productionArea = game.getBoard().getBigProductionArea();
         assertBigActionSpaceOccupiableBy(productionArea, player, familyMemberColor);
@@ -508,6 +554,16 @@ public class GameController {
                   .anyMatch(e -> e.isInhibited(actionSpace))) {
             throw new ActionNotAllowedException("You are prohibited from going to that action space");
         }
+    }
+
+    private void assertValidCouncilPrivilegesChoiceForCard(Card card, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
+        // Validate council privileges choice
+        List<ImmediateResourcesEffect> effects = developmentCardBeingTaken.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class);
+        int allowedCouncilPrivileges = 0;
+        for(ImmediateResourcesEffect e : effects) {
+            allowedCouncilPrivileges += e.getObtainableResourceSet().getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
+        }
+        assertValidCouncilPrivilegesChoice(councilPrivileges, allowedCouncilPrivileges);
     }
 
     /**
@@ -592,16 +648,76 @@ public class GameController {
      * @param player
      * @param familyMemberColor
      * @param paymentForCard
+     * @param chosenPrivileges
      */
     private void assertFloorOccupiableBy(Floor floor,
                                          Player player,
                                          FamilyMemberColor familyMemberColor,
-                                         RequiredResourceSet paymentForCard) throws ActionNotAllowedException {
+                                         RequiredResourceSet paymentForCard,
+                                         List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
         assertFloorHasCard(floor);
         assertActionSpaceIsEnabled(floor);
         assertPlayerIsNotInhibitedFromGoingTo(player, floor);
+        assertFamilyMemberColorRule(floor, player, familyMemberColor);
+        assertMilitaryRequirement(player, floor.getCard());
+        assertPlayerCanTakeAnotherCard(player, floor.getCard().getClass());
 
-        // STEP 1: check that the player can place that family member (color) on this floor
+        // check that the player can cover the cost of occupying the floor
+        ObtainedResourceSet playerClonedResourceSet = new ObtainedResourceSet(player.getResources());
+
+        // Double occupation cost
+        if (!player.hasEffectsImplementing(DoubleOccupationCostIgnoreEffect.class)) {
+            RequiredResourceSet doubleOccupationCost = floor.getDoubleOccupationCost();
+            if (!player.getResources().has(doubleOccupationCost)) {
+                throw new ActionNotAllowedException("You don't have the resources to occupy an already occupied tower");
+            }
+            playerClonedResourceSet.subtractResources(doubleOccupationCost);
+        }
+
+        // Floor bonus
+        ObtainableResourceSet actionSpaceBonus = floor.getBonus();
+        for(ObtainableResourceSet privilege : chosenPrivileges) {
+            actionSpaceBonus.addResources(privilege);
+        }
+
+        // Apply action space bonus setter effect (Preacher)
+        for(FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)){
+            actionSpaceBonus = e.setObtainedResourceSet();
+        }
+
+        // Apply obtained resource set modifier effects
+        for(ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)){
+            actionSpaceBonus = e.modifyResources(actionSpaceBonus);
+        }
+
+        playerClonedResourceSet.addResources(actionSpaceBonus);
+
+        // STEP 3: check the requirements chosen to pay for the card
+        paymentForCard = new RequiredResourceSet(paymentForCard);
+        if (!floor.getCard().isPayableWith(paymentForCard)) {
+            throw new ActionNotAllowedException("You cannot pay that price to take that card");
+        }
+
+        // Apply effects that modify the cost of the card
+        for(DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
+            paymentForCard = e.modifyResources(paymentForCard, floor.getCard());
+        }
+
+        if (!playerClonedResourceSet.has(paymentForCard)) {
+            throw new ActionNotAllowedException("You don't have the resources necessary to take that card");
+        }
+    }
+
+    /**
+     * Asserts that the player can place his family member on the floor and
+     * is not trying to place two colored family members in the same tower
+     *
+     * @param floor
+     * @param player
+     * @param familyMemberColor
+     * @throws ActionNotAllowedException
+     */
+    private void assertFamilyMemberColorRule(Floor floor, Player player, FamilyMemberColor familyMemberColor) throws ActionNotAllowedException {
         List<Tuple<Player, FamilyMemberColor>> occupations = new ArrayList<>();
         List<Floor> floors = floor.getTower().getFloors();
         for (Floor f : floors) {
@@ -624,30 +740,39 @@ public class GameController {
                 }
             }
         }
+    }
 
-        // STEP 2: check that the player can cover the cost of occupying the floor
-        ObtainedResourceSet playerClonedResourceSet = new ObtainedResourceSet(player.getResources());
+    /**
+     * Asserts that the player has the necessary military points
+     * to take another card (applies only to territory cards)
+     *
+     * @param player
+     * @param card
+     */
+    private void assertMilitaryRequirement(Player player, DevelopmentCard card) throws ActionNotAllowedException {
+        if(!(card instanceof TerritoryCard)) return;
 
-        RequiredResourceSet doubleOccupationCost = floor.getDoubleOccupationCost();
-        if (!player.hasEffectsImplementing(DoubleOccupationCostIgnoreEffect.class)) {
-            if (!player.getResources().has(doubleOccupationCost)) {
-                throw new ActionNotAllowedException("You don't have the resources to occupy an already occupied tower");
+        // If the card is a territory check military points requirement
+        if (!player.hasEffectsImplementing(SkipMilitaryPointsRequirementEffect.class)) {
+
+            int currentTerritories = player.getTerritories().size();
+            int requiredMilitaryPoints = 0;
+
+            if (currentTerritories == 5) {
+                requiredMilitaryPoints = 18;
             }
-            playerClonedResourceSet.subtractResources(doubleOccupationCost);
+            else if (currentTerritories == 4) {
+                requiredMilitaryPoints = 12;
+            }
+            else if (currentTerritories == 3) {
+                requiredMilitaryPoints = 7;
+            }
+            else if (currentTerritories == 2) requiredMilitaryPoints = 3;
+
+            if (!player.getResources().hasAtLeast(requiredMilitaryPoints, ObtainableResource.MILITARY_POINTS)) {
+                throw new ActionNotAllowedException("You don't have the military points to take another territory");
+            }
         }
-
-        // STEP 3: check the requirements chosen to pay for the card
-        if (!floor.getCard().getRequiredResourceSet().contains(paymentForCard)) {
-            throw new ActionNotAllowedException("You cannot pay that resources to take that card");
-        }
-
-        if (!playerClonedResourceSet.has(paymentForCard)) {
-            throw new ActionNotAllowedException("You don't have the resources necessary to take that card");
-        }
-
-        // TODO: check military requirements
-
-        assertPlayerCanTakeAnotherCard(player, floor.getCard().getClass());
     }
 
     /**
@@ -739,7 +864,7 @@ public class GameController {
      * @param familyMember
      * @param minimumValue
      */
-    private void assertActionValueIsAtLeast(Player player, ActionType actionType, FamilyMemberColor familyMember, int minimumValue) throws ActionNotAllowedException {
+    private void assertEffectiveActionValueIsAtLeast(Player player, ActionType actionType, FamilyMemberColor familyMember, int minimumValue) throws ActionNotAllowedException {
         int value = game.getInitialValueForFamilyMember(familyMember);
 
         for (FamilyMemberValueSetterEffectInterface e : player.getEffectsImplementing(FamilyMemberValueSetterEffectInterface.class)) {
@@ -937,6 +1062,18 @@ public class GameController {
                    .orElseThrow(() -> new ActionNotAllowedException("Unrecognized action space ID"));
     }
 
+    public DevelopmentCard getLocalCardFromTowers(UUID cardId) throws ActionNotAllowedException {
+        List<DevelopmentCard> cards = game.getBoard().getTerritoryTower().getCards();
+        cards.addAll(game.getBoard().getBuildingTower().getCards());
+        cards.addAll(game.getBoard().getCharacterTower().getCards());
+        cards.addAll(game.getBoard().getVentureTower().getCards());
+
+        return cards.stream()
+                    .filter(card -> card.getId().equals(cardId))
+                    .findFirst()
+                    .orElseThrow(() -> new ActionNotAllowedException("Card ID not recognized"));
+    }
+
     /*
      * Trivial getters and setters
      */
@@ -947,5 +1084,9 @@ public class GameController {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public DevelopmentCard getDevelopmentCardBeingTaken() {
+        return developmentCardBeingTaken;
     }
 }

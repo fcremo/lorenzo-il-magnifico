@@ -5,7 +5,6 @@ import client.ServerToClientInterface;
 import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.Game;
-import model.board.actionspace.ActionSpace;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
@@ -101,6 +100,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
+    public void takeDevelopmentCard(UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws NetworkException, ActionNotAllowedException, RemoteException {
+        connection.takeDevelopmentCard(cardId, councilPrivileges);
+    }
+
+    @Override
     public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
         connection.discardLeaderCard(leaderCardId, councilPrivilege);
     }
@@ -136,6 +140,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException {
         clientController.showChooseLeaderCard(leaderCards);
+    }
+
+    @Override
+    public void askWhichImmediateResourcesToTake(UUID cardId) throws RemoteException {
+        clientController.showChooseImmediateCouncilPrivileges(cardId);
     }
 
     @Override
@@ -181,5 +190,10 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
         clientController.onPlayerOccupiesFloor(username, floorId, familyMemberColor, chosenPrivileges, paymentForCard);
+    }
+
+    @Override
+    public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        clientController.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
     }
 }

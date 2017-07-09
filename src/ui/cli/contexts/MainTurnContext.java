@@ -55,13 +55,12 @@ public class MainTurnContext extends Context {
     private void showBoard(String[] params) throws InvalidCommandException {
         if (params.length != 0) throw new InvalidCommandException("This command takes no arguments");
 
-        TableLayout layout = new TableLayout();
-
         // Add 4 rows for the floors
-        layout.addRow(new ContainerRow());
-        layout.addRow(new ContainerRow());
-        layout.addRow(new ContainerRow());
-        layout.addRow(new ContainerRow());
+        List<ContainerRow> rows = new ArrayList<>();
+        rows.add(new ContainerRow());
+        rows.add(new ContainerRow());
+        rows.add(new ContainerRow());
+        rows.add(new ContainerRow());
 
         for (int i = 0; i < 4; i++) {
             String description = game.getBoard().getTerritoryTower().getFloors().get(i).toString();
@@ -76,7 +75,8 @@ public class MainTurnContext extends Context {
             else {
                 column = new TextBox(description);
             }
-            ((ContainerRow) layout.getRows().get(i)).addColumn(column);
+
+            rows.get(i).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
             String description = game.getBoard().getBuildingTower().getFloors().get(i).toString();
@@ -91,7 +91,7 @@ public class MainTurnContext extends Context {
             else {
                 column = new TextBox(description);
             }
-            ((ContainerRow) layout.getRows().get(i)).addColumn(column);
+            rows.get(i).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
             String description = game.getBoard().getCharacterTower().getFloors().get(i).toString();
@@ -106,7 +106,7 @@ public class MainTurnContext extends Context {
             else {
                 column = new TextBox(description);
             }
-            ((ContainerRow) layout.getRows().get(i)).addColumn(column);
+            rows.get(i).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
             String description = game.getBoard().getVentureTower().getFloors().get(i).toString();
@@ -121,84 +121,25 @@ public class MainTurnContext extends Context {
             else {
                 column = new TextBox(description);
             }
-            ((ContainerRow) layout.getRows().get(i)).addColumn(column);
+            rows.get(i).addColumn(column);
         }
 
         ContainerRow lastRow = new ContainerRow();
-        layout.addRow(lastRow);
+        rows.add(lastRow);
 
         // Production Area
-        ContainerColumn productionAreaColumn = new ContainerColumn();
-        productionAreaColumn.setTitle("PRODUCTION");
-        lastRow.addColumn(productionAreaColumn);
-
-        String mainProductionArea = "Main production area:\n"
-                + game.getBoard().getSmallProductionArea().getOccupantsString();
-        productionAreaColumn.addRow(new TextBox(mainProductionArea));
-
-        if (game.getPlayers().size() > 2) {
-            String secondaryProductionArea = "Secondary production area:\n"
-                    + game.getBoard().getBigProductionArea().getOccupantsString();
-            productionAreaColumn.addRow(new TextBox(secondaryProductionArea));
-        }
+        lastRow.addColumn(getProductionAreaColumn());
 
         // Harvest Area
-        ContainerColumn harvestAreaColumn = new ContainerColumn();
-        harvestAreaColumn.setTitle("HARVEST");
-        lastRow.addColumn(harvestAreaColumn);
-
-        String mainHarvestArea = "Main harvest area:\n"
-                + game.getBoard().getSmallHarvestArea().getOccupantsString();
-        harvestAreaColumn.addRow(new TextBox(mainHarvestArea));
-
-        if (game.getPlayers().size() > 2) {
-            String secondaryHarvestArea = "Secondary harvest area:\n"
-                    + game.getBoard().getBigHarvestArea().getOccupantsString();
-            productionAreaColumn.addRow(new TextBox(secondaryHarvestArea));
-        }
+        lastRow.addColumn(getHarvestAreaColumn());
 
         // Market
-        ContainerColumn marketColumn = new ContainerColumn();
-        marketColumn.setTitle("MARKET");
-        lastRow.addColumn(marketColumn);
+        lastRow.addColumn(getMarketColumn());
 
-        String market1 = String.format("M1 : ")
-                + game.getBoard().getMarket1().toString();
-        marketColumn.addRow(new TextBox(market1));
+        // Council Palace and dice
+        lastRow.addColumn(getCouncilPalaceAndDiceColumn());
 
-        String market2 = String.format("M2 : ")
-                + game.getBoard().getMarket2().toString();
-        marketColumn.addRow(new TextBox(market2));
-
-        if (game.getPlayers().size() > 2) {
-            String market3 = String.format("M3 : ")
-                    + game.getBoard().getMarket3().toString();
-            marketColumn.addRow(new TextBox(market3));
-
-            if (game.getPlayers().size() > 3) {
-                String market4 = String.format("M4 : ")
-                        + game.getBoard().getMarket4().toString();
-                marketColumn.addRow(new TextBox(market4));
-            }
-        }
-
-        // Council Palace
-        ContainerColumn councilPalaceColumn = new ContainerColumn();
-        councilPalaceColumn.setTitle("COUNCIL PALACE");
-        lastRow.addColumn(councilPalaceColumn);
-
-        String councilPalaceArea = "Council palace:\n";
-        councilPalaceArea += "Gives: " + game.getBoard().getCouncilPalace().getBonus() + "\n"
-                + game.getBoard().getCouncilPalace().getOccupantsString();
-        councilPalaceColumn.addRow(new TextBox(councilPalaceArea));
-
-        // Dice values
-        StringBuilder dice = new StringBuilder();
-        dice.append("Black Die: ").append(game.getBlackDie()).append("\n")
-            .append("White Die: ").append(game.getWhiteDie()).append("\n")
-            .append("Orange Die: ").append(game.getOrangeDie());
-        councilPalaceColumn.addRow(new TextBox(dice.toString()));
-
+        TableLayout layout = new TableLayout(rows);
         uiContextInterface.printLayout(layout);
     }
 
@@ -408,13 +349,18 @@ public class MainTurnContext extends Context {
         DevelopmentCard card = floor.getCard();
 
         List<RequiredResourceSet> choices = gameController.getAllowedPaymentsForCard(card);
-
-        SingleChoiceContext<RequiredResourceSet> choiceContext;
-        choiceContext = new SingleChoiceContext<>(uiContextInterface, choices,
-                choice -> this.chosenPaymentForCard(choice));
-
-        choiceContext.setPreviousContext(this);
-        uiContextInterface.changeContext(choiceContext);
+        if(choices.isEmpty()) {
+            chosenPaymentForCard(new RequiredResourceSet());
+        }
+        else if (choices.size() == 1) {
+            chosenPaymentForCard(choices.get(0));
+        }
+        else {
+            SingleChoiceContext<RequiredResourceSet> choiceContext;
+            choiceContext = new SingleChoiceContext<>(uiContextInterface, choices, this::chosenPaymentForCard);
+            choiceContext.setPreviousContext(this);
+            uiContextInterface.changeContext(choiceContext);
+        }
     }
 
     /**
@@ -545,10 +491,10 @@ public class MainTurnContext extends Context {
     }
 
     public interface Callback {
+
         void spendServants(int servants) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void goToFloor(Floor floor, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
-
         void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet privilege) throws NetworkException, RemoteException, ActionNotAllowedException;
@@ -558,5 +504,83 @@ public class MainTurnContext extends Context {
         void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException;
 
         void activateOncePerRoundEffect(Card Card, OncePerRoundEffectInterface effect) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+    }
+
+    /*
+     * Methods that render columns/rows/etc
+     */
+    private ColumnInterface getMarketColumn() {
+        ContainerColumn marketColumn = new ContainerColumn();
+        marketColumn.setTitle("MARKET");
+
+        String market1 = String.format("M1: %s", game.getBoard().getMarket1());
+        marketColumn.addRow(new TextBox(market1));
+
+        String market2 = String.format("M2: %s", game.getBoard().getMarket2());
+        marketColumn.addRow(new TextBox(market2));
+
+        if (game.getPlayers().size() > 2) {
+            String market3 = String.format("M3: %s", game.getBoard().getMarket3());
+            marketColumn.addRow(new TextBox(market3));
+        }
+        if (game.getPlayers().size() > 3) {
+            String market4 = String.format("M4: %s", game.getBoard().getMarket4());
+            marketColumn.addRow(new TextBox(market4));
+        }
+        return marketColumn;
+    }
+
+    private ColumnInterface getProductionAreaColumn() {
+        ContainerColumn productionAreaColumn = new ContainerColumn();
+        productionAreaColumn.setTitle("PRODUCTION");
+
+        String mainProductionArea = "Main production area:\n"
+                + game.getBoard().getSmallProductionArea().getOccupantsString();
+        productionAreaColumn.addRow(new TextBox(mainProductionArea));
+
+        if (game.getPlayers().size() > 2) {
+            String secondaryProductionArea = "Secondary production area:\n"
+                    + game.getBoard().getBigProductionArea().getOccupantsString();
+            productionAreaColumn.addRow(new TextBox(secondaryProductionArea));
+        }
+
+        return productionAreaColumn;
+    }
+
+    private ColumnInterface getHarvestAreaColumn() {
+        ContainerColumn harvestAreaColumn = new ContainerColumn();
+        harvestAreaColumn.setTitle("HARVEST");
+
+        String mainHarvestArea = "Main harvest area:\n"
+                + game.getBoard().getSmallHarvestArea().getOccupantsString();
+        harvestAreaColumn.addRow(new TextBox(mainHarvestArea));
+
+        if (game.getPlayers().size() > 2) {
+            String secondaryHarvestArea = "Secondary harvest area:\n"
+                    + game.getBoard().getBigHarvestArea().getOccupantsString();
+            harvestAreaColumn.addRow(new TextBox(secondaryHarvestArea));
+        }
+
+        return harvestAreaColumn;
+    }
+
+    private ColumnInterface getCouncilPalaceAndDiceColumn() {
+        // Council palace
+        ContainerColumn councilPalaceColumn = new ContainerColumn();
+        councilPalaceColumn.setTitle("COUNCIL PALACE");
+
+        String councilPalaceArea = "Gives: " + game.getBoard().getCouncilPalace().getBonus() + "\n"
+                + game.getBoard().getCouncilPalace().getOccupantsString();
+        councilPalaceColumn.addRow(new TextBox(councilPalaceArea));
+
+        // Dice values
+        StringBuilder dice = new StringBuilder();
+        dice.append("Black Die: ").append(game.getBlackDie()).append("\n")
+            .append("White Die: ").append(game.getWhiteDie()).append("\n")
+            .append("Orange Die: ").append(game.getOrangeDie());
+        councilPalaceColumn.addRow(new TextBox(dice.toString()));
+
+        return councilPalaceColumn;
     }
 }

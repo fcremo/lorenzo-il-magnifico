@@ -4,17 +4,12 @@ import model.Excommunication;
 import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
+import model.card.development.*;
 import model.resource.ObtainableResourceSet;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * This class represents the state of the board.
@@ -161,16 +156,19 @@ public class Board implements Serializable {
         this.faithTrackBonus = faithTrackBonus;
     }
 
-    public Floor getFloorById(UUID id) {
-        List<Floor> floors = new ArrayList<>();
-        floors.addAll(territoryTower.getFloors());
-        floors.addAll(characterTower.getFloors());
-        floors.addAll(buildingTower.getFloors());
-        floors.addAll(ventureTower.getFloors());
+    public void removeDevelopmentCardFromFloor(DevelopmentCard card) {
+        Tower tower;
 
-        Optional<Floor> desiredFloor = floors.stream().filter(floor -> floor.equals(id)).findAny();
+        if(card instanceof TerritoryCard) tower = territoryTower;
+        else if(card instanceof CharacterCard) tower = characterTower;
+        else if(card instanceof BuildingCard) tower = buildingTower;
+        else tower = ventureTower;
 
-        // TODO: throw an exception if the player gives an invalid id
-        return desiredFloor.orElse(null);
+        List<Floor> floors = tower.getFloors();
+        Optional<Floor> floor = floors.stream()
+                                      .filter(f -> f.getCard().equals(card))
+                                      .findFirst();
+
+        floor.ifPresent(f -> f.setCard(null));
     }
 }

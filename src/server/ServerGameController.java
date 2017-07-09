@@ -579,6 +579,30 @@ public class ServerGameController {
                 handleRemoteException(e);
             }
         });
+
+
+        // Ask the player to choose immediate resources, if any
+        UUID cardId = gameController.getLocalFloor(floorId).getCard().getId();
+        try {
+            getConnectionForPlayer(username).askWhichImmediateResourcesToTake(cardId);
+        }
+        catch (RemoteException e) {
+            handleRemoteException(e);
+        }
+    }
+
+    public void takeDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
+        gameController.takeDevelopmentCard(username, cardId, councilPrivileges);
+
+        // Inform all players
+        connections.forEach(connection -> {
+            try {
+                connection.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
+            }
+            catch (RemoteException e) {
+                handleRemoteException(e);
+            }
+        });
     }
 
     /**
@@ -686,6 +710,18 @@ public class ServerGameController {
     private ClientConnection getConnectionForPlayer(Player player) {
         Optional<ClientConnection> connection = connections.stream()
                                                            .filter(c -> c.getUsername().equals(player.getUsername()))
+                                                           .findFirst();
+        if (connection.isPresent()) {
+            return connection.get();
+        }
+        else {
+            throw new NoSuchElementException();
+        }
+    }
+
+    private ClientConnection getConnectionForPlayer(String username) {
+        Optional<ClientConnection> connection = connections.stream()
+                                                           .filter(c -> c.getUsername().equals(username))
                                                            .findFirst();
         if (connection.isPresent()) {
             return connection.get();

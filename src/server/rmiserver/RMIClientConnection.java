@@ -2,7 +2,6 @@ package server.rmiserver;
 
 import client.ServerToClientInterface;
 import model.Game;
-import model.board.actionspace.ActionSpace;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
@@ -67,6 +66,11 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
+    public void askWhichImmediateResourcesToTake(UUID cardId) throws RemoteException {
+        client.askWhichImmediateResourcesToTake(cardId);
+    }
+
+    @Override
     public void showWaitingMessage(String message) throws RemoteException {
         client.showWaitingMessage(message);
     }
@@ -112,5 +116,10 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     @Override
     public void onPlayerSpendsServants(String username, int servants) throws RemoteException {
         client.onPlayerSpendsServants(username, servants);
+    }
+
+    @Override
+    public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        client.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
     }
 }

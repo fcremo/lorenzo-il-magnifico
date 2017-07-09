@@ -6,7 +6,6 @@ import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.completer.CandidateListCompletionHandler;
 import jline.console.completer.Completer;
-import model.board.actionspace.ActionSpace;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
@@ -18,6 +17,7 @@ import ui.cli.layout.LayoutInterface;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -155,6 +155,11 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     }
 
     @Override
+    public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        // TODO
+    }
+
+    @Override
     public void onCardsDrawn(List<UUID> territoryCards, List<UUID> characterCards, List<UUID> buildingCards, List<UUID> ventureCards) throws RemoteException {
         // We're not interested in this event for now
     }
@@ -193,6 +198,28 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     @Override
     public void showMainTurnContext() {
         currentContext = new MainTurnContext(this, controller.getGameController(), controller);
+    }
+
+    @Override
+    public void showChooseCouncilPrivileges(List<ObtainableResourceSet> allowedCouncilPrivileges, int councilPrivilegesAmount) {
+        if(councilPrivilegesAmount == 1) {
+            currentContext = new SingleChoiceContext<>(this,
+                    allowedCouncilPrivileges,
+                    choice -> {
+                        ArrayList<ObtainableResourceSet> choices = new ArrayList<>();
+                        choices.add(choice);
+                        controller.chooseDevelopmentCardCouncilPrivileges(choices);
+                    }
+                );
+        }
+        else {
+            currentContext = new MultipleChoiceContext<>(this,
+                    allowedCouncilPrivileges,
+                    councilPrivilegesAmount,
+                    councilPrivilegesAmount,
+                    choices -> controller.chooseDevelopmentCardCouncilPrivileges(choices),
+                    true);
+        }
     }
 
     @Override

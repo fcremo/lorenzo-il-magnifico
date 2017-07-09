@@ -22,7 +22,7 @@ public class LeaderCard extends Card implements Serializable {
         string.append("\n");
 
         if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
-            string.append("requirements: ");
+            string.append("Requirements: ");
             for (RequiredResourceSet requirement : getRequiredResourceSet()) {
                 string.append(requirement)
                       .append("\n")
@@ -34,7 +34,7 @@ public class LeaderCard extends Card implements Serializable {
         }
 
         if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
-            string.append("effects: ")
+            string.append("Effects: ")
                   .append(getEffectsContainer().toString());
         }
 

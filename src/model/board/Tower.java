@@ -7,6 +7,7 @@ import model.player.Player;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the state of one tower
@@ -55,5 +56,11 @@ public class Tower<T extends DevelopmentCard> implements Serializable {
 
     public List<Floor<T>> getFloors() {
         return floors;
+    }
+
+    public List<DevelopmentCard> getCards() {
+        return floors.stream()
+                     .map(Floor::getCard)
+                     .collect(Collectors.toList());
     }
 }

@@ -41,6 +41,8 @@ public class Card implements Serializable {
      */
     protected Card() {
         this.id = UUID.randomUUID();
+        this.requiredResourceSet = new ArrayList<>();
+        this.effectsContainer = new EffectsContainer();
     }
 
     public Card(String name, List<RequiredResourceSet> requiredResourceSet) {
@@ -122,5 +124,17 @@ public class Card implements Serializable {
         }
 
         return string.toString();
+    }
+
+
+    /**
+     * @param resources
+     * @return true if "resources" is one of the required resource sets of the card,
+     *          or if "resources" is empty and the card has no cost
+     */
+    public boolean isPayableWith(RequiredResourceSet resources) {
+        if(requiredResourceSet.size() == 0 && resources.isEmpty()) return true;
+
+        else return requiredResourceSet.contains(resources);
     }
 }

@@ -8,6 +8,7 @@ import model.player.PersonalBonusTile;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This interface specifies the server to client methods
@@ -43,6 +44,15 @@ public interface ServerToClientInterface extends GameEventsInterface, Remote {
      * @throws RemoteException
      */
     void askToChooseLeaderCard(List<LeaderCard> leaderCards) throws RemoteException;
+
+    /**
+     * Called when the player has to choose which immediate resources to take from a card
+     * he's taking
+     *
+     * @param cardId the card id
+     * @throws RemoteException
+     */
+    void askWhichImmediateResourcesToTake(UUID cardId) throws RemoteException;
 
     /**
      * Called when the player has to wait

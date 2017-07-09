@@ -1,7 +1,10 @@
 package model.board.actionspace;
 
 import model.board.Tower;
-import model.card.development.*;
+import model.card.development.BuildingCard;
+import model.card.development.CharacterCard;
+import model.card.development.DevelopmentCard;
+import model.card.development.TerritoryCard;
 import model.resource.ObtainableResource;
 import model.resource.ObtainableResourceSet;
 import model.resource.RequiredResourceSet;
@@ -29,7 +32,7 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace implements Sin
      */
     public RequiredResourceSet getDoubleOccupationCost() {
         RequiredResourceSet requiredResourceSet = new RequiredResourceSet();
-        if(tower.isOccupied()) requiredResourceSet.setRequiredAmount(ObtainableResource.GOLD, 3);
+        if (tower.isOccupied()) requiredResourceSet.setRequiredAmount(ObtainableResource.GOLD, 3);
         return requiredResourceSet;
     }
 
@@ -54,33 +57,54 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace implements Sin
 
     @Override
     public String toString() {
-        String string;
+        StringBuilder sb = new StringBuilder();
 
         if (isOccupied()) {
-            string = "Occupied by " + getOccupantsString();
+            sb.append("Occupied by ")
+              .append(getOccupantsString())
+              .append("\n");
         }
         else {
             if (card == null) {
-                string = "No card available";
+                sb.append("Card was taken\n");
             }
-            else  {
-                string = getCard().toString();
+            else {
+                sb.append(getCard())
+                  .append("\n");
+
+                if(!getBonus().isEmpty()) {
+                    sb.append("Floor bonus: ")
+                      .append(getBonus())
+                      .append("\n");
+                }
+
+                sb.append("Required value: ")
+                  .append(getRequiredFamilyMemberValue());
             }
         }
 
-        return string;
+        return sb.toString();
     }
 
     @Override
     public String getShortDescriptionForChoosing() {
         String str;
-        if(card instanceof TerritoryCard) str = "Territory ";
-        else if (card instanceof BuildingCard) str = "Building ";
-        else if (card instanceof CharacterCard) str = "Character ";
-        else str = "Venture ";
+        if (card instanceof TerritoryCard) {
+            str = "Territory ";
+        }
+        else if (card instanceof BuildingCard) {
+            str = "Building ";
+        }
+        else if (card instanceof CharacterCard) {
+            str = "Character ";
+        }
+        else {
+            str = "Venture ";
+        }
 
         str += card.getName();
 
         return str;
     }
+
 }

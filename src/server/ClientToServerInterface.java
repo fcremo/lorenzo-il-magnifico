@@ -4,6 +4,7 @@ import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
+import model.card.development.DevelopmentCard;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.resource.ObtainableResourceSet;
@@ -99,6 +100,8 @@ public interface ClientToServerInterface extends Remote {
      * @throws ActionNotAllowedException
      */
     void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+
+    void takeDevelopmentCard(UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException;
 

@@ -336,6 +336,5 @@ public class Game implements Serializable {
         actionSpaces.add(board.getCouncilPalace());
 
         return actionSpaces;
-
     }
 }
