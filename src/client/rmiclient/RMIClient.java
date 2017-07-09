@@ -6,10 +6,6 @@ import client.exceptions.NetworkException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import model.Game;
 import model.board.actionspace.ActionSpace;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
@@ -105,13 +101,13 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
-        connection.discardLeaderCard(leaderCard, councilPrivilege);
+    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.discardLeaderCard(leaderCardId, councilPrivilege);
     }
 
     @Override
-    public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-        connection.playLeaderCard(leaderCard);
+    public void playLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException {
+        connection.playLeaderCard(leaderCardId);
     }
 
     @Override
@@ -163,7 +159,7 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     }
 
     @Override
-    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
+    public void onCardsDrawn(List<UUID> territoryCards, List<UUID> characterCards, List<UUID> buildingCards, List<UUID> ventureCards) throws RemoteException {
         clientController.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
     }
 

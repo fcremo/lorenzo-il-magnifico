@@ -100,9 +100,9 @@ public interface ClientToServerInterface extends Remote {
      */
     void goToFloor(UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges, RequiredResourceSet paymentForCard) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException;
 
-    void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException;
+    void playLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException;
 
     void endTurn() throws NetworkException, RemoteException, ActionNotAllowedException ;
 

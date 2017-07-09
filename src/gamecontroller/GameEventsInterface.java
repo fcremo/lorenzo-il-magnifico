@@ -36,7 +36,7 @@ public interface GameEventsInterface {
      * @param ventureCards
      * @throws RemoteException
      */
-    void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException;
+    void onCardsDrawn(List<UUID> territoryCards, List<UUID> characterCards, List<UUID> buildingCards, List<UUID> ventureCards) throws RemoteException;
 
     /**
      * Called when the dice are thrown

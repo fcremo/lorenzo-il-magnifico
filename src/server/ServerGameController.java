@@ -361,23 +361,26 @@ public class ServerGameController {
                                                                      .stream()
                                                                      .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
-        List<TerritoryCard> territoryCards = StreamUtils.takeRandomElements(currentPeriodTerritoryCards, 4)
-                                                        .collect(Collectors.toList());
+        List<UUID> territoryCardsIds = StreamUtils.takeRandomElements(currentPeriodTerritoryCards, 4)
+                                                  .map(card -> card.getId())
+                                                  .collect(Collectors.toList());
 
 
         Stream<CharacterCard> currentPeriodCharacterCards = getGame().getAvailableCharacterCards()
                                                                      .stream()
                                                                      .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
-        List<CharacterCard> characterCards = StreamUtils.takeRandomElements(currentPeriodCharacterCards, 4)
-                                                        .collect(Collectors.toList());
+        List<UUID> characterCardsIds = StreamUtils.takeRandomElements(currentPeriodCharacterCards, 4)
+                                                  .map(card -> card.getId())
+                                                  .collect(Collectors.toList());
 
 
         Stream<BuildingCard> currentPeriodBuildingCards = getGame().getAvailableBuildingCards()
                                                                    .stream()
                                                                    .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
-        List<BuildingCard> buildingCards = StreamUtils.takeRandomElements(currentPeriodBuildingCards, 4)
+        List<UUID> buildingCardsIds = StreamUtils.takeRandomElements(currentPeriodBuildingCards, 4)
+                                                      .map(card -> card.getId())
                                                       .collect(Collectors.toList());
 
 
@@ -385,14 +388,21 @@ public class ServerGameController {
                                                                  .stream()
                                                                  .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
-        List<VentureCard> ventureCards = StreamUtils.takeRandomElements(currentPeriodVentureCards, 4)
+        List<UUID> ventureCardsIds = StreamUtils.takeRandomElements(currentPeriodVentureCards, 4)
+                                                    .map(card -> card.getId())
                                                     .collect(Collectors.toList());
 
-        gameController.setDevelopmentCards(territoryCards, characterCards, buildingCards, ventureCards);
+        try {
+            gameController.setDevelopmentCards(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
+        }
+        catch (ActionNotAllowedException e) {
+            // This should never happen
+            e.printStackTrace();
+        }
 
         for (ClientConnection c : connections) {
             try {
-                c.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+                c.onCardsDrawn(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
             }
             catch (RemoteException e) {
                 handleRemoteException(e);

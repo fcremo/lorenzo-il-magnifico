@@ -21,14 +21,10 @@ import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
 import model.util.Tuple;
-import server.exceptions.LeaderCardNotAvailableException;
-import server.exceptions.PersonalBonusTileNotAvailableException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,6 +55,7 @@ public class GameController {
 
     /**
      * Called when a player chooses a personal bonus tile
+     *
      * @param username
      * @param personalBonusTileId
      * @throws ActionNotAllowedException
@@ -132,8 +129,13 @@ public class GameController {
         }
     }
 
-    public void setDevelopmentCards(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) {
+    public void setDevelopmentCards(List<UUID> territoryCardsIds, List<UUID> characterCardsIds, List<UUID> buildingCardsIds, List<UUID> ventureCardsIds) throws ActionNotAllowedException {
         Board board = getGame().getBoard();
+
+        List<TerritoryCard> territoryCards = getLocalAvailableTerritoryCards(territoryCardsIds);
+        List<CharacterCard> characterCards = getLocalAvailableCharacterCards(characterCardsIds);
+        List<BuildingCard> buildingCards = getLocalAvailableBuildingCards(buildingCardsIds);
+        List<VentureCard> ventureCards = getLocalAvailableVentureCards(ventureCardsIds);
 
         board.getTerritoryTower().setCards(territoryCards);
         board.getCharacterTower().setCards(characterCards);
@@ -173,13 +175,27 @@ public class GameController {
         assertPlayerHasNotPlacedFamilyMember();
         assertFamilyMemberAvailable(player, familyMemberColor);
 
-        if(actionSpace instanceof MarketActionSpace) goToMarket(player, familyMemberColor, (MarketActionSpace)actionSpace, chosenPrivileges);
-        else if(actionSpace instanceof CouncilPalace) goToCouncilPalace(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof SmallProductionArea) goToSmallProducion(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof BigProductionArea) goToBigProducion(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof SmallHarvestArea) goToSmallHarvest(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof BigHarvestArea) goToBigHarvest(player, familyMemberColor, chosenPrivileges);
-        else throw new ActionNotAllowedException("Unrecognized action space");
+        if (actionSpace instanceof MarketActionSpace) {
+            goToMarket(player, familyMemberColor, (MarketActionSpace) actionSpace, chosenPrivileges);
+        }
+        else if (actionSpace instanceof CouncilPalace) {
+            goToCouncilPalace(player, familyMemberColor, chosenPrivileges);
+        }
+        else if (actionSpace instanceof SmallProductionArea) {
+            goToSmallProducion(player, familyMemberColor, chosenPrivileges);
+        }
+        else if (actionSpace instanceof BigProductionArea) {
+            goToBigProducion(player, familyMemberColor, chosenPrivileges);
+        }
+        else if (actionSpace instanceof SmallHarvestArea) {
+            goToSmallHarvest(player, familyMemberColor, chosenPrivileges);
+        }
+        else if (actionSpace instanceof BigHarvestArea) {
+            goToBigHarvest(player, familyMemberColor, chosenPrivileges);
+        }
+        else {
+            throw new ActionNotAllowedException("Unrecognized action space");
+        }
     }
 
     /**
@@ -875,6 +891,42 @@ public class GameController {
                    .filter(floor -> floor.getId().equals(floorId))
                    .findFirst()
                    .orElseThrow(() -> new ActionNotAllowedException("Unrecognized floor ID"));
+    }
+
+    public List<TerritoryCard> getLocalAvailableTerritoryCards(List<UUID> Ids) throws ActionNotAllowedException {
+        List cards = game.getAvailableTerritoryCards().stream()
+                         .filter(card -> Ids.contains(card.getId()))
+                         .collect(Collectors.toList());
+
+        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        return cards;
+    }
+
+    public List<BuildingCard> getLocalAvailableBuildingCards(List<UUID> Ids) throws ActionNotAllowedException {
+        List cards = game.getAvailableBuildingCards().stream()
+                         .filter(card -> Ids.contains(card.getId()))
+                         .collect(Collectors.toList());
+
+        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        return cards;
+    }
+
+    public List<CharacterCard> getLocalAvailableCharacterCards(List<UUID> Ids) throws ActionNotAllowedException {
+        List cards = game.getAvailableCharacterCards().stream()
+                         .filter(card -> Ids.contains(card.getId()))
+                         .collect(Collectors.toList());
+
+        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        return cards;
+    }
+
+    public List<VentureCard> getLocalAvailableVentureCards(List<UUID> Ids) throws ActionNotAllowedException {
+        List cards = game.getAvailableVentureCards().stream()
+                         .filter(card -> Ids.contains(card.getId()))
+                         .collect(Collectors.toList());
+
+        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        return cards;
     }
 
     /*

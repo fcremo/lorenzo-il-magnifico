@@ -160,12 +160,12 @@ public class ClientController implements GameEventsInterface,
 
     @Override
     public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilege) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.discardLeaderCard(leaderCard, councilPrivilege);
+        clientConnection.discardLeaderCard(leaderCard.getId(), councilPrivilege);
     }
 
     @Override
     public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-        clientConnection.playLeaderCard(leaderCard);
+        clientConnection.playLeaderCard(leaderCard.getId());
     }
 
     @Override
@@ -226,9 +226,14 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
-        gameController.setDevelopmentCards(territoryCards, characterCards, buildingCards, ventureCards);
-        ui.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
+    public void onCardsDrawn(List<UUID> territoryCardsIds, List<UUID> characterCardsIds, List<UUID> buildingCardsIds, List<UUID> ventureCardsIds) throws RemoteException {
+        try {
+            gameController.setDevelopmentCards(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
+        }
+        catch (ActionNotAllowedException e) {
+            e.printStackTrace();
+        }
+        ui.onCardsDrawn(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
     }
 
     @Override

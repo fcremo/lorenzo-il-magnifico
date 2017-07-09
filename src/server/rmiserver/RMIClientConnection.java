@@ -3,10 +3,6 @@ package server.rmiserver;
 import client.ServerToClientInterface;
 import model.Game;
 import model.board.actionspace.ActionSpace;
-import model.card.development.BuildingCard;
-import model.card.development.CharacterCard;
-import model.card.development.TerritoryCard;
-import model.card.development.VentureCard;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.PersonalBonusTile;
@@ -94,7 +90,7 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void onCardsDrawn(List<TerritoryCard> territoryCards, List<CharacterCard> characterCards, List<BuildingCard> buildingCards, List<VentureCard> ventureCards) throws RemoteException {
+    public void onCardsDrawn(List<UUID> territoryCards, List<UUID> characterCards, List<UUID> buildingCards, List<UUID> ventureCards) throws RemoteException {
         client.onCardsDrawn(territoryCards, characterCards, buildingCards, ventureCards);
     }
 

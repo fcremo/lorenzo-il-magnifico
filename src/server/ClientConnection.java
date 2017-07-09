@@ -158,13 +158,13 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     }
 
     @Override
-    public void discardLeaderCard(LeaderCard leaderCard, ObtainableResourceSet councilPrivilegeA) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+    public void discardLeaderCard(UUID leaderCardId, ObtainableResourceSet councilPrivilegeA) throws NetworkException, RemoteException, ActionNotAllowedException {
+        // TODO
     }
 
     @Override
-    public void playLeaderCard(LeaderCard leaderCard) throws NetworkException, RemoteException, ActionNotAllowedException {
-
+    public void playLeaderCard(UUID leaderCardId) throws NetworkException, RemoteException, ActionNotAllowedException {
+        // TODO
     }
 
     @Override
