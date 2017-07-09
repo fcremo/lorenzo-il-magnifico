@@ -79,6 +79,9 @@ public abstract class ActionSpace implements Serializable, SingleChoiceContext.C
             occupants.append("Occupied by ");
             for (int i = 0; i < getOccupants().size(); i++) {
                 occupants.append(getOccupants().get(i).first.getUsername())
+                         .append("(")
+                         .append(getOccupants().get(i).second)
+                         .append(")")
                          .append(", ");
             }
             if (occupants.lastIndexOf(", ") != -1) {

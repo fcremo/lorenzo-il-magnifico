@@ -60,8 +60,7 @@ public class Floor<T extends DevelopmentCard> extends ActionSpace implements Sin
         StringBuilder sb = new StringBuilder();
 
         if (isOccupied()) {
-            sb.append("Occupied by ")
-              .append(getOccupantsString())
+            sb.append(getOccupantsString())
               .append("\n");
         }
         else {
