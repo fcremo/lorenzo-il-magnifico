@@ -140,7 +140,7 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
     /**
      * Called when the player wants to go to an action space
      *
-     * @param actionSpace
+     * @param actionSpaceId
      * @param familyMemberColor
      * @param chosenPrivileges
      * @throws NetworkException
@@ -148,8 +148,8 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
      * @throws ActionNotAllowedException
      */
     @Override
-    public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
-        serverGameController.goToActionSpace(username, actionSpace, familyMemberColor, chosenPrivileges);
+    public void goToActionSpace(UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
+        serverGameController.goToActionSpace(username, actionSpaceId, familyMemberColor, chosenPrivileges);
     }
 
     @Override

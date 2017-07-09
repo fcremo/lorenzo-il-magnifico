@@ -21,14 +21,10 @@ import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
 import model.util.Tuple;
-import server.exceptions.LeaderCardNotAvailableException;
-import server.exceptions.PersonalBonusTileNotAvailableException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -161,13 +157,14 @@ public class GameController {
      * Called when a player goes to an action space
      *
      * @param username
-     * @param actionSpace
+     * @param actionSpaceId
      * @param familyMemberColor
      * @param chosenPrivileges
      * @throws ActionNotAllowedException
      */
-    public void goToActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
+    public void goToActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
         Player player = getLocalPlayer(username);
+        ActionSpace actionSpace = getLocalActionSpace(actionSpaceId);
         assertPlayerTurn(player);
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
@@ -175,8 +172,8 @@ public class GameController {
 
         if(actionSpace instanceof MarketActionSpace) goToMarket(player, familyMemberColor, (MarketActionSpace)actionSpace, chosenPrivileges);
         else if(actionSpace instanceof CouncilPalace) goToCouncilPalace(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof SmallProductionArea) goToSmallProducion(player, familyMemberColor, chosenPrivileges);
-        else if(actionSpace instanceof BigProductionArea) goToBigProducion(player, familyMemberColor, chosenPrivileges);
+        else if(actionSpace instanceof SmallProductionArea) goToSmallProduction(player, familyMemberColor, chosenPrivileges);
+        else if(actionSpace instanceof BigProductionArea) goToBigProduction(player, familyMemberColor, chosenPrivileges);
         else if(actionSpace instanceof SmallHarvestArea) goToSmallHarvest(player, familyMemberColor, chosenPrivileges);
         else if(actionSpace instanceof BigHarvestArea) goToBigHarvest(player, familyMemberColor, chosenPrivileges);
         else throw new ActionNotAllowedException("Unrecognized action space");
@@ -185,9 +182,9 @@ public class GameController {
     /**
      * Called when a player goes to a floor
      *
-     * @param player
+     * @param username
      * @param familyMemberColor
-     * @param floor
+     * @param floorId
      * @param paymentForCard
      * @throws ActionNotAllowedException
      */
@@ -251,7 +248,7 @@ public class GameController {
     /**
      * Performs the action and returns the set of resources obtained
      *
-     * @param player            the player performing the action
+     * @param username            the player performing the action
      * @param familyMemberValue the family member value used for performing the action
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
@@ -379,9 +376,9 @@ public class GameController {
         setGameState(GameState.HARVEST);
     }
 
-    private void goToSmallProducion(Player player,
-                                    FamilyMemberColor familyMemberColor,
-                                    List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+    private void goToSmallProduction(Player player,
+                                     FamilyMemberColor familyMemberColor,
+                                     List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
         assertPlayerTurn(player);
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
@@ -404,9 +401,9 @@ public class GameController {
         setGameState(GameState.PRODUCTION);
     }
 
-    private void goToBigProducion(Player player,
-                                  FamilyMemberColor familyMemberColor,
-                                  List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
+    private void goToBigProduction(Player player,
+                                   FamilyMemberColor familyMemberColor,
+                                   List<ObtainableResourceSet> chosenCouncilPrivileges) throws ActionNotAllowedException {
         assertPlayerTurn(player);
         assertGameState(GameState.PLAYER_TURN);
         assertPlayerHasNotPlacedFamilyMember();
@@ -875,6 +872,13 @@ public class GameController {
                    .filter(floor -> floor.getId().equals(floorId))
                    .findFirst()
                    .orElseThrow(() -> new ActionNotAllowedException("Unrecognized floor ID"));
+    }
+
+    public ActionSpace getLocalActionSpace(UUID actionSpaceId) throws ActionNotAllowedException {
+        return game.getActionSpaces().stream()
+                   .filter(actionSpace -> actionSpace.getId().equals(actionSpaceId))
+                   .findFirst()
+                   .orElseThrow(() -> new ActionNotAllowedException("Unrecognized action space ID"));
     }
 
     /*

@@ -148,7 +148,7 @@ public class ClientController implements GameEventsInterface,
     @Override
     public void goToActionSpace(ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws NetworkException, RemoteException, ActionNotAllowedException {
         // TODO: locally check if the action is allowed
-        clientConnection.goToActionSpace(actionSpace, familyMemberColor, chosenPrivileges);
+        clientConnection.goToActionSpace(actionSpace.getId(), familyMemberColor, chosenPrivileges);
 
         ui.showMainTurnContext();
     }
@@ -250,14 +250,14 @@ public class ClientController implements GameEventsInterface,
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+    public void onPlayerOccupiesActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
         try {
-            gameController.goToActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+            gameController.goToActionSpace(username, actionSpaceId, familyMemberColor, councilPrivileges);
         }
         catch (ActionNotAllowedException e) {
             e.printStackTrace();
         }
-        ui.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+        ui.onPlayerOccupiesActionSpace(username, actionSpaceId, familyMemberColor, councilPrivileges);
     }
 
     @Override

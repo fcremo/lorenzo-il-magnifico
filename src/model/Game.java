@@ -1,6 +1,7 @@
 package model;
 
 import model.board.Board;
+import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
@@ -319,5 +320,22 @@ public class Game implements Serializable {
         floors.addAll(board.getVentureTower().getFloors());
 
         return floors;
+    }
+
+    public List<ActionSpace> getActionSpaces() {
+        List<ActionSpace> actionSpaces = new ArrayList<>();
+
+        actionSpaces.add(board.getMarket1());
+        actionSpaces.add(board.getMarket2());
+        actionSpaces.add(board.getMarket3());
+        actionSpaces.add(board.getMarket4());
+        actionSpaces.add(board.getSmallProductionArea());
+        actionSpaces.add(board.getBigProductionArea());
+        actionSpaces.add(board.getSmallHarvestArea());
+        actionSpaces.add(board.getBigHarvestArea());
+        actionSpaces.add(board.getCouncilPalace());
+
+        return actionSpaces;
+
     }
 }

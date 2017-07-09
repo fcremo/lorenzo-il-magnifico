@@ -104,8 +104,8 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     }
 
     @Override
-    public void onPlayerOccupiesActionSpace(String username, ActionSpace actionSpace, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-        client.onPlayerOccupiesActionSpace(username, actionSpace, familyMemberColor, councilPrivileges);
+    public void onPlayerOccupiesActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
+        client.onPlayerOccupiesActionSpace(username, actionSpaceId, familyMemberColor, councilPrivileges);
     }
 
     @Override
