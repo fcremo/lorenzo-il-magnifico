@@ -2,8 +2,6 @@ package ui;
 
 import client.ClientController;
 
-import java.io.IOException;
-
 /**
  * This class is responsible for starting the command line user interface (CLI UI)
  */
@@ -14,7 +12,7 @@ public class CLILauncher {
     private CLILauncher() {
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new ClientController(UIType.CLI);
     }
 }

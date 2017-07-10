@@ -107,7 +107,7 @@ public class Game implements Serializable {
     private int orangeDie;
 
     public Game() {
-        board = new Board(this);
+        board = new Board();
     }
 
     /**

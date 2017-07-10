@@ -102,6 +102,8 @@ public class ClientController implements GameEventsInterface,
             handleNetworkFailure(e);
         }
 
+        ui.setOurUsername(username);
+
         // TODO: maybe handle this not-very-exceptional condition without exceptions
         try {
             clientConnection.joinFirstAvailableGame();

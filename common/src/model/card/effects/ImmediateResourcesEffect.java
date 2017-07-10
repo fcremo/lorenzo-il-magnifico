@@ -22,6 +22,6 @@ public class ImmediateResourcesEffect implements EffectInterface {
 
     @Override
     public String toString() {
-        return "Receive " + obtainableResourceSet;
+        return "immediately receive " + obtainableResourceSet;
     }
 }

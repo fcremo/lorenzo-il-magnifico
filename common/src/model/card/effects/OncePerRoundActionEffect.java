@@ -49,6 +49,6 @@ public class OncePerRoundActionEffect implements OncePerRoundEffectInterface {
 
     @Override
     public String toString() {
-        return "Once per round perform a " + actionType + " with value " + actionValue + " without placing a Family Member";
+        return "once per round perform a " + actionType + " with value " + actionValue + " without placing a Family Member";
     }
 }

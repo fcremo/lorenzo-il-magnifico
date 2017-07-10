@@ -8,6 +8,6 @@ import model.card.effects.interfaces.EffectInterface;
 public class SkipOccupationCheckEffect implements EffectInterface {
     @Override
     public String toString() {
-        return "You can place your Family Members in occupied action spaces";
+        return "you can place your Family Members in occupied action spaces (the color rule still applies)";
     }
 }

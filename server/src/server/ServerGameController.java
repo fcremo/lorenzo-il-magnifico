@@ -838,7 +838,18 @@ public class ServerGameController {
         // If the player is last in turn order, end round
         int playerIndex = turnOrder.indexOf(player);
         if (playerIndex == turnOrder.size() - 1) {
-            endRound();
+            /*
+             * TODO: change this, players can skip their first turn because of an effect,
+             * or decide not to place a family member and skip their turn.
+             * This way of checking can make them skip a turn or postpone their turn.
+             * We should keep a counter of how many turns the player has performed instead.
+            */
+            if(player.getAvailableFamilyMembers().isEmpty()) {
+                endRound();
+            }
+            else {
+                startPlayerTurn(turnOrder.get(0));
+            }
         }
         // else start next player's turn
         else {

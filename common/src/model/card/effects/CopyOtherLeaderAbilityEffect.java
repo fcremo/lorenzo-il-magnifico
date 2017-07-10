@@ -21,6 +21,6 @@ public class CopyOtherLeaderAbilityEffect implements EffectInterface {
 
     @Override
     public String toString() {
-        return "Copy the ability of another Leader Card already played by another player; once you decide the ability to copy, it can’t be changed";
+        return "copy the ability of another Leader Card already played by another player; once you decide the ability to copy, it can’t be changed";
     }
 }

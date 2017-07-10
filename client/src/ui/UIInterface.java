@@ -26,6 +26,8 @@ public interface UIInterface extends GameEventsInterface {
 
     void showFatalError(String errorMessage);
 
+    void setOurUsername(String username);
+
     void onNetworkError();
 
     // public void onChatMessage();

@@ -7,6 +7,7 @@ import model.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class BuildingCard extends DevelopmentCard {
     private ArrayList<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions;
@@ -44,49 +45,43 @@ public class BuildingCard extends DevelopmentCard {
 
     @Override
     public String toString() {
-        StringBuilder string = new StringBuilder(getName());
-        string.append("\n");
+        StringJoiner sj = new StringJoiner("\n");
+        sj.add(getName());
 
         if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
-            string.append("price: ");
+            StringJoiner sj2 = new StringJoiner("\n or ");
+            sj2.add("Price: ");
             for (RequiredResourceSet requirement : getRequiredResourceSet()) {
-                string.append(requirement)
-                      .append("\n")
-                      .append("or ");
+                sj2.add(requirement.toString());
             }
-        }
-
-        if (string.lastIndexOf("or ") != -1) {
-            string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
+            sj.add(sj2.toString());
         }
 
         if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
-            string.append("effects: ")
-                  .append(getEffectsContainer().toString());
+            sj.add("Effects: "+ getEffectsContainer().toString());
         }
 
         if (!getProductions().isEmpty()) {
-            string.append(String.format("Production (at %d): ", getRequiredValueForProduction()));
 
+            String head = String.format("Production (at %d): ", getRequiredValueForProduction());
+
+            StringJoiner sj2 = new StringJoiner("\n or ");
             for(Tuple<RequiredResourceSet, ObtainableResourceSet> production : getProductions()) {
                 RequiredResourceSet required = production.first;
                 ObtainableResourceSet obtained = production.second;
 
-                string.append(obtained);
+                String tmp = obtained.toString();
+
                 if (required != null && !required.isEmpty()) {
-                    string.append(" for ")
-                          .append(required);
+                    tmp += " for " + required;
                 }
-                string.append("\n")
-                      .append("or ");
+                sj2.add(tmp);
             }
 
-            if (string.lastIndexOf("or ") != -1) {
-                string.delete(string.lastIndexOf("or "), string.lastIndexOf("or ") + 3);
-            }
+            sj.add(head + sj2.toString());
         }
 
-        return string.toString();
+        return sj.toString();
     }
 
     @Override

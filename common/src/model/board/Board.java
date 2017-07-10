@@ -1,7 +1,6 @@
 package model.board;
 
 import model.Excommunication;
-import model.Game;
 import model.board.actionspace.ActionSpace;
 import model.board.actionspace.Floor;
 import model.card.development.*;
@@ -15,7 +14,6 @@ import java.util.Optional;
  * This class represents the state of the board.
  */
 public class Board implements Serializable {
-    private Game game;
     private ActionSpace councilPalace;
     private ActionSpace smallProductionArea;
     private ActionSpace bigProductionArea;
@@ -32,8 +30,7 @@ public class Board implements Serializable {
     private Excommunication[] excommunications = new Excommunication[3];
     private ObtainableResourceSet[] faithTrackBonus = new ObtainableResourceSet[16];
 
-    public Board(Game game) {
-        this.game = game;
+    public Board() {
     }
 
     public ActionSpace getSmallProductionArea() {
@@ -165,8 +162,9 @@ public class Board implements Serializable {
         else tower = ventureTower;
 
         List<Floor> floors = tower.getFloors();
+
         Optional<Floor> floor = floors.stream()
-                                      .filter(f -> f.getCard().equals(card))
+                                      .filter(f -> card.equals(f.getCard()))
                                       .findFirst();
 
         floor.ifPresent(f -> f.setCard(null));

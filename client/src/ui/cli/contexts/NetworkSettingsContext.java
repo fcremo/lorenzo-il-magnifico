@@ -17,7 +17,7 @@ public class NetworkSettingsContext extends Context {
         this.callback = callback;
         this.addCommand("set-hostname", this::setHostname, "<hostname>");
         this.addCommand("set-port", this::setPort, "<port>");
-        this.addCommand("set-method", this::setMethod, "<RMI, SOCKET>");
+        // this.addCommand("set-method", this::setMethod, "<RMI, SOCKET>");
         this.addCommand("show-settings", this::showSettings, "Show current settings");
         this.addCommand("connect", this::connect, "");
         this.uiContextInterface.println("Network settings");

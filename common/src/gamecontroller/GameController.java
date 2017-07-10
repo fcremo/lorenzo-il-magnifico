@@ -328,6 +328,8 @@ public class GameController {
 
         hasCurrentPlayerPlacedFamilyMember = true;
 
+        player.getAvailableFamilyMembers().remove(familyMemberColor);
+
         developmentCardBeingTaken = floor.getCard();
 
         gameState = GameState.TAKING_CARD;
@@ -1036,7 +1038,7 @@ public class GameController {
 
         return actionSpaces.stream()
                            // Take only enabled action spaces
-                           .filter(actionSpace -> !actionSpace.isEnabled())
+                           .filter(ActionSpace::isEnabled)
                            // Take only floors with cards
                            .filter(actionSpace -> {
                                if (actionSpace instanceof Floor) {
@@ -1116,30 +1118,30 @@ public class GameController {
                    .orElseThrow(() -> new ActionNotAllowedException("Unrecognized floor ID"));
     }
 
-    public List<TerritoryCard> getLocalAvailableTerritoryCards(List<UUID> Ids) throws ActionNotAllowedException {
+    public List<TerritoryCard> getLocalAvailableTerritoryCards(List<UUID> ids) throws ActionNotAllowedException {
         List cards = game.getAvailableTerritoryCards().stream()
-                         .filter(card -> Ids.contains(card.getId()))
+                         .filter(card -> ids.contains(card.getId()))
                          .collect(Collectors.toList());
 
-        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        if (ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
         return cards;
     }
 
-    public List<BuildingCard> getLocalAvailableBuildingCards(List<UUID> Ids) throws ActionNotAllowedException {
+    public List<BuildingCard> getLocalAvailableBuildingCards(List<UUID> ids) throws ActionNotAllowedException {
         List cards = game.getAvailableBuildingCards().stream()
-                         .filter(card -> Ids.contains(card.getId()))
+                         .filter(card -> ids.contains(card.getId()))
                          .collect(Collectors.toList());
 
-        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        if (ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
         return cards;
     }
 
-    public List<CharacterCard> getLocalAvailableCharacterCards(List<UUID> Ids) throws ActionNotAllowedException {
+    public List<CharacterCard> getLocalAvailableCharacterCards(List<UUID> ids) throws ActionNotAllowedException {
         List cards = game.getAvailableCharacterCards().stream()
-                         .filter(card -> Ids.contains(card.getId()))
+                         .filter(card -> ids.contains(card.getId()))
                          .collect(Collectors.toList());
 
-        if (Ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
+        if (ids.size() != cards.size()) throw new ActionNotAllowedException("Card ID not recognized");
         return cards;
     }
 

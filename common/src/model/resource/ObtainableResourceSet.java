@@ -42,6 +42,7 @@ public class ObtainableResourceSet implements Serializable {
         this.resourceMultipliers = new HashMap<>(obtainableResourceSet.resourceMultipliers);
     }
 
+    /*
     public ObtainableResourceSet(int gold, int wood, int stone, int servants, int councilPrivileges, int militaryPoints,
                                  int faithPoints, int victoryPoints) {
         obtainedResources.put(ObtainableResource.GOLD, gold);
@@ -53,6 +54,7 @@ public class ObtainableResourceSet implements Serializable {
         obtainedResources.put(ObtainableResource.FAITH_POINTS, faithPoints);
         obtainedResources.put(ObtainableResource.VICTORY_POINTS, victoryPoints);
     }
+    */
 
     public boolean isEmpty() {
         return (obtainedResources.isEmpty() && resourceMultipliers.isEmpty());

@@ -66,7 +66,7 @@ public class BoardDeserializer implements JsonDeserializer<Board> {
         /* ---------------------------------------------------------
          * Step 4: Set the attributes of the board
          * --------------------------------------------------------- */
-        Board board = new Board(null);
+        Board board = new Board();
         board.setTerritoryTower(greenTower);
         board.setCharacterTower(blueTower);
         board.setBuildingTower(yellowTower);

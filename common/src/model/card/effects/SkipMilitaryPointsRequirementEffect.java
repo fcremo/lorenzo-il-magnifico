@@ -9,6 +9,6 @@ import model.card.effects.interfaces.EffectInterface;
 public class SkipMilitaryPointsRequirementEffect implements EffectInterface {
     @Override
     public String toString() {
-        return "You don’t need to satisfy the Military Points requirement when you take Territory Cards";
+        return "you don’t need to satisfy the Military Points requirement when you take Territory Cards";
     }
 }

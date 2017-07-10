@@ -46,13 +46,14 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
 
     private KeyboardHandler keyboardHandler;
 
+    private String ourUsername;
+
     public CommandLineUI(ClientController controller) {
         this.controller = controller;
     }
 
     public void start() {
-        TerminalFactory tf = new TerminalFactory();
-        tf.configure(TerminalFactory.AUTO);
+        TerminalFactory.configure(TerminalFactory.AUTO);
         terminal = TerminalFactory.get();
 
         width = terminal.getWidth();
@@ -114,7 +115,6 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     }
 
     @Override
-    @SuppressWarnings("squid:S106") // Suppress warning, I want to use System.out.println
     public void printPrompt() {
         try {
             keyboardHandler.cr.redrawLine();
@@ -144,27 +144,41 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
 
     @Override
     public void onPlayerTurnStarted(String username) throws RemoteException {
-        showWaitingMessage(String.format("It's %s's turn", username));
+        showWaitingMessage(String.format("It's %s's turn\n", username));
     }
 
     @Override
     public void onPlayerSpendsServants(String username, int servants) throws RemoteException {
-        // Not interested in this event for now
+        if(!username.equals(ourUsername)) {
+            showWaitingMessage(String.format("%s commits %d servant(s) for his next action", username, servants));
+        }
     }
 
     @Override
     public void onPlayerOccupiesActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-        // TODO
+        // TODO: show more informative message
+        if(!username.equals(ourUsername)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%s occupies an action space with his %s family member", username, familyMemberColor));
+
+            showWaitingMessage(sb.toString());
+        }
     }
 
     @Override
     public void onPlayerOccupiesFloor(String username, UUID floorId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges, RequiredResourceSet paymentForCard) throws RemoteException {
-        // TODO
+        // TODO: show more informative message
+        if(!username.equals(ourUsername)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%s occupies a floor with his %s family member", username, familyMemberColor));
+
+            showWaitingMessage(sb.toString());
+        }
     }
 
     @Override
     public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
-        // TODO
+        // TODO: take useful parameters and print which card the player takes
     }
 
     @Override
@@ -174,7 +188,14 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
 
     @Override
     public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) {
-        // TODO
+        if(!username.equals(ourUsername)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%s decides to be ", username));
+            if(beExcommunicated) sb.append("excommunicated");
+            else sb.append("blessed");
+
+            showWaitingMessage(sb.toString());
+        }
     }
 
     @Override
@@ -262,6 +283,10 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
         println("Error: " + errorMessage);
     }
 
+    public void setOurUsername(String ourUsername) {
+        this.ourUsername = ourUsername;
+    }
+
     private class KeyboardHandler implements Runnable {
         ConsoleReader cr;
 
@@ -286,7 +311,6 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
         @SuppressWarnings("squid:S2189") // Disable infinite loop warning
         public void run() {
             while (true) {
-                // String input = askForString();
                 try {
                     cr.println();
                     String input = cr.readLine();

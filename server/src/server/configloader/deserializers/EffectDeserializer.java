@@ -3,8 +3,7 @@ package server.configloader.deserializers;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import model.action.ActionType;
-import model.board.actionspace.ActionSpace;
-import model.board.actionspace.MarketActionSpace;
+import model.board.actionspace.*;
 import model.card.development.*;
 import model.card.effects.*;
 import model.card.effects.interfaces.EffectInterface;
@@ -24,7 +23,6 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
 
         EffectInterface effect;
 
-        // TODO: 5/25/17 check if it's possible to use reflection instead of a switch-case construct
         // Curly braces are used to create a new scope for variables declared in each case
         switch (effectType) {
             case "ImmediateResources": {
@@ -168,10 +166,24 @@ public class EffectDeserializer implements JsonDeserializer<EffectInterface> {
             case "InhibitActionSpace": {
                 String actionSpaceType = jsonEffect.get("actionSpace").getAsString();
                 Class<? extends ActionSpace> actionSpaceClass;
-                // TODO: implement other action space types
                 switch (actionSpaceType) {
                     case "Market":
                         actionSpaceClass = MarketActionSpace.class;
+                        break;
+                    case "Floor":
+                        actionSpaceClass = Floor.class;
+                        break;
+                    case "BigHarvest":
+                        actionSpaceClass = BigHarvestArea.class;
+                        break;
+                    case "SmallHarvest":
+                        actionSpaceClass = SmallHarvestArea.class;
+                        break;
+                    case "BigProduction":
+                        actionSpaceClass = BigProductionArea.class;
+                        break;
+                    case "SmallProduction":
+                        actionSpaceClass = SmallProductionArea.class;
                         break;
                     default:
                         throw new JsonParseException("ActionSpace type not supported");

@@ -18,6 +18,6 @@ public class ServantsValueMultiplierEffect implements EffectInterface {
 
     @Override
     public String toString() {
-        return "You have to spend " + (int) Math.round(1.0 / multiplier) + " servants to increase your action value by 1";
+        return "you have to spend " + (int) Math.round(1.0 / multiplier) + " servants to increase your action value by 1";
     }
 }

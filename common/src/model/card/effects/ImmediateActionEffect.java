@@ -38,7 +38,7 @@ public class ImmediateActionEffect implements EffectInterface {
 
     @Override
     public String toString() {
-        StringBuilder effects = new StringBuilder("Perform a ");
+        StringBuilder effects = new StringBuilder("perform a ");
         for (ActionType action : actionTypes) {
             effects.append(action)
                    .append(" or ");

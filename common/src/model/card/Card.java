@@ -106,7 +106,7 @@ public class Card implements Serializable {
         string.append("\n");
 
         if (getRequiredResourceSet() != null && !getRequiredResourceSet().isEmpty()) {
-            string.append("price: ");
+            string.append("Price: ");
             for (RequiredResourceSet requirement : getRequiredResourceSet()) {
                 string.append(requirement)
                       .append("\n")
@@ -118,7 +118,7 @@ public class Card implements Serializable {
         }
 
         if (getEffectsContainer() != null && !getEffectsContainer().getEffects().isEmpty()) {
-            string.append("effects: ")
+            string.append("Effects: ")
                   .append(getEffectsContainer().toString())
                   .append("\n");
         }
@@ -133,7 +133,7 @@ public class Card implements Serializable {
      *          or if "resources" is empty and the card has no cost
      */
     public boolean isPayableWith(RequiredResourceSet resources) {
-        if(requiredResourceSet.size() == 0 && resources.isEmpty()) return true;
+        if(requiredResourceSet.isEmpty() && resources.isEmpty()) return true;
 
         else return requiredResourceSet.contains(resources);
     }

@@ -12,7 +12,7 @@ public class MarketActionSpace extends ActionSpace {
         String string;
 
         if (isOccupied()) {
-            string = "Occupied by " + getOccupantsString();
+            string = getOccupantsString();
         }
         else {
             string = getBonus().toString();

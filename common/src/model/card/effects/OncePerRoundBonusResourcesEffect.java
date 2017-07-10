@@ -34,6 +34,6 @@ public class OncePerRoundBonusResourcesEffect implements OncePerRoundEffectInter
 
     @Override
     public String toString() {
-        return "Once per round receive " + resources;
+        return "once per round receive " + resources;
     }
 }

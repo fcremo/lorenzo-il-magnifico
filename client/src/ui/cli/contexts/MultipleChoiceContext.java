@@ -94,7 +94,7 @@ public class MultipleChoiceContext<T> extends Context {
         if(choicesMustBeUnique) uiContextInterface.println("The choices must be unique");
     }
 
-    private void choose(String[] params) throws InvalidCommandException, ActionNotAllowedException {
+    private void choose(String[] params) throws InvalidCommandException {
         if (params.length == 0) throw new InvalidCommandException("You have to specify what you want to choose!");
 
         List<Integer> chosenIndexes = new ArrayList<>();
@@ -138,7 +138,7 @@ public class MultipleChoiceContext<T> extends Context {
         }
     }
 
-    private void remove(String[] params) throws InvalidCommandException, ActionNotAllowedException {
+    private void remove(String[] params) throws InvalidCommandException {
         if (params.length != 1) throw new InvalidCommandException("You have to specify what you want to remove!");
 
         int chosenIndex;
@@ -183,8 +183,8 @@ public class MultipleChoiceContext<T> extends Context {
      * @return
      */
     private <T> Set<T> findDuplicates(Collection<T> list) {
-        Set<T> duplicates = new LinkedHashSet<T>();
-        Set<T> uniques = new HashSet<T>();
+        Set<T> duplicates = new LinkedHashSet<>();
+        Set<T> uniques = new HashSet<>();
 
         for(T t : list) {
             if(!uniques.add(t)) {

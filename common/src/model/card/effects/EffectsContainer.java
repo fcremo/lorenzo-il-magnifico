@@ -32,7 +32,7 @@ public class EffectsContainer implements Serializable {
      * Returns all the effects
      * @return
      */
-    public ArrayList<EffectInterface> getEffects() {
+    public List<EffectInterface> getEffects() {
         return effects;
     }
 

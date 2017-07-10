@@ -7,6 +7,7 @@ import model.player.Player;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,7 @@ public class Tower<T extends DevelopmentCard> implements Serializable {
     public List<DevelopmentCard> getCards() {
         return floors.stream()
                      .map(Floor::getCard)
+                     .filter(Objects::nonNull)
                      .collect(Collectors.toList());
     }
 }

@@ -70,26 +70,26 @@ public abstract class ActionSpace implements Serializable, Choosable {
     }
 
     public String getOccupantsString() {
-        StringBuilder occupants = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         if (!isOccupied()) {
-            occupants.append("Not occupied yet");
+            sb.append("Not occupied yet");
         }
         else {
-            occupants.append("Occupied by ");
+            sb.append("Occupied by ");
             for (int i = 0; i < getOccupants().size(); i++) {
-                occupants.append(getOccupants().get(i).first.getUsername())
+                sb.append(getOccupants().get(i).first.getUsername())
                          .append("(")
                          .append(getOccupants().get(i).second)
                          .append(")")
                          .append(", ");
             }
-            if (occupants.lastIndexOf(", ") != -1) {
-                occupants.delete(occupants.lastIndexOf(", "), occupants.lastIndexOf(", ") + 2);
+            if (sb.lastIndexOf(", ") != -1) {
+                sb.delete(sb.lastIndexOf(", "), sb.lastIndexOf(", ") + 2);
             }
         }
 
-        return occupants.toString();
+        return sb.toString();
     }
 
     public void addOccupant(Player player, FamilyMemberColor color) {
@@ -132,5 +132,24 @@ public abstract class ActionSpace implements Serializable, Choosable {
         ActionSpace that = (ActionSpace) o;
 
         return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getOccupantsString())
+          .append("\n");
+
+        if(bonus != null && !bonus.isEmpty()){
+            sb.append("Bonus: ")
+              .append(bonus);
+        }
+
+        return sb.toString();
     }
 }
