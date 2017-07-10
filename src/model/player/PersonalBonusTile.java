@@ -54,8 +54,8 @@ public class PersonalBonusTile implements Serializable {
 
     @Override
     public String toString() {
-        return "Production: " + productionObtainableResourceSet +
-                "\n\tHarvest: " + harvestObtainableResourceSet;
+        return "Production: " + productionObtainableResourceSet + "\n" +
+                "Harvest: " + harvestObtainableResourceSet;
     }
 
     public static class InstanceCreator implements com.google.gson.InstanceCreator<PersonalBonusTile> {
