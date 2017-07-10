@@ -51,6 +51,8 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     }
 
     public void start() {
+        TerminalFactory tf = new TerminalFactory();
+        tf.configure(TerminalFactory.AUTO);
         terminal = TerminalFactory.get();
 
         width = terminal.getWidth();
@@ -114,7 +116,13 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     @Override
     @SuppressWarnings("squid:S106") // Suppress warning, I want to use System.out.println
     public void printPrompt() {
-        System.out.print("> ");
+        try {
+            keyboardHandler.cr.redrawLine();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -280,6 +288,7 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
             while (true) {
                 // String input = askForString();
                 try {
+                    cr.println();
                     String input = cr.readLine();
                     currentContext.handleInput(input, false);
                 }
