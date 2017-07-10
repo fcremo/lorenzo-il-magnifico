@@ -7,7 +7,7 @@
       </pattern>
     </extension>
     <option name="MAIN_CLASS_NAME" value="server.ServerMain" />
-    <option name="VM_PARAMETERS" value="-Djava.rmi.server.codebase=file://$PROJECT_DIR$/out/artifacts/lorenzo_il_magnifico_jar/lorenzo-il-magnifico.jar" />
+    <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
