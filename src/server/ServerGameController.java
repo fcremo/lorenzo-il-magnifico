@@ -65,39 +65,18 @@ public class ServerGameController {
      */
     private List<Player> playersThatHaveToDraft;
 
+    public ServerGameController() {
+        loadConfiguration();
+    }
+
     /* ----------------------------------------------------------------
      * PRIVATE METHODS THAT CONTROL THE FLOW OF THE GAME
      * These methods do server-specific actions
      * (loading configuration, coordinating drafts, throwing the dice, and so on)
      * ---------------------------------------------------------------- */
-    /**
-     * Callback called when the game timeout expires or 4 players have joined
-     */
-    private void startGame() {
-        // Ignore repeated calls (made if 4 players connect before the timeout expires)
-        if(gameController.getGameState() != GameState.WAITING_FOR_PLAYERS_TO_CONNECT) return;
-
-        gameController.setGameState(GameState.STARTED);
-
-        LOGGER.info("Starting game...");
-        // Load game configuration
-        loadConfiguration();
-
-        // Create players and set colors
-        createPlayers();
-
-        // Extract excommunications
-        drawExcommunications();
-
-        // Set random turn order
-        shufflePlayers();
-
-        // Start personal bonus tile draft phase (in reverse turn order)
-        startPersonalBonusTileDraft();
-    }
 
     /**
-     * Load the game configuration
+     * Loads the game configuration
      */
     private void loadConfiguration() {
         String configDirectory = "configuration";
@@ -122,6 +101,40 @@ public class ServerGameController {
 
         gameController.setGame(configLoader.getGame());
 
+        gameStartTimeout = configLoader.getGameStartTimeout();
+    }
+
+    /**
+     * Callback called when the game timeout expires or 4 players have joined
+     */
+    private void startGame() {
+        // Ignore repeated calls (made if 4 players connect before the timeout expires)
+        if(gameController.getGameState() != GameState.WAITING_FOR_PLAYERS_TO_CONNECT) return;
+
+        gameController.setGameState(GameState.STARTED);
+
+        LOGGER.info("Starting game...");
+
+        // Initialize game
+        initializeGame();
+
+        // Create players and set colors
+        createPlayers();
+
+        // Extract excommunications
+        drawExcommunications();
+
+        // Set random turn order
+        shufflePlayers();
+
+        // Start personal bonus tile draft phase (in reverse turn order)
+        startPersonalBonusTileDraft();
+    }
+
+    /**
+     * Load the game configuration
+     */
+    private void initializeGame() {
         // Disable some action spaces if players are less than four
         if (connections.size() < 4) {
             getGame().getBoard().getMarket4().setEnabled(false);
@@ -131,8 +144,6 @@ public class ServerGameController {
             getGame().getBoard().getBigHarvestArea().setEnabled(false);
             getGame().getBoard().getBigProductionArea().setEnabled(false);
         }
-
-        gameStartTimeout = configLoader.getGameStartTimeout();
     }
 
     /**
