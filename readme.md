@@ -56,6 +56,24 @@ Asynchronous networking should make network error recovery and persistence easie
 all the game state at all times and is never stuck waiting for a method call to return.
 Unfortunately we did not have time to implement those features.
 
+### Security (and "Why do you send UUIDs instead of objects via RMI?")
+In the real world the game should use RMI over TLS (or not use RMI at all).
+
+To prevent action spoofing the server remembers which player is connected to which connection, so every
+action received can be authenticated (excluding MITM scenarios).
+ 
+To prevent object spoofing (a malicious client sending a crafted object to the server with properties 
+conveniently set to gain an advantage) the server tries as hard as possible to not trust data sent by 
+the clients.
+When possible this means referring to objects via UUIDs, both when receiving actions from the clients and 
+when sending messages to them.
+
+This approach has several advantages:
+
+- makes object spoofing impossible
+- makes impossible to confuse received objects with local ones (eg modifying the received floor instead of the local one)
+- should make writing a raw socket protocol easier since there's less serialization/deserialization involved
+
 ### Highly configurable game
 Almost the whole game configuration is loaded from files.
 That includes all aspects of the development cards, the leader cards, and board bonuses, including effects which are not
