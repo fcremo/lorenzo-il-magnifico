@@ -407,7 +407,6 @@ public class GameController {
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
     ArrayList<ObtainableResourceSet> performAction(String username, int familyMemberValue, Action action) throws ActionNotAllowedException {
-        throw new NotImplementedException();
     }
 
     /* --------------------------------------------------------------------------------------

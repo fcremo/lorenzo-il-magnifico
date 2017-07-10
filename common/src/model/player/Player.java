@@ -1,8 +1,6 @@
 package model.player;
 
 import model.Excommunication;
-import model.action.Action;
-import model.board.actionspace.ActionSpace;
 import model.card.Card;
 import model.card.development.*;
 import model.card.effects.interfaces.EffectInterface;
@@ -10,7 +8,6 @@ import model.card.leader.LeaderCard;
 import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,24 +60,6 @@ public class Player implements Serializable {
 
     public Player(String username) {
         this.username = username;
-    }
-
-    /**
-     * Returns the family member value for the specified action, accounting for personal bonuses and maluses due to
-     * the effects of leader cards, excommunications or development cards.
-     *
-     * @param color  the family member color
-     * @param action the action to perform
-     * @return the family member value
-     */
-    public int getFamilyMemberValue(FamilyMemberColor color, ActionSpace actionSpace) {
-        // TODO: 5/7/17
-        throw new NotImplementedException();
-    }
-
-    public int getActionValue(Action action) {
-        // TODO: 5/7/17
-        throw new NotImplementedException();
     }
 
     public PlayerColor getColor() {
