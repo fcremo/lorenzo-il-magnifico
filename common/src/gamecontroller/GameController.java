@@ -22,7 +22,6 @@ import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
 import model.resource.RequiredResourceSet;
 import model.util.Tuple;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,8 +30,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static model.resource.ObtainableResource.*;
-import static model.resource.ObtainableResource.GOLD;
-import static model.resource.ObtainableResource.SERVANTS;
 
 /**
  * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
@@ -400,13 +397,14 @@ public class GameController {
     }
 
     /**
-     * Performs the action and returns the set of resources obtained
+     * Performs an action
      *
      * @param username          the player performing the action
      * @param familyMemberValue the family member value used for performing the action
      * @returns an ArrayList representing the possible choices of resources that can be obtained from performing the action
      */
-    ArrayList<ObtainableResourceSet> performAction(String username, int familyMemberValue, Action action) throws ActionNotAllowedException {
+    void performAction(String username, int familyMemberValue, Action action) throws ActionNotAllowedException {
+        // TODO
     }
 
     /* --------------------------------------------------------------------------------------
