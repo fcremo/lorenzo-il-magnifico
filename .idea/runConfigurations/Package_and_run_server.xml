@@ -15,8 +15,10 @@
     <option name="ENABLE_SWING_INSPECTOR" value="false" />
     <option name="ENV_VARIABLES" />
     <option name="PASS_PARENT_ENVS" value="true" />
-    <module name="lorenzo-il-magnifico" />
+    <module name="server" />
     <envs />
-    <method />
+    <method>
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Package" run_configuration_type="MavenRunConfiguration" />
+    </method>
   </configuration>
 </component>
