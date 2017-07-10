@@ -449,6 +449,44 @@ public class ServerGameController {
         }
     }
 
+    /**
+     * Ends the round
+     */
+    private void endRound() {
+        if(getGame().getCurrentRound() == 6) {
+            // TODO
+            // startGameEndPhase();
+        }
+        else if(getGame().getCurrentRound() % 2 == 0) {
+            startVaticanReport();
+        }
+        else {
+            startNewRound();
+        }
+    }
+
+    /**
+     * Starts the vatican report phase
+     */
+    private void startVaticanReport() {
+        try {
+            gameController.startVaticanReport();
+        }
+        catch (ActionNotAllowedException e) {
+            // Should never happen since this function is called only by the server
+            e.printStackTrace();
+        }
+
+        for (ClientConnection connection : connections) {
+            try {
+                connection.onStartVaticanReport();
+            }
+            catch (RemoteException e) {
+                handleRemoteException(e);
+            }
+        }
+    }
+
     /* ----------------------------------------------------------------
      * PUBLIC METHODS THAT ARE CALLED WHEN THE PLAYERS DO SOMETHING
      * These methods forward the actions to the game controller
@@ -636,6 +674,12 @@ public class ServerGameController {
         });
     }
 
+    /**
+     * Called when a player ends his turn
+     *
+     * @param username
+     * @throws ActionNotAllowedException
+     */
     public void endTurn(String username) throws ActionNotAllowedException {
         gameController.assertGameState(GameState.PLAYER_TURN);
         Player player = gameController.getLocalPlayer(username);
@@ -643,17 +687,24 @@ public class ServerGameController {
 
         List<Player> turnOrder = getGame().getPlayers();
 
-        // If the player is last in turn order, start next round
+        // If the player is last in turn order, end round
         int playerIndex = turnOrder.indexOf(player);
         if(playerIndex == turnOrder.size() - 1) {
-            // TODO
+            endRound();
         }
         // else start next player's turn
         else {
             Player nextPlayer = turnOrder.get(playerIndex + 1);
             startPlayerTurn(nextPlayer);
         }
+    }
 
+    public void decideExcommunication(String username, Boolean beExcommunicated) throws ActionNotAllowedException {
+        gameController.decideExcommunication(username, beExcommunicated);
+
+        connections.forEach(
+                connection -> connection.onPlayerDecidesExcommunication(username, beExcommunicated)
+        );
     }
 
     /* ----------------------------------------------------------------

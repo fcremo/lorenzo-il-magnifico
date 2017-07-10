@@ -88,4 +88,17 @@ public interface GameEventsInterface {
      * @param servants
      */
     void onPlayerSpendsServants(String username, int servants) throws RemoteException;
+
+    /**
+     * Called when the vatican report phase starts
+     * @throws RemoteException
+     */
+    void onStartVaticanReport() throws RemoteException;
+
+    /**
+     * Called when a player decides if he wants to be excommunicated
+     * @param username
+     * @param beExcommunicated
+     */
+    void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated);
 }

@@ -9,6 +9,7 @@ import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
 import model.resource.ObtainableResourceSet;
 import model.resource.ObtainedResourceSet;
+import model.resource.RequiredResource;
 import model.resource.RequiredResourceSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -248,6 +249,15 @@ public class Player implements Serializable {
      */
     public boolean hasEnoughResources(RequiredResourceSet requirements) {
         return resources.has(requirements);
+    }
+
+    /**
+     * @param requirements
+     * @return true if the player resources can cover any of the requirements
+     */
+    public boolean hasEnoughResourcesForAny(List<RequiredResourceSet> requirements) {
+        return requirements.stream()
+                           .anyMatch(this::hasEnoughResources);
     }
 
     /**

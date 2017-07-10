@@ -118,6 +118,11 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
         connection.endTurn();
     }
 
+    @Override
+    public void decideExcommunication(Boolean beExcommunicated) throws RemoteException, ActionNotAllowedException {
+        connection.decideExcommunication(beExcommunicated);
+    }
+
     /* ----------------------------------------------------------
      * SERVER TO CLIENT INTERFACE
      * ---------------------------------------------------------- */
@@ -194,5 +199,15 @@ public class RMIClient implements ClientToServerInterface, ServerToClientInterfa
     @Override
     public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
         clientController.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
+    }
+
+    @Override
+    public void onStartVaticanReport() throws RemoteException {
+        clientController.onStartVaticanReport();
+    }
+
+    @Override
+    public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) {
+        clientController.onPlayerDecidesExcommunication(username, beExcommunicated);
     }
 }

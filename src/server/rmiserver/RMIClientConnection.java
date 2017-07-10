@@ -122,4 +122,14 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     public void onPlayerTakesDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws RemoteException {
         client.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
     }
+
+    @Override
+    public void onStartVaticanReport() throws RemoteException {
+        client.onStartVaticanReport();
+    }
+
+    @Override
+    public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) {
+        client.onPlayerDecidesExcommunication(username, beExcommunicated);
+    }
 }

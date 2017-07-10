@@ -160,6 +160,16 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     }
 
     @Override
+    public void onStartVaticanReport() throws RemoteException {
+        // Not interested in this event for now
+    }
+
+    @Override
+    public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) {
+        // TODO
+    }
+
+    @Override
     public void onCardsDrawn(List<UUID> territoryCards, List<UUID> characterCards, List<UUID> buildingCards, List<UUID> ventureCards) throws RemoteException {
         // We're not interested in this event for now
     }
@@ -220,6 +230,18 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
                     choices -> controller.chooseDevelopmentCardCouncilPrivileges(choices),
                     true);
         }
+    }
+
+    @Override
+    public void showDecideExcommunicationContext() {
+        List choices = new ArrayList<>();
+        choices.add(new ChoosableItem<>("Be excommunicated but keep your faith points", true));
+        choices.add(new ChoosableItem<>("Be blessed and give up your faith points", false));
+
+        currentContext = new SingleChoiceContext<Boolean>(this,
+                choices,
+                controller::decideExcommunication
+        );
     }
 
     @Override

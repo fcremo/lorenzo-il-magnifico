@@ -1,8 +1,8 @@
 package gamecontroller;
 
-import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
 import gamecontroller.exceptions.ActionNotAllowedException;
 import gamecontroller.exceptions.PlayerDoesNotExistException;
+import model.Excommunication;
 import model.Game;
 import model.action.Action;
 import model.action.ActionType;
@@ -56,6 +56,12 @@ public class GameController {
      */
     private DevelopmentCard developmentCardBeingTaken;
 
+    /**
+     * This list is used to keep track of whick players
+     * still have to decide whether to be excommunicated or not
+     */
+    private List<Player> playersWithPendingExcommunicationDecision = new ArrayList<>();
+
     public GameController() {
         this.gameState = GameState.WAITING_FOR_PLAYERS_TO_CONNECT;
     }
@@ -85,6 +91,8 @@ public class GameController {
      * Does the preparation for starting a new round
      */
     public void prepareNewRound() {
+        game.nextRound();
+
         game.getPlayers().forEach(Player::resetAvailableFamilyMembers);
 
         // Updated the turn order according to the occupations of the council palace
@@ -106,6 +114,61 @@ public class GameController {
         game.setCurrentPlayer(player);
         gameState = GameState.PLAYER_TURN;
         hasCurrentPlayerPlacedFamilyMember = false;
+    }
+
+    /**
+     * Starts the vatican report and immediately excommunicates players that
+     * don't have the required faith points
+     *
+     * @throws ActionNotAllowedException
+     */
+    public void startVaticanReport() throws ActionNotAllowedException {
+        int currentRound = getGame().getCurrentRound();
+
+        int faithPointsNeeded;
+        if(currentRound == 2) faithPointsNeeded = 3;
+        else if(currentRound == 4) faithPointsNeeded = 4;
+        else if(currentRound == 6) faithPointsNeeded = 5;
+        else throw new ActionNotAllowedException("The vatican report starts only after even rounds!");
+
+        gameState = GameState.VATICAN_REPORT;
+
+        Excommunication excommunication = game.getBoard().getExcommunications()[currentRound/2];
+
+        // Assign excommunication to players that don't have the necessary faith points
+        game.getPlayers()
+            .stream()
+            .filter(player -> !player.getResources().hasAtLeast(faithPointsNeeded, ObtainableResource.FAITH_POINTS))
+            .forEach(player -> player.getExcommunications().add(excommunication));
+
+        playersWithPendingExcommunicationDecision = new ArrayList<>();
+
+        // Keep track of which players can choose if they want to be excommunicated
+        game.getPlayers()
+            .stream()
+            .filter(player -> player.getResources().hasAtLeast(faithPointsNeeded, ObtainableResource.FAITH_POINTS))
+            .forEach(playersWithPendingExcommunicationDecision::add);
+    }
+
+    /**
+     * Called when a player decides whether to be excommunicated or not
+     * @param username
+     * @param beExcommunicated
+     */
+    public void decideExcommunication(String username, boolean beExcommunicated) throws ActionNotAllowedException {
+        assertGameState(GameState.VATICAN_REPORT);
+        Player player = getLocalPlayer(username);
+        assertPlayerCanDecideHisExcommunication(player);
+
+        if(beExcommunicated) {
+            player.getResources().setResourceQty(ObtainableResource.FAITH_POINTS, 0);
+        }
+        else {
+            int currentRound = game.getCurrentRound();
+            Excommunication excommunication = game.getBoard().getExcommunications()[currentRound/2];
+            player.getExcommunications().add(excommunication);
+        }
+        playersWithPendingExcommunicationDecision.remove(player);
     }
 
     /**
@@ -237,17 +300,17 @@ public class GameController {
 
         // Add bonus resources to the player
         ObtainableResourceSet actionSpaceBonus = floor.getBonus();
-        for(ObtainableResourceSet privilege : chosenPrivileges) {
+        for (ObtainableResourceSet privilege : chosenPrivileges) {
             actionSpaceBonus.addResources(privilege);
         }
 
         // Apply action space bonus setter effect (Preacher)
-        for(FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)){
+        for (FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)) {
             actionSpaceBonus = e.setObtainedResourceSet();
         }
 
         // Apply obtained resource set modifier effects
-        for(ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)){
+        for (ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)) {
             actionSpaceBonus = e.modifyResources(actionSpaceBonus);
         }
 
@@ -255,7 +318,7 @@ public class GameController {
 
         // Pay the card
         // Apply effects that modify the cost of the card
-        for(DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
+        for (DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
             paymentForCard = e.modifyResources(paymentForCard, floor.getCard());
         }
         player.getResources().subtractResources(paymentForCard);
@@ -272,13 +335,16 @@ public class GameController {
 
     /**
      * Called when a player takes a development card
+     *
      * @param username
      * @param cardId
      * @param councilPrivileges
      */
     public void takeDevelopmentCard(String username, UUID cardId, List<ObtainableResourceSet> councilPrivileges) throws ActionNotAllowedException {
         Player player = getLocalPlayer(username);
-        if(!developmentCardBeingTaken.getId().equals(cardId)) throw new ActionNotAllowedException("Unrecognized card ID");
+        if (!developmentCardBeingTaken.getId().equals(cardId)) {
+            throw new ActionNotAllowedException("Unrecognized card ID");
+        }
         DevelopmentCard card = developmentCardBeingTaken;
 
         assertPlayerTurn(player);
@@ -286,7 +352,7 @@ public class GameController {
         assertValidCouncilPrivilegesChoiceForCard(card, councilPrivileges);
 
         // Add immediate resources
-        for(ImmediateResourcesEffect e : card.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class)) {
+        for (ImmediateResourcesEffect e : card.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class)) {
             player.addResources(e.getObtainableResourceSet());
         }
 
@@ -560,7 +626,7 @@ public class GameController {
         // Validate council privileges choice
         List<ImmediateResourcesEffect> effects = developmentCardBeingTaken.getEffectsContainer().getEffectsImplementing(ImmediateResourcesEffect.class);
         int allowedCouncilPrivileges = 0;
-        for(ImmediateResourcesEffect e : effects) {
+        for (ImmediateResourcesEffect e : effects) {
             allowedCouncilPrivileges += e.getObtainableResourceSet().getObtainedAmount(ObtainableResource.COUNCIL_PRIVILEGES);
         }
         assertValidCouncilPrivilegesChoice(councilPrivileges, allowedCouncilPrivileges);
@@ -676,17 +742,17 @@ public class GameController {
 
         // Floor bonus
         ObtainableResourceSet actionSpaceBonus = floor.getBonus();
-        for(ObtainableResourceSet privilege : chosenPrivileges) {
+        for (ObtainableResourceSet privilege : chosenPrivileges) {
             actionSpaceBonus.addResources(privilege);
         }
 
         // Apply action space bonus setter effect (Preacher)
-        for(FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)){
+        for (FloorBonusResourcesSetterEffect e : player.getEffectsImplementing(FloorBonusResourcesSetterEffect.class)) {
             actionSpaceBonus = e.setObtainedResourceSet();
         }
 
         // Apply obtained resource set modifier effects
-        for(ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)){
+        for (ObtainableResourceSetModifierEffect e : player.getEffectsImplementing(ObtainableResourceSetModifierEffect.class)) {
             actionSpaceBonus = e.modifyResources(actionSpaceBonus);
         }
 
@@ -699,7 +765,7 @@ public class GameController {
         }
 
         // Apply effects that modify the cost of the card
-        for(DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
+        for (DevelopmentCardRequiredResourceSetModifierEffect e : player.getEffectsImplementing(DevelopmentCardRequiredResourceSetModifierEffect.class)) {
             paymentForCard = e.modifyResources(paymentForCard, floor.getCard());
         }
 
@@ -750,7 +816,7 @@ public class GameController {
      * @param card
      */
     private void assertMilitaryRequirement(Player player, DevelopmentCard card) throws ActionNotAllowedException {
-        if(!(card instanceof TerritoryCard)) return;
+        if (!(card instanceof TerritoryCard)) return;
 
         // If the card is a territory check military points requirement
         if (!player.hasEffectsImplementing(SkipMilitaryPointsRequirementEffect.class)) {
@@ -903,6 +969,17 @@ public class GameController {
     }
 
     /**
+     * Asserts that the player is in the list of the ones that can decide whether to be excommunicated or not
+     * @param player
+     * @throws ActionNotAllowedException
+     */
+    private void assertPlayerCanDecideHisExcommunication(Player player) throws ActionNotAllowedException {
+        if(!playersWithPendingExcommunicationDecision.contains(player)) {
+            throw new ActionNotAllowedException("%s can't decide if he has to be excommunicated");
+        }
+    }
+
+    /**
      * Returns true if the player can choose these council privileges
      *
      * @param chosenCouncilPrivileges
@@ -932,12 +1009,16 @@ public class GameController {
         return validateCouncilPrivileges(chosenCouncilPrivileges);
     }
 
+    public boolean canPlayerDecideHisExcommunication(String username) throws PlayerDoesNotExistException {
+        Player player = getLocalPlayer(username);
+        return playersWithPendingExcommunicationDecision.contains(player);
+    }
+
     /* --------------------------------------------------------------------------------------
      * Getters for valid moves, etc
      * These methods are used mostly by the UI for getting which actions the player can perform
      * -------------------------------------------------------------------------------------- */
     public List<ActionSpace> getAllowedActionSpaces() {
-        // TODO: take player as parameter and return only action spaces where he's allowed to go
         List<ActionSpace> actionSpaces = new ArrayList<>();
         actionSpaces.addAll(game.getBoard().getTerritoryTower().getFloors());
         actionSpaces.addAll(game.getBoard().getCharacterTower().getFloors());
@@ -953,12 +1034,28 @@ public class GameController {
         actionSpaces.add(game.getBoard().getBigProductionArea());
         actionSpaces.add(game.getBoard().getCouncilPalace());
 
-        return actionSpaces;
+        return actionSpaces.stream()
+                           // Take only enabled action spaces
+                           .filter(actionSpace -> !actionSpace.isEnabled())
+                           // Take only floors with cards
+                           .filter(actionSpace -> {
+                               if (actionSpace instanceof Floor) {
+                                   return ((Floor) actionSpace).getCard() != null;
+                               }
+                               else {
+                                   return true;
+                               }
+                           })
+                           .collect(Collectors.toList());
     }
 
     public List<LeaderCard> getAllowedLeaderCards() {
-        // TODO: filter only the leader cards the current player can play
-        return game.getCurrentPlayer().getAvailableLeaderCards();
+        Player player = game.getCurrentPlayer();
+        // TODO: account for card effects
+        return player.getAvailableLeaderCards()
+                     .stream()
+                     .filter(card -> player.hasEnoughResourcesForAny(card.getRequiredResourceSet()))
+                     .collect(Collectors.toList());
     }
 
     public List<RequiredResourceSet> getAllowedPaymentsForCard(DevelopmentCard card) {
@@ -969,16 +1066,16 @@ public class GameController {
     }
 
     public List<Card> getActivatableCards() {
-        // TODO: filter only cards activatable by the current player
+        // TODO: filter only cards not already activated
         List<Card> cards = new ArrayList<>();
 
         Player player = game.getCurrentPlayer();
 
         player.getAllPlayedCards()
               .stream()
-              .filter(
-                      card -> !card.getEffectsContainer()
-                                   .getEffectsImplementing(OncePerRoundEffectInterface.class).isEmpty())
+              .filter(card -> !card.getEffectsContainer()
+                                   .getEffectsImplementing(OncePerRoundEffectInterface.class)
+                                   .isEmpty())
               .forEach(cards::add);
 
         return cards;
@@ -1088,5 +1185,9 @@ public class GameController {
 
     public DevelopmentCard getDevelopmentCardBeingTaken() {
         return developmentCardBeingTaken;
+    }
+
+    public List<Player> getPlayersWithPendingExcommunicationDecision() {
+        return playersWithPendingExcommunicationDecision;
     }
 }

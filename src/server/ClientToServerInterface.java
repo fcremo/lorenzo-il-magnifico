@@ -96,5 +96,7 @@ public interface ClientToServerInterface extends Remote {
 
     void endTurn() throws RemoteException, ActionNotAllowedException ;
 
+    void decideExcommunication(Boolean beExcommunicated) throws RemoteException, ActionNotAllowedException;
+
     // void activateOncePerRoundEffect(Card card, OncePerRoundEffectInterface effect) throws RemoteException, ActionNotAllowedException;
 }

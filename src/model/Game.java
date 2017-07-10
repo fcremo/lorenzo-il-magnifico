@@ -89,7 +89,7 @@ public class Game implements Serializable {
     /**
      * The current round
      */
-    private int currentRound = 1;
+    private int currentRound = 0;
 
     /**
      * The value of the black dice as rolled (does not account for bonuses/maluses)

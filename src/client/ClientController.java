@@ -236,6 +236,18 @@ public class ClientController implements GameEventsInterface,
         }
     }
 
+    public void decideExcommunication(Boolean beExcommunicated) {
+        try {
+            clientConnection.decideExcommunication(beExcommunicated);
+        }
+        catch (RemoteException e) {
+            handleNetworkFailure(e);
+        }
+        catch (ActionNotAllowedException e) {
+            handleOutOfSyncWithServer(e);
+        }
+    }
+
     /* ---------------------------------------
      * GAME EVENTS
      * --------------------------------------- */
@@ -387,6 +399,32 @@ public class ClientController implements GameEventsInterface,
         ui.onPlayerTakesDevelopmentCard(username, cardId, councilPrivileges);
     }
 
+    @Override
+    public void onStartVaticanReport() throws RemoteException {
+        try {
+            gameController.startVaticanReport();
+
+            ui.onStartVaticanReport();
+
+            if(gameController.canPlayerDecideHisExcommunication(ourUsername)) {
+                ui.showDecideExcommunicationContext();
+            }
+        }
+        catch (ActionNotAllowedException e) {
+            handleOutOfSyncWithServer(e);
+        }
+    }
+
+    @Override
+    public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) {
+        try {
+            gameController.decideExcommunication(username, beExcommunicated);
+        }
+        catch (ActionNotAllowedException e) {
+            handleOutOfSyncWithServer(e);
+        }
+    }
+
     /**
      * This method handles network errors.
      * For now we abort the game, but it should be possible to recover by
@@ -427,6 +465,4 @@ public class ClientController implements GameEventsInterface,
     public GameController getGameController() {
         return gameController;
     }
-
-
 }

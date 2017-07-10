@@ -119,6 +119,15 @@ public class ObtainedResourceSet implements Serializable {
         }
     }
 
+    /**
+     * Sets a resource quantity
+     * @param resource
+     * @param qty
+     */
+    public void setResourceQty(ObtainableResource resource, int qty) {
+        resources.put(resource, 0);
+    }
+
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();

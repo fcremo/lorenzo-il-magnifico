@@ -167,6 +167,11 @@ public abstract class ClientConnection implements ServerToClientInterface, Clien
         serverGameController.endTurn(username);
     }
 
+    @Override
+    public void decideExcommunication(Boolean beExcommunicated) throws RemoteException, ActionNotAllowedException {
+        serverGameController.decideExcommunication(username, beExcommunicated);
+    }
+
     public String getUsername() {
         return username;
     }

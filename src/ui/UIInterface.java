@@ -22,6 +22,8 @@ public interface UIInterface extends GameEventsInterface {
 
     void showChooseCouncilPrivileges(List<ObtainableResourceSet> allowedPrivileges, int councilPrivilegesAmount);
 
+    void showDecideExcommunicationContext();
+
     void showFatalError(String errorMessage);
 
     void onNetworkError();

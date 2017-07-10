@@ -9,4 +9,5 @@ public enum GameState {
     PRODUCTION,                         // Production phase
     HARVEST,                            // Harvest phase
     TAKING_CARD,                        // Taking a card after occupying an action space
+    VATICAN_REPORT,                     // Vatican report phase
 }
