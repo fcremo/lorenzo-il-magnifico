@@ -871,6 +871,10 @@ public class ServerGameController {
                     }
                 }
         );
+
+        if(gameController.getPlayersWithPendingExcommunicationDecision().isEmpty()){
+            startNewRound();
+        }
     }
 
     /* ----------------------------------------------------------------
