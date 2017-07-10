@@ -262,20 +262,19 @@ public class ServerGameController {
     private void draftNextLeaderCard() {
         // Rotate the available leader cards choices
         List<Player> players = getGame().getPlayers();
-        List<LeaderCard> tmp = null;
+
+        List<LeaderCard> firstPlayerBackup = leaderCardsDraft.get(players.get(0));
+
         for (Player p : players.stream()
                                .limit(players.size() - 1)
                                .collect(Collectors.toList())) {
 
             int nextPlayerIndex = players.indexOf(p) + 1;
             Player nextPlayer = players.get(nextPlayerIndex);
-            tmp = leaderCardsDraft.get(nextPlayer);
-            leaderCardsDraft.put(nextPlayer, leaderCardsDraft.get(p));
+            leaderCardsDraft.put(p, leaderCardsDraft.get(nextPlayer));
         }
-
-        // Pass the last player's cards to the first
-        Player firstPlayer = players.get(0);
-        leaderCardsDraft.put(firstPlayer, tmp);
+        // Pass the first player's cards to the last
+        leaderCardsDraft.put(players.get(players.size() - 1), firstPlayerBackup);
 
         // All the players have to draft
         playersThatHaveToDraft = new ArrayList<>(getGame().getPlayers());
@@ -402,7 +401,7 @@ public class ServerGameController {
             gameController.setDevelopmentCards(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
         }
         catch (ActionNotAllowedException e) {
-            // This should never happen
+            // This should never happen as cards IDs are chosen by the server
             e.printStackTrace();
         }
 
@@ -447,7 +446,8 @@ public class ServerGameController {
             gameController.startPlayerTurn(player.getUsername());
         }
         catch (PlayerDoesNotExistException e) {
-            e.printStackTrace(); // This should never happen
+            // This should never happen since the player comes from the server
+            e.printStackTrace();
         }
 
         for (ClientConnection connection : connections) {
@@ -671,6 +671,13 @@ public class ServerGameController {
         });
     }
 
+    /**
+     * Called when a player commits some servants for his next action
+     *
+     * @param username
+     * @param servants
+     * @throws ActionNotAllowedException
+     */
     public void spendServants(String username, int servants) throws ActionNotAllowedException {
         gameController.spendServants(username, servants);
 
