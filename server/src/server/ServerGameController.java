@@ -11,6 +11,9 @@ import model.card.development.BuildingCard;
 import model.card.development.CharacterCard;
 import model.card.development.TerritoryCard;
 import model.card.development.VentureCard;
+import model.card.effects.EndOfGameResourcesEffect;
+import model.card.effects.IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect;
+import model.card.effects.interfaces.EffectInterface;
 import model.card.leader.LeaderCard;
 import model.player.FamilyMemberColor;
 import model.player.Player;
@@ -28,6 +31,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static model.resource.ObtainableResource.*;
 
 /**
  * This class provides the server specific logic for the game,
@@ -109,7 +114,7 @@ public class ServerGameController {
      */
     private void startGame() {
         // Ignore repeated calls (made if 4 players connect before the timeout expires)
-        if(gameController.getGameState() != GameState.WAITING_FOR_PLAYERS_TO_CONNECT) return;
+        if (gameController.getGameState() != GameState.WAITING_FOR_PLAYERS_TO_CONNECT) return;
 
         gameController.setGameState(GameState.STARTED);
 
@@ -385,8 +390,8 @@ public class ServerGameController {
                                                                    .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
         List<UUID> buildingCardsIds = StreamUtils.takeRandomElements(currentPeriodBuildingCards, 4)
-                                                      .map(card -> card.getId())
-                                                      .collect(Collectors.toList());
+                                                 .map(card -> card.getId())
+                                                 .collect(Collectors.toList());
 
 
         Stream<VentureCard> currentPeriodVentureCards = getGame().getAvailableVentureCards()
@@ -394,8 +399,8 @@ public class ServerGameController {
                                                                  .filter(card -> card.getPeriod() == (getGame().getCurrentPeriod()));
 
         List<UUID> ventureCardsIds = StreamUtils.takeRandomElements(currentPeriodVentureCards, 4)
-                                                    .map(card -> card.getId())
-                                                    .collect(Collectors.toList());
+                                                .map(card -> card.getId())
+                                                .collect(Collectors.toList());
 
         try {
             gameController.setDevelopmentCards(territoryCardsIds, characterCardsIds, buildingCardsIds, ventureCardsIds);
@@ -463,17 +468,142 @@ public class ServerGameController {
     /**
      * Ends the round
      */
-    private void endRound() {
-        if(getGame().getCurrentRound() == 6) {
-            // TODO
-            // startGameEndPhase();
-        }
-        else if(getGame().getCurrentRound() % 2 == 0) {
+    private void endRound() throws PlayerDoesNotExistException {
+        if (getGame().getCurrentRound() % 2 == 0) {
             startVaticanReport();
+            if (getGame().getCurrentRound() == 6) {
+                startGameEndPhase();
+            }
         }
         else {
             startNewRound();
         }
+    }
+
+    /**
+     * Compute final scoring
+     */
+    private void startGameEndPhase() throws PlayerDoesNotExistException {
+        for (ClientConnection connection : connections) {
+            Player player = gameController.getLocalPlayer(connection.getUsername());
+            int victoryPoints = 0;
+
+            victoryPoints += computeVictoryPointsFromConqueredTerritories(player);
+            victoryPoints += computeVictoryPointsFromInfluencedCharacters(player);
+            victoryPoints += computeVictoryPointsFromEncouragedVentures(player);
+            victoryPoints += computeVictoryPointsFromCollectedResources(player);
+
+            ObtainableResourceSet obtainableResourceSet = new ObtainableResourceSet();
+            obtainableResourceSet.addResource(ObtainableResource.VICTORY_POINTS, victoryPoints);
+            player.addResources(obtainableResourceSet);
+
+            computeVictoryPointsFromMilitaryStrength();
+        }
+    }
+
+    private int computeVictoryPointsFromConqueredTerritories(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(TerritoryCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+        int conqueredTerritories = player.getTerritories().size();
+        if (conqueredTerritories == 3) {
+            victoryPoints = 1;
+        }
+        else if (conqueredTerritories == 4) {
+            victoryPoints = 4;
+        }
+        else if (conqueredTerritories == 5) {
+            victoryPoints = 10;
+        }
+        else if (conqueredTerritories == 6) {
+            victoryPoints = 20;
+        }
+        return victoryPoints;
+    }
+
+    private int computeVictoryPointsFromInfluencedCharacters(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(CharacterCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+        int influencedCharacters = player.getTerritories().size();
+        if (influencedCharacters == 1) {
+            victoryPoints = 1;
+        }
+        else if (influencedCharacters == 2) {
+            victoryPoints = 3;
+        }
+        else if (influencedCharacters == 3) {
+            victoryPoints = 6;
+        }
+        else if (influencedCharacters == 4) {
+            victoryPoints = 10;
+        }
+        else if (influencedCharacters == 5) {
+            victoryPoints = 15;
+        }
+        else if (influencedCharacters == 6) {
+            victoryPoints = 21;
+        }
+        return victoryPoints;
+    }
+
+    private int computeVictoryPointsFromEncouragedVentures(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(VentureCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+
+        for (EndOfGameResourcesEffect e : player.getEffectsImplementing(EndOfGameResourcesEffect.class)) {
+            victoryPoints += e.getResourceSet().getObtainedAmount(VICTORY_POINTS);
+        }
+
+        return victoryPoints;
+
+    }
+
+    private void computeVictoryPointsFromMilitaryStrength() {
+        List<Player> sortedPlayers = new ArrayList<>();
+        sortedPlayers.addAll(gameController.getGame().getPlayers());
+        sortedPlayers.sort(Comparator.comparingInt(player -> player.getResources().getAmount(MILITARY_POINTS)));
+
+
+        int currentMilitaryPoints = sortedPlayers.get(sortedPlayers.size() - 1).getResources().getAmount(MILITARY_POINTS);
+        int i = sortedPlayers.size() - 1;
+        do {
+            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 5);
+            i--;
+        }
+        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
+
+        if (i < 0) return;
+
+        currentMilitaryPoints = sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS);
+        do {
+            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 2);
+            i--;
+        }
+        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
+    }
+
+
+    private int computeVictoryPointsFromCollectedResources(Player player) {
+        int victoryPoints;
+        int resources = 0;
+        resources += player.getResources().getAmount(WOOD);
+        resources += player.getResources().getAmount(STONE);
+        resources += player.getResources().getAmount(GOLD);
+        resources += player.getResources().getAmount(SERVANTS);
+        victoryPoints = resources / 5;
+        return victoryPoints;
+
     }
 
     /**
@@ -518,7 +648,7 @@ public class ServerGameController {
      * TODO: keep track of whick players have drafted like in the leader cards draft
      *
      * @param username
-     * @param personalBonusTile
+     * @param personalBonusTileId
      */
     public void choosePersonalBonusTile(String username, UUID personalBonusTileId) throws ActionNotAllowedException {
         gameController.setPersonalBonusTile(username, personalBonusTileId);
@@ -541,7 +671,7 @@ public class ServerGameController {
      * Called when a player chooses his leader card
      *
      * @param username
-     * @param leaderCard
+     * @param leaderCardId
      */
     public void chooseLeaderCard(String username, UUID leaderCardId) throws ActionNotAllowedException {
         Player player = gameController.getLocalPlayer(username);
@@ -598,7 +728,7 @@ public class ServerGameController {
      * Called when a player goes to a floor
      *
      * @param username
-     * @param floor
+     * @param floorId
      * @param familyMember
      * @param paymentForCard
      * @throws RemoteException
@@ -652,9 +782,9 @@ public class ServerGameController {
      * Called when a player wants to occupy an action space
      * (except a floor for which there's a dedicated method)
      *
-     * @param username the username of the player
+     * @param username          the username of the player
      * @param familyMemberColor the family member he wants to use
-     * @param chosenPrivileges the council privileges the player has chosen
+     * @param chosenPrivileges  the council privileges the player has chosen
      */
     public void goToActionSpace(String username, UUID actionSpaceId, FamilyMemberColor familyMemberColor, List<ObtainableResourceSet> chosenPrivileges) throws ActionNotAllowedException {
         // If the action is not allowed the game controller will throw an exception
@@ -689,7 +819,7 @@ public class ServerGameController {
                     catch (RemoteException e) {
                         handleRemoteException(e);
                     }
-        });
+                });
     }
 
     /**
@@ -707,7 +837,7 @@ public class ServerGameController {
 
         // If the player is last in turn order, end round
         int playerIndex = turnOrder.indexOf(player);
-        if(playerIndex == turnOrder.size() - 1) {
+        if (playerIndex == turnOrder.size() - 1) {
             endRound();
         }
         // else start next player's turn

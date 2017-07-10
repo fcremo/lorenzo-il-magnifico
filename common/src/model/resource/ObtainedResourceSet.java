@@ -40,6 +40,10 @@ public class ObtainedResourceSet implements Serializable {
         this.resources = new HashMap<>(otherObtainedResourceSet.resources);
     }
 
+    public int getAmount (ObtainableResource resource) {
+        return resources.getOrDefault(resource, 0);
+    }
+
     /**
      * Adds some quantity of a resource to the set
      * @param resource
