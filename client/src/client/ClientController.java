@@ -427,6 +427,12 @@ public class ClientController implements GameEventsInterface,
         }
     }
 
+    @Override
+    public void onGameEnd() throws RemoteException {
+        gameController.endGame();
+        ui.onGameEnd();
+    }
+
     /**
      * This method handles network errors.
      * For now we abort the game, but it should be possible to recover by

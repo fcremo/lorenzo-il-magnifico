@@ -101,4 +101,10 @@ public interface GameEventsInterface {
      * @param beExcommunicated
      */
     void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) throws RemoteException;
+
+
+    /**
+     * Called when the game ends
+     */
+    void onGameEnd() throws RemoteException;
 }

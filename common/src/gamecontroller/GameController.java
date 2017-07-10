@@ -25,9 +25,14 @@ import model.util.Tuple;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static model.resource.ObtainableResource.*;
+import static model.resource.ObtainableResource.GOLD;
+import static model.resource.ObtainableResource.SERVANTS;
 
 /**
  * This class implements the game logic and is responsible for handling player actions (and raise exceptions),
@@ -379,6 +384,21 @@ public class GameController {
     public <T extends OncePerRoundEffectInterface> void activateOncePerRoundEffect(String username, T effect) {
     }
 
+    public void endGame() {
+        for (Player player : game.getPlayers()) {
+            int victoryPoints = 0;
+
+            victoryPoints += computeVictoryPointsFromConqueredTerritories(player);
+            victoryPoints += computeVictoryPointsFromInfluencedCharacters(player);
+            victoryPoints += computeVictoryPointsFromEncouragedVentures(player);
+            victoryPoints += computeVictoryPointsFromCollectedResources(player);
+
+            player.getResources().addResource(ObtainableResource.VICTORY_POINTS, victoryPoints);
+
+            computeVictoryPointsFromMilitaryStrength();
+        }
+    }
+
     /**
      * Performs the action and returns the set of resources obtained
      *
@@ -388,32 +408,6 @@ public class GameController {
      */
     ArrayList<ObtainableResourceSet> performAction(String username, int familyMemberValue, Action action) throws ActionNotAllowedException {
         throw new NotImplementedException();
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-    public void addPlayer(Player player) {
-        game.addPlayer(player);
-    }
-
-    public void setDiceValues(int blackDie, int whiteDie, int orangeDie) {
-        game.setBlackDie(blackDie);
-        game.setWhiteDie(whiteDie);
-        game.setOrangeDie(orangeDie);
-    }
-
-    public boolean hasCurrentPlayerPlacedFamilyMember() {
-        return hasCurrentPlayerPlacedFamilyMember;
-    }
-
-    public void setHasCurrentPlayerPlacedFamilyMember(boolean hasCurrentPlayerPlacedFamilyMember) {
-        this.hasCurrentPlayerPlacedFamilyMember = hasCurrentPlayerPlacedFamilyMember;
     }
 
     /* --------------------------------------------------------------------------------------
@@ -559,6 +553,112 @@ public class GameController {
 
         setGameState(GameState.PRODUCTION);
     }
+
+    private int computeVictoryPointsFromConqueredTerritories(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(TerritoryCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+        int conqueredTerritories = player.getTerritories().size();
+        if (conqueredTerritories == 3) {
+            victoryPoints = 1;
+        }
+        else if (conqueredTerritories == 4) {
+            victoryPoints = 4;
+        }
+        else if (conqueredTerritories == 5) {
+            victoryPoints = 10;
+        }
+        else if (conqueredTerritories == 6) {
+            victoryPoints = 20;
+        }
+        return victoryPoints;
+    }
+
+    private int computeVictoryPointsFromInfluencedCharacters(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(CharacterCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+        int influencedCharacters = player.getTerritories().size();
+        if (influencedCharacters == 1) {
+            victoryPoints = 1;
+        }
+        else if (influencedCharacters == 2) {
+            victoryPoints = 3;
+        }
+        else if (influencedCharacters == 3) {
+            victoryPoints = 6;
+        }
+        else if (influencedCharacters == 4) {
+            victoryPoints = 10;
+        }
+        else if (influencedCharacters == 5) {
+            victoryPoints = 15;
+        }
+        else if (influencedCharacters == 6) {
+            victoryPoints = 21;
+        }
+        return victoryPoints;
+    }
+
+    private int computeVictoryPointsFromEncouragedVentures(Player player) {
+        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
+                               .stream()
+                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(VentureCard.class));
+        if (ignore) return 0;
+
+        int victoryPoints = 0;
+
+        for (EndOfGameResourcesEffect e : player.getEffectsImplementing(EndOfGameResourcesEffect.class)) {
+            victoryPoints += e.getResourceSet().getObtainedAmount(VICTORY_POINTS);
+        }
+
+        return victoryPoints;
+
+    }
+
+    private void computeVictoryPointsFromMilitaryStrength() {
+        List<Player> sortedPlayers = new ArrayList<>();
+        sortedPlayers.addAll(game.getPlayers());
+        sortedPlayers.sort(Comparator.comparingInt(player -> player.getResources().getAmount(MILITARY_POINTS)));
+
+
+        int currentMilitaryPoints = sortedPlayers.get(sortedPlayers.size() - 1).getResources().getAmount(MILITARY_POINTS);
+        int i = sortedPlayers.size() - 1;
+        do {
+            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 5);
+            i--;
+        }
+        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
+
+        if (i < 0) return;
+
+        currentMilitaryPoints = sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS);
+        do {
+            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 2);
+            i--;
+        }
+        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
+    }
+
+
+    private int computeVictoryPointsFromCollectedResources(Player player) {
+        int victoryPoints;
+        int resources = 0;
+        resources += player.getResources().getAmount(WOOD);
+        resources += player.getResources().getAmount(STONE);
+        resources += player.getResources().getAmount(GOLD);
+        resources += player.getResources().getAmount(SERVANTS);
+        victoryPoints = resources / 5;
+        return victoryPoints;
+
+    }
+
 
     /* --------------------------------------------------------------------------------------
      * Validations and assertions
@@ -1191,5 +1291,31 @@ public class GameController {
 
     public List<Player> getPlayersWithPendingExcommunicationDecision() {
         return playersWithPendingExcommunicationDecision;
+    }
+
+    public void setDiceValues(int blackDie, int whiteDie, int orangeDie) {
+        game.setBlackDie(blackDie);
+        game.setWhiteDie(whiteDie);
+        game.setOrangeDie(orangeDie);
+    }
+
+    public boolean hasCurrentPlayerPlacedFamilyMember() {
+        return hasCurrentPlayerPlacedFamilyMember;
+    }
+
+    public void setHasCurrentPlayerPlacedFamilyMember(boolean hasCurrentPlayerPlacedFamilyMember) {
+        this.hasCurrentPlayerPlacedFamilyMember = hasCurrentPlayerPlacedFamilyMember;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void addPlayer(Player player) {
+        game.addPlayer(player);
     }
 }

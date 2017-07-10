@@ -343,6 +343,10 @@ public class ServerGameController {
      * Start new round
      */
     private void startNewRound() {
+        if (getGame().getCurrentRound() == 6) {
+            startGameEndPhase();
+        }
+
         gameController.prepareNewRound();
 
         connections.forEach(connection -> {
@@ -471,9 +475,6 @@ public class ServerGameController {
     private void endRound() throws PlayerDoesNotExistException {
         if (getGame().getCurrentRound() % 2 == 0) {
             startVaticanReport();
-            if (getGame().getCurrentRound() == 6) {
-                startGameEndPhase();
-            }
         }
         else {
             startNewRound();
@@ -483,127 +484,19 @@ public class ServerGameController {
     /**
      * Compute final scoring
      */
-    private void startGameEndPhase() throws PlayerDoesNotExistException {
-        for (ClientConnection connection : connections) {
-            Player player = gameController.getLocalPlayer(connection.getUsername());
-            int victoryPoints = 0;
+    private void startGameEndPhase() {
+        gameController.endGame();
 
-            victoryPoints += computeVictoryPointsFromConqueredTerritories(player);
-            victoryPoints += computeVictoryPointsFromInfluencedCharacters(player);
-            victoryPoints += computeVictoryPointsFromEncouragedVentures(player);
-            victoryPoints += computeVictoryPointsFromCollectedResources(player);
-
-            ObtainableResourceSet obtainableResourceSet = new ObtainableResourceSet();
-            obtainableResourceSet.addResource(ObtainableResource.VICTORY_POINTS, victoryPoints);
-            player.addResources(obtainableResourceSet);
-
-            computeVictoryPointsFromMilitaryStrength();
-        }
-    }
-
-    private int computeVictoryPointsFromConqueredTerritories(Player player) {
-        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
-                               .stream()
-                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(TerritoryCard.class));
-        if (ignore) return 0;
-
-        int victoryPoints = 0;
-        int conqueredTerritories = player.getTerritories().size();
-        if (conqueredTerritories == 3) {
-            victoryPoints = 1;
-        }
-        else if (conqueredTerritories == 4) {
-            victoryPoints = 4;
-        }
-        else if (conqueredTerritories == 5) {
-            victoryPoints = 10;
-        }
-        else if (conqueredTerritories == 6) {
-            victoryPoints = 20;
-        }
-        return victoryPoints;
-    }
-
-    private int computeVictoryPointsFromInfluencedCharacters(Player player) {
-        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
-                               .stream()
-                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(CharacterCard.class));
-        if (ignore) return 0;
-
-        int victoryPoints = 0;
-        int influencedCharacters = player.getTerritories().size();
-        if (influencedCharacters == 1) {
-            victoryPoints = 1;
-        }
-        else if (influencedCharacters == 2) {
-            victoryPoints = 3;
-        }
-        else if (influencedCharacters == 3) {
-            victoryPoints = 6;
-        }
-        else if (influencedCharacters == 4) {
-            victoryPoints = 10;
-        }
-        else if (influencedCharacters == 5) {
-            victoryPoints = 15;
-        }
-        else if (influencedCharacters == 6) {
-            victoryPoints = 21;
-        }
-        return victoryPoints;
-    }
-
-    private int computeVictoryPointsFromEncouragedVentures(Player player) {
-        boolean ignore = player.getEffectsImplementing(IgnoreEndOfGameVictoryPointsFromDevelopmentCardsEffect.class)
-                               .stream()
-                               .anyMatch(effect -> effect.ignoreVictoryPointsFromDevelopmentCard(VentureCard.class));
-        if (ignore) return 0;
-
-        int victoryPoints = 0;
-
-        for (EndOfGameResourcesEffect e : player.getEffectsImplementing(EndOfGameResourcesEffect.class)) {
-            victoryPoints += e.getResourceSet().getObtainedAmount(VICTORY_POINTS);
-        }
-
-        return victoryPoints;
-
-    }
-
-    private void computeVictoryPointsFromMilitaryStrength() {
-        List<Player> sortedPlayers = new ArrayList<>();
-        sortedPlayers.addAll(gameController.getGame().getPlayers());
-        sortedPlayers.sort(Comparator.comparingInt(player -> player.getResources().getAmount(MILITARY_POINTS)));
-
-
-        int currentMilitaryPoints = sortedPlayers.get(sortedPlayers.size() - 1).getResources().getAmount(MILITARY_POINTS);
-        int i = sortedPlayers.size() - 1;
-        do {
-            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 5);
-            i--;
-        }
-        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
-
-        if (i < 0) return;
-
-        currentMilitaryPoints = sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS);
-        do {
-            sortedPlayers.get(i).getResources().addResource(VICTORY_POINTS, 2);
-            i--;
-        }
-        while (sortedPlayers.get(i).getResources().getAmount(MILITARY_POINTS) == currentMilitaryPoints && i >= 0);
-    }
-
-
-    private int computeVictoryPointsFromCollectedResources(Player player) {
-        int victoryPoints;
-        int resources = 0;
-        resources += player.getResources().getAmount(WOOD);
-        resources += player.getResources().getAmount(STONE);
-        resources += player.getResources().getAmount(GOLD);
-        resources += player.getResources().getAmount(SERVANTS);
-        victoryPoints = resources / 5;
-        return victoryPoints;
-
+        connections.forEach(
+                connection -> {
+                    try {
+                        connection.onGameEnd();
+                    }
+                    catch (RemoteException e) {
+                        handleRemoteException(e);
+                    }
+                }
+        );
     }
 
     /**
@@ -625,6 +518,10 @@ public class ServerGameController {
             catch (RemoteException e) {
                 handleRemoteException(e);
             }
+        }
+
+        if(gameController.getPlayersWithPendingExcommunicationDecision().isEmpty()){
+            startNewRound();
         }
     }
 

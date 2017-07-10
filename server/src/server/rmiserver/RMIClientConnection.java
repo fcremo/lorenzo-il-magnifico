@@ -132,4 +132,9 @@ public class RMIClientConnection extends ClientConnection implements ServerToCli
     public void onPlayerDecidesExcommunication(String username, Boolean beExcommunicated) throws RemoteException {
         client.onPlayerDecidesExcommunication(username, beExcommunicated);
     }
+
+    @Override
+    public void onGameEnd() throws RemoteException {
+        client.onGameEnd();
+    }
 }

@@ -213,6 +213,12 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
         // We're not interested in this event for now
     }
 
+    @Override
+    public void onGameEnd() throws RemoteException {
+        println("The game has ended!");
+        // TODO: print the winner
+    }
+
     /* -------------------------------------------------------------------------
      * UIInterface
      * These methods are called by the client controller.
