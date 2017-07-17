@@ -11,8 +11,21 @@ import java.util.ArrayList;
  * This class represents a territory card
  */
 public class TerritoryCard extends DevelopmentCard {
+    /**
+     * The set of resources obtained when activating this
+     * card during harvest
+     */
     private ObtainableResourceSet harvestResourceSet;
+
+    /**
+     * The action value required for activating the card during harvest
+     */
     private int requiredValueForHarvest;
+
+    /**
+     * True if this card has been activated during harvest
+     */
+    private boolean hasBeenActivated;
 
     private TerritoryCard() {
         super();
@@ -28,16 +41,8 @@ public class TerritoryCard extends DevelopmentCard {
         return harvestResourceSet;
     }
 
-    public void setHarvestResourceSet(ObtainableResourceSet harvestResourceSet) {
-        this.harvestResourceSet = harvestResourceSet;
-    }
-
     public int getRequiredValueForHarvest() {
         return requiredValueForHarvest;
-    }
-
-    public void setRequiredValueForHarvest(int requiredValueForHarvest) {
-        this.requiredValueForHarvest = requiredValueForHarvest;
     }
 
     @Override
@@ -74,6 +79,14 @@ public class TerritoryCard extends DevelopmentCard {
         }
 
         return string.toString();
+    }
+
+    public boolean hasBeenActivated() {
+        return hasBeenActivated;
+    }
+
+    public void setActivated(boolean hasBeenActivated) {
+        this.hasBeenActivated = hasBeenActivated;
     }
 
     public static class InstanceCreator implements com.google.gson.InstanceCreator<TerritoryCard> {

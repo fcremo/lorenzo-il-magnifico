@@ -10,8 +10,22 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class BuildingCard extends DevelopmentCard {
+    /**
+     * The possible conversions the card can do when activated during production
+     * The first element of the tuple represents a cost/requirement,
+     * the second what's obtained when satisfying the cost.
+     */
     private ArrayList<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions;
+
+    /**
+     * The value required for activating the card during production
+     */
     private int requiredValueForProduction;
+
+    /**
+     * True if this card has been activated during harvest
+     */
+    private boolean hasBeenActivated;
 
     public BuildingCard(String name, RequiredResourceSet requiredResourceSet, int period,
                         List<Tuple<RequiredResourceSet, ObtainableResourceSet>> productions,
@@ -87,5 +101,13 @@ public class BuildingCard extends DevelopmentCard {
     @Override
     public ActionType getCardTakingActionType() {
         return ActionType.TAKE_BUILDING_CARD;
+    }
+
+    public boolean hasBeenActivated() {
+        return hasBeenActivated;
+    }
+
+    public void setActivated(boolean hasBeenActivated) {
+        this.hasBeenActivated = hasBeenActivated;
     }
 }
