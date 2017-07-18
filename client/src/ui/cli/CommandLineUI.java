@@ -66,14 +66,14 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
             height = 50;
         }
 
-        currentContext = new NetworkSettingsContext(this, controller);
-
         try {
             keyboardHandler = new KeyboardHandler(terminal);
         }
         catch (IOException e) {
             println("IOException while trying to open the terminal.");
         }
+        changeContext(new NetworkSettingsContext(this, controller));
+
         keyboardHandler.run();
     }
 
@@ -128,6 +128,8 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
     @Override
     public void changeContext(Context context) {
         this.currentContext = context;
+        keyboardHandler.clearAutocompleters();
+        keyboardHandler.addAutocompleter(context.getCompleter());
     }
 
     /* -------------------------------------------------------------------------
@@ -227,22 +229,22 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
 
     @Override
     public void showLoginPrompt() {
-        currentContext = new LoginContext(this, controller);
+        changeContext(new LoginContext(this, controller));
     }
 
     @Override
     public void showChoosePersonalBonusTile(List<PersonalBonusTile> personalBonusTiles) {
-        currentContext = new ChooseBonusTileContext(this, personalBonusTiles, controller);
+        changeContext(new ChooseBonusTileContext(this, personalBonusTiles, controller));
     }
 
     @Override
     public void showChooseLeaderCard(List<LeaderCard> leaderCards) {
-        currentContext = new ChooseLeaderCardContext(this, leaderCards, controller);
+        changeContext(new ChooseLeaderCardContext(this, leaderCards, controller));
     }
 
     @Override
     public void showMainTurnContext() {
-        currentContext = new MainTurnContext(this, controller.getGameController(), controller);
+        changeContext(new MainTurnContext(this, controller.getGameController(), controller));
     }
 
     @Override
@@ -281,7 +283,7 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
 
     @Override
     public void showWaitingMessage(String message) {
-        currentContext = new WaitingContext(this, message);
+        changeContext(new WaitingContext(this, message));
     }
 
     @Override

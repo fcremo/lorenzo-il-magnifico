@@ -1,6 +1,8 @@
 package ui.cli.contexts;
 
 import gamecontroller.exceptions.ActionNotAllowedException;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
 import ui.cli.exceptions.InvalidCommandException;
 
 import java.util.Arrays;
@@ -90,6 +92,10 @@ public abstract class Context {
         if (!commands.containsKey("back")) {
             addCommand("back", s -> goBack(), "Go back");
         }
+    }
+
+    public Completer getCompleter() {
+        return new StringsCompleter(commands.keySet());
     }
 
     protected void goBack() {
