@@ -44,6 +44,12 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
      */
     private int height;
 
+    /**
+     * Fallback values for width and height
+     */
+    private final int DEFAULT_WIDTH = 160;
+    private final int DEFAULT_HEIGHT = 40;
+
     private KeyboardHandler keyboardHandler;
 
     private String ourUsername;
@@ -59,11 +65,11 @@ public class CommandLineUI implements UIInterface, UIContextInterface {
         width = terminal.getWidth();
         height = terminal.getHeight();
 
-        if(width < 140 || height < 50 || !terminal.isSupported()) {
+        if(width < DEFAULT_WIDTH || height < DEFAULT_HEIGHT || !terminal.isSupported()) {
             println("Your terminal is too small or unsupported.");
-            println("Defaulting to 140x50 size");
-            width = 140;
-            height = 50;
+            println(String.format("Defaulting to %dx%d size", DEFAULT_WIDTH, DEFAULT_HEIGHT));
+            width = DEFAULT_WIDTH;
+            height = DEFAULT_HEIGHT;
         }
 
         try {
