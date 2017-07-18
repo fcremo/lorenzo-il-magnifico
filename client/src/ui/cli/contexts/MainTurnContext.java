@@ -77,7 +77,7 @@ public class MainTurnContext extends Context {
             rows.get(i).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
-            String description = game.getBoard().getBuildingTower().getFloors().get(i).toString();
+            String description = game.getBoard().getCharacterTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
@@ -92,7 +92,7 @@ public class MainTurnContext extends Context {
             rows.get(i).addColumn(column);
         }
         for (int i = 0; i < 4; i++) {
-            String description = game.getBoard().getCharacterTower().getFloors().get(i).toString();
+            String description = game.getBoard().getBuildingTower().getFloors().get(i).toString();
             ColumnInterface column;
             if (i == 0) {
                 ContainerColumn containerColumn = new ContainerColumn();
