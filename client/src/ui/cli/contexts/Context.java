@@ -69,7 +69,7 @@ public abstract class Context {
 
         if (params.length == 1) {
             if (helps.containsKey(params[0])) {
-                uiContextInterface.println(helps.get(params[0]));
+                uiContextInterface.println(params[0] + " " + commands.get(params[0]));
             }
             else {
                 throw new InvalidCommandException(String.format("Command %s does not exist", params[0]));
