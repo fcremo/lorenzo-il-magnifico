@@ -117,7 +117,6 @@ public class TextBox implements ColumnInterface, RowInterface {
         // Delete last \n
         sb.deleteCharAt(sb.length()-1);
 
-
         return sb.toString();
     }
 

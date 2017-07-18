@@ -37,18 +37,20 @@ public class ContainerColumn implements ColumnInterface {
     }
 
     @Override
-    public String render(int width, int height) {
-        int remainingHeight = height;
-        if (height == 0) {
-            remainingHeight = getHeightRequirement(width);
+    public String render(int targetWidth, int targetHeight) {
+        // availableHeight is the height available to the rows
+        int availableHeight = targetHeight;
+
+        if (targetHeight == 0) {
+            availableHeight = getHeightRequirement(targetWidth);
         }
 
-        if (drawBorders && height != 0) {
-            remainingHeight = remainingHeight - 1 - rows.size();
+        if (drawBorders && targetHeight != 0) {
+            availableHeight = availableHeight - 1 - rows.size();
         }
 
-        if (title != null && height != 0) {
-            remainingHeight = remainingHeight - 1;
+        if (title != null && targetHeight != 0) {
+            availableHeight = availableHeight - 1;
         }
 
         // Get the sum of the weights of the rows
@@ -58,17 +60,29 @@ public class ContainerColumn implements ColumnInterface {
 
         StringJoiner sj = new StringJoiner("\n");
 
-        String horizontalBorder = String.join("", Collections.nCopies(width, "-"));
+        String horizontalBorder = String.join("", Collections.nCopies(targetWidth, "-"));
         if (drawBorders) sj.add(horizontalBorder);
 
-        if (title != null) sj.add(renderTitle(width));
+        if (title != null) sj.add(renderTitle(targetWidth));
         // Render each row proportionally
         for (RowInterface row : rows) {
-            int rowHeight = row.getWeight() * remainingHeight / weightsSum;
-            String renderedRow = row.render(width, rowHeight);
+            int rowHeight = row.getWeight() * availableHeight / weightsSum;
+            String renderedRow = row.render(targetWidth, rowHeight);
             sj.add(renderedRow);
-            if (drawBorders) sj.add(horizontalBorder);
+            // Wait to draw the last border to fill vertical space
+            if(rows.indexOf(row) < rows.size() - 1 && drawBorders) sj.add(horizontalBorder);
         }
+
+        // Add empty lines at the end of the column to fill height if needed
+        String emptyRow = String.join("", Collections.nCopies(targetWidth, " "));
+        int currentHeight = sj.toString().split("\n").length;
+        int missingHeight = targetHeight - currentHeight;
+        if(drawBorders) missingHeight -= 1;
+        for(; missingHeight > 0; missingHeight--) {
+            sj.add(emptyRow);
+        }
+
+        if(drawBorders) sj.add(horizontalBorder);
 
         return sj.toString();
     }
