@@ -1,4 +1,4 @@
 {
-  "startTimeout": 3,
-  "moveTimeout": 3
+  "startTimeout": 10,
+  "moveTimeout": 60
 }
